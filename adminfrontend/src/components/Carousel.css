@@ -1,0 +1,103 @@
+
+
+
+@media (min-width: 1440px) {
+  html {
+    zoom: 1.5;
+  }
+}
+
+@media (min-width: 2560px) {
+  html {
+    zoom: 1.7;
+  }
+}
+
+@media (min-width: 3860px) {
+  html {
+    zoom: 2.5;
+  }
+}
+
+
+
+:root {
+  --primary: #ff5722;
+  
+}
+
+
+
+
+
+
+
+
+
+.swiper_container {
+  height: 28rem;
+  
+  position: relative;
+  
+  
+ 
+ 
+  
+}
+
+/* .swiper-slide {
+    width: 30rem;
+    height: 37rem;
+  position: relative;
+  width: 100px;
+  background-color: red;
+  
+  
+} */
+
+@media (max-width: 500px) {
+  .swiper_container {
+    height: 47rem;
+  }
+  .swiper-slide {
+    width: 28rem !important;
+    height: 36rem !important;
+  }
+  .swiper-slide img {
+    width: 28rem !important;
+    height: 36rem !important;
+  }
+}
+
+.swiper-slide img {
+  width: 18rem;
+  height: 24rem;
+  border-radius: 2rem;
+  object-fit: cover;
+}
+
+.swiper-slide-shadow-left,
+.swiper-slide-shadow-right {
+  display: none;
+}
+
+/* Removed navigation controls */
+
+.swiper-pagination {
+    position: absolute;
+    bottom: 1rem; /* Adjust as needed to position vertically */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+  
+    
+  }
+
+
+
+.swiper-pagination .swiper-pagination-bullet-active {
+  background: var(--primary);
+}
+
+/* Removed extra controler styling related to navigation arrows */
