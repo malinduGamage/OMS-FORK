@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import useLocalStorage from '../hooks/useLocalStorage'
-import axios from '../api/axios'
+import axios, { axiosPrivate } from '../api/axios'
 import { jwtDecode } from 'jwt-decode'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 const ROLES ={
   'User':1010,
   'Head':1910,
@@ -17,6 +18,8 @@ const Login = () => {
     
 
     const {setAuth} = useAuth()
+
+    const axiosPrivate = useAxiosPrivate()
 
     const navigate = useNavigate()
     const location=useLocation()
@@ -58,6 +61,8 @@ const Login = () => {
           const accessToken = response?.data?.accessToken;
           const decoded = jwtDecode(accessToken);
           const roles = decoded?.UserInfo?.roles || [];
+          const userId = decoded?.UserInfo?.userId
+         
   
           setAuth({ accessToken, roles });
           setEmail('');
@@ -67,7 +72,27 @@ const Login = () => {
           if (roles.includes(ROLES.Admin)) {
               navigate('/admin', { replace: true });
           } else if (roles.includes(ROLES.Head)) {
-              navigate('/orphanage', { replace: true });
+
+            try {
+
+              const orphanageResponse = await axiosPrivate.get(`/orphanage/byHead`)
+              // Extract the orphanageId from the response
+              const orphanageId = orphanageResponse?.data?.orphanageId;
+              
+              // Navigate to the new route with the obtained orphanageId
+              navigate(`/orphanage/${orphanageId}`, { replace: true });
+              
+              
+            } catch (error) {
+
+              console.error('Failed to fetch orphanage:', error);
+        setFormError('Failed to fetch orphanage information');
+
+              
+              
+            }
+
+
           } else {
               navigate(from, { replace: true });
           }
@@ -90,7 +115,7 @@ const Login = () => {
 
   return (
    <section className='mt-10'>
-    <p ref={errRef} className={formError ? 'font-semibold text-md':'absolute left:[-9999px]'}></p>
+    <p ref={errRef} className={formError ? 'font-semibold text-md':'absolute left:[-9999px]'}>{formError}</p>
 
     <h1 className="text-center text-lg font-bold text-primary mb-5">
             Log In

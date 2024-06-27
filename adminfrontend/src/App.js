@@ -37,7 +37,7 @@ function App() {
 
         <Route element={<RequireAuth allowedRoles={[ROLES.Head]}/>}>
         
-        <Route path='/orphanage' element={<Orphanage/>}/>
+        <Route path='/orphanage/:id' element={<Orphanage/>}/>
       </Route>
 
 
