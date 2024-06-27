@@ -35,5 +35,26 @@ const addOrphanage = async (req, res) => {
   }
 };
 
+const getOrphanageByHead = async (req, res) => {
+  const { userId } = req;
 
-module.exports ={addOrphanage}
+  try {
+    const orphanageResult = await db.query('SELECT * FROM orphanage WHERE headid=$1', [userId]);
+
+    if (orphanageResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Orphanage not found for the given head ID.' });
+    }
+
+    const orphanageId = orphanageResult.rows[0].orphanageid;
+
+    res.json({ orphanageId });
+  } catch (error) {
+    console.error('Database query failed:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the orphanage.' });
+  }
+};
+
+
+module.exports ={addOrphanage
+  ,getOrphanageByHead
+}
