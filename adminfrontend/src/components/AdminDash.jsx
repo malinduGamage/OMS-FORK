@@ -3,13 +3,17 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { districts } from '../constants'; 
 import Search from './Search';
 import Dropdown from './Dropdown';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AssignSocialWorkerModal } from './AssignSocialWorkerModal';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useLogout from '../hooks/useLogout';
 
 const AdminDash = () => {
 
   const axiosPrivate = useAxiosPrivate()
+
+  const navigate =useNavigate()
+  const logout = useLogout()
 
   const [orphanageList, setOrphanageList] = useState([])
   const [searchTerm, setSearchTerm] = useState(""); 
@@ -72,6 +76,13 @@ const AdminDash = () => {
    }
   }
 
+  const signout = async ()=>{
+    await logout();
+    navigate('/')
+  }
+
+
+
   return (
     <div className='mx-10'>
       <h1 className="text-2xl font-bold text-center my-10 relative">
@@ -99,6 +110,9 @@ const AdminDash = () => {
           background: #db4b1f;
         }
       `}</style>
+
+
+      <button onClick={signout}>Sign Out</button>
 
 
       <button className='mx-20 my-3 py-3 text-white bg-primary px-2'>

@@ -3,8 +3,13 @@ import orphanageImage from "../assets/images/orphanage1.jpg";
 import { orphanageTabs } from "../constants"; // Replace this with the correct path
 import Overview from "./Overview";
 import Children from "./Children";
+import { useNavigate } from "react-router-dom";
+import useLogout from "../hooks/useLogout";
 
 const Orphanage = () => {
+
+  const navigate =useNavigate()
+  const logout = useLogout()
   const [selectedTab, setSelectedTab] = useState(orphanageTabs[0].label);
 
   // Function to render the corresponding component based on the selected tab
@@ -20,6 +25,12 @@ const Orphanage = () => {
     }
   };
 
+  
+  const signout = async ()=>{
+    await logout();
+    navigate('/')
+  }
+
   return (
     <div className="container mx-auto">
       <div className="h-[50vh] relative">
@@ -33,6 +44,8 @@ const Orphanage = () => {
           <h1 className="text-white font-bold text-3xl">
             Somawathi Child Orphanage
           </h1>
+
+          <button className="text-white" onClick={signout}>Sign Out</button>
         </div>
       </div>
 

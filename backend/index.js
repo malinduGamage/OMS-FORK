@@ -41,6 +41,8 @@ app.use('/register',require('./routes/register'))
 
 app.use('/refresh',require('./routes/refresh'))
 
+app.use('/logout', require('./routes/logout'));
+
 
 //for functiosn below we have re.roles an dreq.user as well automatically
 
