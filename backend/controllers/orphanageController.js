@@ -1,7 +1,35 @@
 const db = require("../config/dbConn");
 
+
+const getAllOrphanage = async(req,res)=>{
+
+  try {
+
+    const orphanageList = await db.query('SELECT * FROM orphanage')
+
+    res.json({success:true,
+      orphanageList:orphanageList.rows
+    })
+    
+  } catch (error) {
+
+
+    console.error('Database query failed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching orphanages.'
+    });
+
+    
+  }
+
+  
+
+
+}
+
 const addOrphanage = async (req, res) => {
-  const { orphanagename, address, capacity, telno, head_email } = req.body;
+  const { orphanagename, address, capacity, telno, head_email,district } = req.body;
 
   try {
    
@@ -17,8 +45,8 @@ const addOrphanage = async (req, res) => {
 
     // Insert new orphanage into orphanage table
     const newOrphanage = await db.query(
-      'INSERT INTO orphanage (orphanagename, headid, address, capacity, telno, head_email) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [orphanagename, newHeadId, address, capacity, telno, head_email]
+      'INSERT INTO orphanage (orphanagename, headid, address, capacity, telno, head_email,district) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *',
+      [orphanagename, newHeadId, address, capacity, telno, head_email,district]
     );
 
    
@@ -56,5 +84,6 @@ const getOrphanageByHead = async (req, res) => {
 
 
 module.exports ={addOrphanage
-  ,getOrphanageByHead
+  ,getOrphanageByHead,
+  getAllOrphanage
 }
