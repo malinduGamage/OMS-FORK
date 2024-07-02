@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const db = require('../config/dbConn');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const handleNewUser = async (req, res) => {
     const { username, password, telno, email } = req.body;
@@ -11,42 +13,44 @@ const handleNewUser = async (req, res) => {
 
     try {
         // Check if user already exists
-        const findUser = await db.query('SELECT * FROM users WHERE email=$1', [email]);
+        const user = await prisma.users.findUnique({
+            where: {
+                email: email
+            }
+        });
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         let result;
-        if (findUser.rows.length === 0) {
+        if (!user) {
             // Insert new user
-            result = await db.query(
-                'INSERT INTO users (username, password, email, telno, refreshtoken, roles) VALUES ($1, $2, $3, $4, $5, $6)',
-                [
-                    username,
-                    hashedPassword,
-                    email,
-                    telno,
-                    'dummy', // Consider handling refresh token properly
-                    JSON.stringify({ 'User': 1010 })
-                ]
-            );
+            result = await prisma.users.create({
+                data: {
+                    username: username,
+                    password: hashedPassword,
+                    email: email,
+                    telno: +telno, // Convert to integer otherwise query will fail
+                    roles: { 'User': 1010 }
+                }
+            });
             res.status(201).json({ 'success': `New user ${username} created!` });
         } else {
             // Update existing user
-            result = await db.query(
-                'UPDATE users SET username = $1, password = $2, telno = $3, refreshtoken = $4 WHERE email = $5',
-                [
-                    username,
-                    hashedPassword,
-                    telno,
-                    'dummy', // Consider handling refresh token properly
-                    email
-                ]
-            );
+            result = await prisma.users.update({
+                where: {
+                    email: email
+                },
+                data: {
+                    username: username,
+                    password: hashedPassword,
+                    telno: +telno // Convert to integer otherwise query will fail
+                }
+            });
             res.status(200).json({ 'success': `User ${username} updated!` });
         }
 
-        console.log(result.rows);
+        console.log(result);
     } catch (error) {
         res.status(500).json({ 'message': error.message });
     }
