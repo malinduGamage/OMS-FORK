@@ -7,6 +7,8 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
+import PersistLogin from "./components/PersistLogin";
+import UserDash from "./components/UserDash";
 
 
 const ROLES ={
@@ -28,6 +30,7 @@ function App() {
 
         {/* Protected Routes */}
 
+        <Route element={<PersistLogin/>}>
         <Route element={<RequireAuth allowedRoles={[ROLES.Admin]}/>}>
         
           <Route path='/admin' element={<AdminDash/>}/>
@@ -40,6 +43,14 @@ function App() {
         <Route path='/orphanage/:id' element={<Orphanage/>}/>
       </Route>
 
+      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
+      <Route path='/userdash' element={<UserDash/>}/>
+      </Route>
+
+
+</Route>
+
+        
 
 
 

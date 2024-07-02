@@ -116,7 +116,7 @@ const Login = () => {
           } 
           
           else {
-              navigate(from, { replace: true });
+            navigate(`/userdash`, { replace: true });
           }
   
       } catch (err) {
