@@ -41,6 +41,8 @@ app.use('/register',require('./routes/register'))
 
 app.use('/refresh',require('./routes/refresh'))
 
+app.use('/logout', require('./routes/logout'));
+
 
 //for functiosn below we have re.roles an dreq.user as well automatically
 
@@ -48,6 +50,8 @@ app.use(verifyJWT)
 
 
 app.use ('/orphanage',require('./routes/api/orphanages'))
+
+app.use('/socialworker',require('./routes/api/socialworker'))
 
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import useAuth from '../hooks/useAuth'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Route, useLocation, useNavigate } from 'react-router-dom'
 import useLocalStorage from '../hooks/useLocalStorage'
 import axios, { axiosPrivate } from '../api/axios'
 import { jwtDecode } from 'jwt-decode'
@@ -93,8 +93,30 @@ const Login = () => {
             }
 
 
-          } else {
-              navigate(from, { replace: true });
+          }else if(roles.includes(ROLES.SocialWorker)){
+
+            try {
+
+              const response = await axiosPrivate.get('/socialworker')
+
+              const orphanageId = response.data.orphanageId
+
+              navigate(`/orphanage/${orphanageId}`, { replace: true });
+              
+
+
+              
+            } catch (error) {
+              
+            }
+
+
+
+
+          } 
+          
+          else {
+            navigate(`/userdash`, { replace: true });
           }
   
       } catch (err) {
