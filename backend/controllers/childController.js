@@ -4,7 +4,11 @@ const prisma = new PrismaClient();
 const getAllChildren = async (req, res) => {
 
     try {
-        const childrenList = await prisma.children.findMany();
+        const childrenList = await prisma.children.findMany({
+            where: {
+                orphanageid: req.params.orphanageid
+            }
+        });
         res.json({
             success: true,
             childrenList: childrenList
