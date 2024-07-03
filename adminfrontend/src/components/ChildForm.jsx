@@ -41,7 +41,7 @@ const ChildForm = ({ setFormVisibility }) => {
                                 <textarea id="educationaldetails" className="resize-none block w-full px-3 py-1 mt-1 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-orange-500 focus:outline-none"></textarea>
                             </div>
                             <div className="col-span-1 sm:col-span-2 lg:col-span-4">
-                                <label className="block text-sm font-medium text-gray-700">Image</label>
+                                <label className="block text-sm font-medium text-gray-700">Image **********not implemented*************</label>
                                 <div className="mt-1 flex justify-center px-4 pt-4 pb-4 border-2 border-gray-300 border-dashed rounded-md">
                                     <div className="space-y-1 text-center">
                                         <svg className="mx-auto h-10 w-10 text-gray-700" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
