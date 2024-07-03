@@ -1,16 +1,18 @@
 const db = require("../config/dbConn");
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-
-const getAllOrphanage = async(req,res)=>{
+const getAllOrphanage = async (req, res) => {
 
   try {
 
-    const orphanageList = await db.query('SELECT * FROM orphanage')
+    const orphanageList = await prisma.orphanage.findMany();
 
-    res.json({success:true,
-      orphanageList:orphanageList.rows
+    res.json({
+      success: true,
+      orphanageList: orphanageList
     })
-    
+
   } catch (error) {
 
 
@@ -20,39 +22,45 @@ const getAllOrphanage = async(req,res)=>{
       message: 'An error occurred while fetching orphanages.'
     });
 
-    
+
   }
 
-  
+
 
 
 }
 
 const addOrphanage = async (req, res) => {
-  const { orphanagename, address, capacity, telno, head_email,district } = req.body;
+  const { orphanagename, address, capacity, telno, head_email, district } = req.body;
 
   try {
-   
+
 
     // Insert new head into users table
-    const newHead = await db.query(
-      'INSERT INTO users (email, roles) VALUES ($1, $2) RETURNING userid',
-      [head_email, JSON.stringify({ 'User': 1010, 'Head': 1910, 'SocialWorker': 2525 })]
-    );
-
-    
-    const newHeadId = newHead.rows[0].userid;
+    const newHead = await prisma.users.create({
+      data: {
+        email: head_email,
+        roles: { 'User': 1010, 'Head': 1910, 'SocialWorker': 2525 },
+      }
+    });
+    const newHeadId = newHead.userid;
 
     // Insert new orphanage into orphanage table
-    const newOrphanage = await db.query(
-      'INSERT INTO orphanage (orphanagename, headid, address, capacity, telno, head_email,district) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *',
-      [orphanagename, newHeadId, address, capacity, telno, head_email,district]
-    );
+    const newOrphanage = await prisma.orphanage.create({
+      data: {
+        orphanagename: orphanagename,
+        headid: newHeadId,
+        address: address,
+        capacity: +capacity, // Convert to integer otherwise query will fail
+        telno: +telno, // Convert to integer otherwise query will fail
+        head_email: head_email,
+        //district: district -- was not in the original database schema
+      }
+    });
 
-   
     res.json({
       success: true,
-      orphanage: newOrphanage.rows[0]
+      orphanage: newOrphanage
     });
   } catch (error) {
     console.error(error);
@@ -67,13 +75,17 @@ const getOrphanageByHead = async (req, res) => {
   const { userId } = req;
 
   try {
-    const orphanageResult = await db.query('SELECT * FROM orphanage WHERE headid=$1', [userId]);
+    const orphanage = await prisma.orphanage.findUnique({
+      where: {
+        headid: userId,
+      },
+    });
 
-    if (orphanageResult.rows.length === 0) {
+    if (!orphanage) {
       return res.status(404).json({ error: 'Orphanage not found for the given head ID.' });
     }
 
-    const orphanageId = orphanageResult.rows[0].orphanageid;
+    const orphanageId = orphanage.orphanageid;
 
     res.json({ orphanageId });
   } catch (error) {
@@ -83,7 +95,8 @@ const getOrphanageByHead = async (req, res) => {
 };
 
 
-module.exports ={addOrphanage
-  ,getOrphanageByHead,
+module.exports = {
+  addOrphanage
+  , getOrphanageByHead,
   getAllOrphanage
 }

@@ -9,6 +9,7 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
+import MoreInfo from "./components/MoreInfo";
 
 
 
@@ -21,6 +22,8 @@ const ROLES ={
 
 function App() {
   return (
+
+
     <main className="App">
       <Routes>
 
@@ -28,6 +31,7 @@ function App() {
         <Route path='/' element={<Login/>}/>
         <Route path="/unauthorized" element={<Unauthorized/>}/>
         <Route path='/register' element={<Register/>}/>
+        <Route path='/moreinfo' element={<MoreInfo/>}/>
 
         {/* Protected Routes */}
 
