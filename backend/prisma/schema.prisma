@@ -34,24 +34,22 @@ model orphanage {
 }
 
 model socialworker {
-  socialworkerid String    @db.Uuid
+  socialworkerid String    @id @db.Uuid
   orphanageid    String    @db.Uuid
   orphanage      orphanage @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
   users          users     @relation(fields: [socialworkerid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([socialworkerid, orphanageid])
 }
 
 model users {
-  userid       String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username     String?        @unique @db.VarChar(50)
-  password     String?        @unique @db.VarChar(255)
-  email        String         @unique @db.VarChar(100)
+  userid       String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username     String?       @unique @db.VarChar(50)
+  password     String?       @unique @db.VarChar(255)
+  email        String        @unique @db.VarChar(100)
   telno        Int?
   roles        Json
-  refreshtoken String?        @unique
+  refreshtoken String?       @unique
   orphanage    orphanage?
-  socialworker socialworker[]
+  socialworker socialworker?
 }
 
 enum gender_type {

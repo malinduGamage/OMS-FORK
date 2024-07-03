@@ -1,7 +1,7 @@
 const ChildForm = ({ setFormVisibility }) => {
     return (
         <div className="fixed inset-0 flex  justify-center bg-black bg-opacity-50 overflow-auto px-10">
-            <section className="max-w-3xl p-4 mx-auto bg-white rounded-md shadow-md my-5">
+            <section className="max-w-3xl px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5">
                 <div className="flex justify-between items-center mb-3">
                     <h1 className="text-lg font-bold text-gray-700 capitalize">Add Child</h1>
                     <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setFormVisibility(false)}>Close</button>
