@@ -1,40 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { childrenDetails } from "../constants";
 import Child from "./Child";
 import Search from "./Search";
 import AgeSlider from "./AgeSlider";
+import ChildTable from "./ChildTable";
+import ChildForm from "./ChildForm";
 
 const Children = () => {
-  const [searchTerm, setSearchTerm] = useState(""); 
-  const [ageRange, setAgeRange] = useState([3, 18]); 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [ageRange, setAgeRange] = useState([0, 18]);
+  const [formVisibility, setFormVisibility] = useState(false);
 
-  
-  const filteredChildren = childrenDetails.filter((child) => {
-    const matchesSearch = child.name
-      .toLowerCase()
-      .startsWith(searchTerm.toLowerCase());
-    const withinAgeRange = child.age >= ageRange[0] && child.age <= ageRange[1];
-    return matchesSearch && withinAgeRange;
-  });
+  const handleClick = () => {
+    setFormVisibility(!formVisibility);
+  };
 
   return (
     <div>
-      <div className=" grid md:grid-cols-2  gap-3 mx-8 my-6">
+      <div className=" grid md:grid-cols-2 mx-10 my-6">
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />{" "}
-      
-      </div>
+        <button onClick={handleClick} class=" items-end bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded">
+          Add Child
+        </button>
+        {/*<AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />{" "}*/}
 
-      <div className="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 mx-10">
-        {filteredChildren.map((child) => (
-          <Child
-            key={child.name} 
-            name={child.name}
-            age={child.age}
-            imageUrl={child.imageUrl}
-          />
-        ))}
       </div>
+      <div className="mx-10">
+        <ChildTable children={childrenDetails} />
+      </div>
+      {formVisibility ? <ChildForm setFormVisibility={setFormVisibility} /> : null}
     </div>
   );
 };
