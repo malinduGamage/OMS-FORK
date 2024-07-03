@@ -1,4 +1,6 @@
 const db = require("../config/dbConn");
+const nodemailer = require('nodemailer');
+const Mailgen = require('mailgen');
 
 
 const getAllOrphanage = async(req,res)=>{
@@ -32,6 +34,53 @@ const addOrphanage = async (req, res) => {
   const { orphanagename, address, capacity, telno, head_email,district } = req.body;
 
   try {
+
+
+  //   let config = {
+  //     service : 'gmail',
+  //     auth : {
+  //         user: process.env.MYEMAIL,
+  //         pass: process.env.MYPASSWORD
+  //     }
+  // }
+
+  // let transporter = nodemailer.createTransport(config);
+
+  // let MailGenerator = new Mailgen({
+  //     theme: "default",
+  //     product : {
+  //         name: "Mailgen",
+  //         link : 'https://mailgen.js/'
+  //     }
+  // })
+
+  // let response = {
+  //     body: {
+  //         name : "Daily Tuition",
+  //         intro: "Your bill has arrived!",
+  //         table : {
+  //             data : [
+  //                 {
+  //                     item : "Nodemailer Stack Book",
+  //                     description: "A Backend application",
+  //                     price : "$10.99",
+  //                 }
+  //             ]
+  //         },
+  //         outro: "Looking forward to do more business"
+  //     }
+  // }
+
+  // let mail = MailGenerator.generate(response)
+
+  // let message = {
+  //     from : process.env.MYEMAIL,
+  //     to : head_email,
+  //     subject: "Place Order",
+  //     html: mail
+  // }
+
+  // transporter.sendMail(message)
    
 
     // Insert new head into users table

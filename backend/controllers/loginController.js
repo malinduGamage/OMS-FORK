@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const db = require('../config/dbConn');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/sendEmail')
 
 const handleLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -58,7 +59,26 @@ const handleLogin = async (req, res) => {
 
             // Respond with access token and roles
             res.json({ accessToken });
-        } else {
+        } else if(userResult.rows[0].verified =false){
+
+            const verifyToken = jwt.sign(
+                { "email": email},
+                process.env.VERIFY_TOKEN_SECRET,
+                { expiresIn: '365d' }
+            );
+
+            await db.query('INSERT INTO users (verifytoken) VALUES ($1)',[verifyToken])
+
+            const url = `${process.env.BASE_URL}${userResult.rows[0].userid}/verify/${verifyToken}`;
+				await sendEmail(email, "Verify Email", url);
+            
+        }
+        
+        
+        
+        else {
+
+
             res.sendStatus(401); // Unauthorized if password doesn't match
            
         }

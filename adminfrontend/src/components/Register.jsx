@@ -107,12 +107,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   return (
     <>
-      {success ? (
-        <section>
-          <h1>Success!</h1>
-          <span onClick={() => navigate("/")}>Login</span>
-        </section>
-      ) : (
+      
         <section className="mt-10">
           <p
             ref={errRef}
@@ -330,7 +325,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             </span>
           </p>
         </section>
-      )}
+     
     </>
   );
 };

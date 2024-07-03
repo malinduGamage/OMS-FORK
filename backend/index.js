@@ -41,6 +41,30 @@ app.use('/register',require('./routes/register'))
 
 app.use('/refresh',require('./routes/refresh'))
 
+app.get('/:id/verify/:token',async(req,res)=>{
+    try {
+
+        const user = await db.query('select * FROM users WHERE userid=$1',[req.params.id])
+
+        if(!user.rows.length>0) return res.status(400).json({"message":"Invalid link"})
+
+
+         if(user.rows[0].verifytoken = null) 
+            return res.status(400).send({ message: "Invalid link" });
+
+         const updateVerify = await db.query('UPDATE users SET verified = $1 WHERE userid = $2',[true,req.params.id]) 
+
+         res.status(200).send({ message: "Email verified successfully" });
+
+
+        
+    } catch (error) {
+
+        res.status(500).send({ message: "Internal Server Error" });
+        
+    }
+})
+
 
 //for functiosn below we have re.roles an dreq.user as well automatically
 
