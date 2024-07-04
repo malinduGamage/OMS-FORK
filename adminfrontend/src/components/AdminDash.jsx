@@ -27,6 +27,7 @@ const AdminDash = () => {
       try {
 
         const response = await axiosPrivate.get('/orphanage')
+        console.log(response.data.orphanageList)
         setOrphanageList(response.data.orphanageList)
         
       } catch (error) {
@@ -35,18 +36,43 @@ const AdminDash = () => {
         
       }
 
-
-
     }
 
     getAllOrphanages()
   },[])
+
+
 
   const filteredOrphanageList = orphanageList.filter((orphanage) => {
     const matchesSearch = orphanage.orphanagename.toLowerCase().startsWith(searchTerm.toLowerCase());
     const matchesDistrict = selectedDistrict ? orphanage.district === selectedDistrict : true;
     return matchesSearch && matchesDistrict;
   });
+
+  const handleClickOrphanage = (orphanageId) => {
+    const path = `/orphanage/${orphanageId}`;
+    navigate(path); 
+  };
+
+    // const handleDeleteOrphanage = async (orphanageId) => {
+    //   try {
+    //     console.log('Inside the handle Delete orphanage...');
+    //     setOrphanageList(orphanageList.filter((orphanage) => orphanage.orphanageid !== orphanageId));
+    //     console.log('filtere orphanage list...')
+    //     await axiosPrivate.delete(`/orphanage/${orphanageId}`);
+    //     console.log('Deleted orphanage');
+
+    //   } catch (error) {
+    //     console.error('Failed to delete orphanage:', error);
+
+    //     setOrphanageList(orphanageList); 
+    //   }
+    // };
+  
+
+  const handleUpdateOrphanage = () => {
+    console.log('Updating orphanage...');
+  }
 
   const fetchMoreData = () => {
     console.log('Fetching more data...');
@@ -126,6 +152,7 @@ const AdminDash = () => {
         <div className='w-full '>
         <Dropdown 
         valueList={districts} 
+
         onSelect={(district) => setSelectedDistrict(district)}
       />
 
@@ -147,9 +174,34 @@ const AdminDash = () => {
         height={300}
       >
         {sortedOrphanageList.map((item, index) => (
-          <div className='px-10 py-2 text-sm border-y-2 border-gray-100 hover:bg-gray-100' key={index}>
+          <div 
+            className='px-10 py-2 text-sm border-y-2 border-gray-100 hover:bg-gray-100 flex justify-between items-center' 
+            key={index}
+            onClick={() => handleClickOrphanage(item.orphanageid)}
+          >
             {item.orphanagename}
-          </div>
+            <div className='flex space-x-2'>
+              <button 
+                className='px-3 py-1 text-xs text-white bg-blue-500 rounded hover:bg-blue-600'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUpdateOrphanage(item.orphanageid);
+                }}
+              >
+                Update
+              </button>
+              {/* <button 
+                className='px-3 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteOrphanage(item.orphanageid);
+                }}
+              >
+                Delete
+              </button> */}
+  </div>
+</div>
+
         ))}
       </InfiniteScroll>
 

@@ -54,6 +54,9 @@ app.use ('/orphanage',require('./routes/api/orphanages'))
 app.use('/socialworker',require('./routes/api/socialworker'))
 
 
+// app.use('/:id',require('./routes/api/orphanages'))
+
+
 
 app.listen(PORT,(error)=>{
     if(!error){
