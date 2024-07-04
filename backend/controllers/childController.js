@@ -1,12 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getAllChildren = async (req, res) => {
-
+const getOrphanageChildren = async (req, res) => {
     try {
-        const childrenList = await prisma.children.findMany({
+        const childrenList = await prisma.child.findMany({
             where: {
                 orphanageid: req.params.orphanageid
+            },
+            select: {
+                name: true,
+                date_of_birth: true,
+                gender: true
             }
         });
         res.json({
@@ -28,7 +32,7 @@ const addChild = async (req, res) => {
     //extracting data from request
     const { orphanageid, name, date_of_birth, gender, nationality, religion, medicaldetails, educationdetails } = req.body;
     try {//database call
-        const newChild = await prisma.children.create({
+        const newChild = await prisma.child.create({
             data: {
                 orphanageid: orphanageid,
                 name: name,
@@ -55,4 +59,4 @@ const addChild = async (req, res) => {
     }
 }
 
-module.exports = { getAllChildren, addChild }
+module.exports = { getOrphanageChildren, addChild }
