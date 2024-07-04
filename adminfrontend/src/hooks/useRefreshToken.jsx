@@ -1,6 +1,7 @@
 import React from 'react'
 import useAuth from './useAuth'
 import axios from '../api/axios'
+import { jwtDecode } from 'jwt-decode'
 
 export const useRefreshToken = () => {
 
@@ -11,11 +12,20 @@ export const useRefreshToken = () => {
         const response = await axios.get('/refresh',{
             withCredentials:true
         })
-        setAuth(prev=>{
-            console.log(JSON.stringify(prev));
-            console.log(response.data.accessToken);
 
-            return{...prev,accessToken:response.data.accessToken
+        const accessToken = response.data.accessToken;
+
+       
+      const decoded = jwtDecode(accessToken);
+      const roles = decoded?.UserInfo?.roles || [];
+      const username = decoded?.UserInfo?.username;
+
+      
+
+        setAuth(prev=>{
+          
+
+            return{...prev,accessToken:response.data.accessToken,roles:roles,username:username
 
             }
         })
