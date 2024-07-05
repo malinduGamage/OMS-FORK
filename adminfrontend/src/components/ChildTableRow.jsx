@@ -1,10 +1,10 @@
-import React from 'react'
-
 const ChildTableRow = ({ name, gender, age }) => {
     const imageURL = `https://avatar.iran.liara.run/public/${gender === 'Male' ? 'boy' : 'girl'}?username=${name.split(' ').join('')}`
     return (
 
-        <div className="grid grid-cols-3 border-b border-stroke  hover:bg-orange-600 text-gray-500  hover:text-white font-medium rounded" >
+        <div
+            className="grid grid-cols-3 border-b border-stroke  hover:bg-orange-600 text-gray-500  hover:text-white font-medium rounded"
+        >{/* onClick={handleViewChild(id)} */}
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
                 <div className="flex-shrink-0 w-8">
                     <img src={imageURL} alt="Brand" />
@@ -15,7 +15,7 @@ const ChildTableRow = ({ name, gender, age }) => {
             </div>
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p cla>{gender}</p>
+                <p className="hidden font-medium  sm:block">{gender}</p>
             </div>
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">

@@ -10,14 +10,14 @@ import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
 import MoreInfo from "./components/MoreInfo";
+import Child from "./components/Child"
 
 
-
-const ROLES ={
-  'User':1010,
-  'Head':1910,
-  'SocialWorker':2525,
-  'Admin':7788
+const ROLES = {
+  'User': 1010,
+  'Head': 1910,
+  'SocialWorker': 2525,
+  'Admin': 7788
 }
 
 function App() {
@@ -28,34 +28,30 @@ function App() {
       <Routes>
 
         {/* Public Routes */}
-        <Route path='/' element={<Login/>}/>
-        <Route path="/unauthorized" element={<Unauthorized/>}/>
-        <Route path='/register' element={<Register/>}/>
-        <Route path='/moreinfo' element={<MoreInfo/>}/>
+        <Route path='/' element={<Login />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/moreinfo' element={<MoreInfo />} />
 
         {/* Protected Routes */}
 
-        <Route element={<PersistLogin/>}>
-        <Route element={<RequireAuth allowedRoles={[ROLES.Admin]}/>}>
-        
-          <Route path='/admin' element={<AdminDash/>}/>
-          <Route path="/addOrphanage" element={<OrphanageForm/>}/>
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+            <Route path='/admin' element={<AdminDash />} />
+            <Route path="/addOrphanage" element={<OrphanageForm />} />
+          </Route>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker]} />}>
+            <Route path='/orphanage/:id' element={<Orphanage />} />
+            <Route path='/orphanage/:id/child/:childid' element={<Child />} />
+          </Route>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
+            <Route path='/userdash' element={<UserDash />} />
+          </Route>
+
+
         </Route>
 
 
-        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker]}/>}>
-        
-        <Route path='/orphanage/:id' element={<Orphanage/>}/>
-      </Route>
-
-      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
-      <Route path='/userdash' element={<UserDash/>}/>
-      </Route>
-
-
-</Route>
-
-        
 
 
 

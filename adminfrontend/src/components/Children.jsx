@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Child from "./Child";
 import Search from "./Search";
 import AgeSlider from "./AgeSlider";
 import ChildTable from "./ChildTable";
 import ChildForm from "./ChildForm";
-import { childrenDetails } from "../constants";
-import { useParams } from 'react-router-dom';
+
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { set } from "mongoose";
 
 const Children = () => {
 
   const { id } = useParams();
   const axiosPrivate = useAxiosPrivate()
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [ageRange, setAgeRange] = useState([0, 18]);
@@ -22,9 +22,11 @@ const Children = () => {
   const [children, setChildren] = useState([]);
   const [filteredChildren, setFilteredChildren] = useState([]);
 
-  const handleClick = () => {
+  const handleAddChild = () => {
     setFormVisibility(!formVisibility);
   };
+
+
 
   const getAge = (dob) => {
     const today = new Date();
@@ -46,7 +48,7 @@ const Children = () => {
 
   const getChildren = async () => {
     try {
-      const response = await axiosPrivate.get(`/child/${id}`);
+      const response = await axiosPrivate.get(`/child/orphanage/${id}`);
 
       setChildren(addAge(response.data.childrenList))
 
@@ -90,11 +92,11 @@ const Children = () => {
   }, [])
 
   return (
-    <div>
-      <button onClick={handleClick} class="mx-10 items-end bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded">
+    <div >
+      <button onClick={handleAddChild} class="mx-10 items-end bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded">
         Add Child
       </button>
-      <div className=" grid md:grid-cols-3 gap-3 mx-10 my-6">
+      <div className=" grid grid-cols-1 lg:grid-cols-3 gap-3 mx-10 my-6">
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />
         <div>

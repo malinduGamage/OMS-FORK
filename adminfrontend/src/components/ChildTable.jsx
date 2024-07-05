@@ -1,9 +1,18 @@
 import ChildTableRow from "./ChildTableRow"
+import { useNavigate, useParams } from "react-router-dom"
 
 const ChildTable = ({ children }) => {
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    const handleViewChild = (child) => {
+        console.log(child)
+        navigate(`/orphanage/${id}/child/${child.childid}`, { replace: true });
+    }
+
     return (
         <div
-            className="rounded-sm border bg-white px-5 pb-2.5 pt-6 shadow-default mb-5 sm:px-7.5 xl:pb-1 h-80vh"
+            className="rounded-sm border bg-white px-5 pb-2.5 pt-6 shadow-default mb-5 sm:px-7.5 xl:pb-1 min-h-screen"
         >
             <h4 className="mb-6 text-xl font-bold text-black ">
                 Children
@@ -25,14 +34,15 @@ const ChildTable = ({ children }) => {
 
                 </div>
                 {children.map((child) => (
-                    <ChildTableRow
-                        key={child.childid}
-                        name={child.name}
-                        age={child.age}
-                        gender={child.gender}
-                    />
+                    <div onClick={() => handleViewChild(child)}>
+                        <ChildTableRow
+                            key={child.childid}
+                            name={child.name}
+                            age={child.age}
+                            gender={child.gender}
+                        />
+                    </div>
                 ))}
-
             </div>
         </div>
     )
