@@ -6,7 +6,6 @@ const ChildTable = ({ children }) => {
     const { id } = useParams();
 
     const handleViewChild = (child) => {
-        console.log(child)
         navigate(`/orphanage/${id}/child/${child.childid}`, { replace: true });
     }
 

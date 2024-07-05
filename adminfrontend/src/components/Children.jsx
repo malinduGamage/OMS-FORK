@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import Child from "./Child";
 import Search from "./Search";
 import AgeSlider from "./AgeSlider";
 import ChildTable from "./ChildTable";
@@ -13,7 +11,6 @@ const Children = () => {
 
   const { id } = useParams();
   const axiosPrivate = useAxiosPrivate()
-  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [ageRange, setAgeRange] = useState([0, 18]);

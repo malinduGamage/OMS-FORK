@@ -1,10 +1,11 @@
 // Child.js
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import ChildEditForm from './ChildEditForm';
 
 const Child = () => {
+
   const getAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
@@ -36,10 +37,11 @@ const Child = () => {
     }
   }
 
+  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate()
   const [child, setChild] = useState({})
   const [formVisibility, setFormVisibility] = useState(false);
-  const { childid } = useParams('')
+  const { id, childid } = useParams('')
   const [imageURL, setImageURL] = useState('')
   const [basicInfo, setBasicInfo] = useState(getBasicInfo(child))
 
@@ -64,6 +66,9 @@ const Child = () => {
 
   return (
     <div>
+      <button onClick={() => navigate(`/orphanage/${id}`, { replace: true })} className="m-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+        Back
+      </button>
       <div className="mx-auto relative flex flex-col lg:flex-row mt-6 text-gray-700 bg-orange-100 shadow-md bg-clip-border rounded-xl w-2/3">
         <img className="w-64 my-auto p-10 rounded-full md:rounded-full mx-auto" src={imageURL} alt="ERROR" />
 
