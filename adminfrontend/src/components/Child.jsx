@@ -65,14 +65,16 @@ const Child = () => {
   }, []);
 
   return (
-    <div>
-      <button onClick={() => navigate(`/orphanage/${id}`, { replace: true })} className="m-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
-        Back
-      </button>
-      <div className="mx-auto relative flex flex-col lg:flex-row mt-6 text-gray-700 bg-orange-100 shadow-md bg-clip-border rounded-xl w-2/3">
-        <img className="w-64 my-auto p-10 rounded-full md:rounded-full mx-auto" src={imageURL} alt="ERROR" />
+    <div className='mx-auto my-5 w-2/3'>
 
-        <div className="p-6 m-auto text-center lg:text-left">
+      <div className="mx-auto  flex flex-col lg:flex-row mt-2 text-gray-700 bg-orange-100 shadow-md bg-clip-border rounded-xl">
+        <button onClick={() => navigate(-1)} className="m-3 relative justify-start h-fit w-fit bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+          Back
+        </button>
+        <div className='lg:w-1/3 flex justify-center'>
+          <img className="w-64 my-auto p-10 rounded-full md:rounded-full" src={imageURL} alt="ERROR" />
+        </div>
+        <div className="p-6 my-auto text-center lg:text-left lg:w-2/3">
           <h5 className="block mb-2 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
             {child.name}
           </h5>
@@ -94,7 +96,7 @@ const Child = () => {
       </div>
 
 
-      <div className="mx-auto relative mt-6 text-black shadow-md bg-clip-border rounded-xl w-2/3 divide-y">
+      <div className="mx-auto relative mt-6 text-black shadow-md bg-clip-border rounded-xl divide-y">
 
         <div className="p-6 m-auto text-left ">
           <h5 className="block mb-4 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
@@ -128,6 +130,10 @@ const Child = () => {
             <h5 className="block mb-4 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
               Documents
             </h5>
+            <div className='block font-sans text-m md:text-2xl antialiased font-light leading-relaxed text-inherit ml-5'>
+              <p>Medical Documents</p>
+              <p>Legal Documents</p>
+            </div>
           </div>
         </div>
       </div>
