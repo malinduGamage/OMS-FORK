@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/dbConn');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const ROLES_LIST = require('../config/roles_list');
 
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
@@ -16,7 +17,25 @@ const handleRefreshToken = async (req, res) => {
         },
     });
 
+    let orphanage;
     if (!user) return res.status(403).json({ 'message': 'There is no user with this ref token' })
+
+    if (!Object.values(user.roles).includes(ROLES_LIST.Admin) && (Object.values(user.roles).includes(ROLES_LIST.Head))) {
+
+        orphanage = await prisma.orphanage.findUnique({
+            where: {
+                headid: user.userid
+            }
+        })
+    }
+    else if (!Object.values(user.roles).includes(ROLES_LIST.Admin) && (Object.values(user.roles).includes(ROLES_LIST.SocialWorker))) {
+
+        orphanage = await prisma.socialworker.findUnique({
+            where: {
+                socialworkerid: user.userid
+            }
+        })
+    }
 
     jwt.verify(
         refreshToken,
@@ -31,7 +50,8 @@ const handleRefreshToken = async (req, res) => {
                     'UserInfo': {
                         "userId": user.userid,
                         "username": decoded.username,
-                        "roles": roles
+                        "roles": roles,
+                        "orphanageid": orphanage?.orphanageid
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
@@ -41,6 +61,7 @@ const handleRefreshToken = async (req, res) => {
             res.json({ accessToken })
         }
     )
+
 
 }
 

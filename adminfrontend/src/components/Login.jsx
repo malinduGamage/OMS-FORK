@@ -59,37 +59,18 @@ const Login = () => {
       const decoded = jwtDecode(accessToken);
       const roles = decoded?.UserInfo?.roles || [];
       const userId = decoded?.UserInfo?.userId;
+      const orphanageId = decoded?.UserInfo?.orphanageid || null;
 
-      setAuth({ accessToken, roles });
+      setAuth({ accessToken, roles, orphanageId });
       setEmail("");
       setPassword("");
 
       // Check roles to navigate
-      if (roles.includes(ROLES.Admin)) {
-        navigate("/admin", { replace: true });
-      } else if (roles.includes(ROLES.Head)) {
-        try {
-          const orphanageResponse = await axiosPrivate.get(`/orphanage/byHead`);
-          // Extract the orphanageId from the response
-          const orphanageId = orphanageResponse?.data?.orphanageId;
+      if (roles.includes(ROLES.Admin)) navigate("/admin", { replace: true });
+      else if (roles.includes(ROLES.Head)) navigate(`/orphanage/${orphanageId}`, { replace: true });
+      else if (roles.includes(ROLES.SocialWorker)) navigate(`/orphanage/${orphanageId}`, { replace: true });
+      else navigate(`/userdash`, { replace: true });
 
-          // Navigate to the new route with the obtained orphanageId
-          navigate(`/orphanage/${orphanageId}`, { replace: true });
-        } catch (error) {
-          console.error("Failed to fetch orphanage:", error);
-          setFormError("Failed to fetch orphanage information");
-        }
-      } else if (roles.includes(ROLES.SocialWorker)) {
-        try {
-          const response = await axiosPrivate.get("/socialworker");
-
-          const orphanageId = response.data.orphanageId;
-
-          navigate(`/orphanage/${orphanageId}`, { replace: true });
-        } catch (error) { }
-      } else {
-        navigate(`/userdash`, { replace: true });
-      }
     } catch (err) {
       if (!err?.response) {
         setFormError("No Server Response");

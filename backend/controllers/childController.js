@@ -1,15 +1,21 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const ROLES_LIST = require('../config/roles_list')
 
 const getChild = async (req, res) => {
     const childid = req.params.childid
 
     try {
+        console.log(childid)
         const child = await prisma.child.findUnique({
             where: {
                 childid: childid
             }
         })
+
+        if (!child) return res.sendStatus(404);
+        //check if user is authorized to view child
+        if (!req.roles.includes(ROLES_LIST.Admin) && ((!req.orphanageid) || (child.orphanageid !== req.orphanageid))) return res.sendStatus(401);
 
         res.json({
             success: true,
@@ -28,9 +34,13 @@ const getChild = async (req, res) => {
 
 const getOrphanageChildren = async (req, res) => {
     try {
+        const orphanageid = req.params.orphanageid;
+        //check if user is authorized to view child
+        if (!req.roles.includes(ROLES_LIST.Admin) && (!req.orphanageid) || (req.orphanageid !== orphanageid)) return res.sendStatus(401);
+
         const childrenList = await prisma.child.findMany({
             where: {
-                orphanageid: req.params.orphanageid
+                orphanageid: orphanageid
             },
             select: {
                 childid: true,
@@ -57,6 +67,9 @@ const getOrphanageChildren = async (req, res) => {
 const addChild = async (req, res) => {
     //extracting data from request
     const { orphanageid, name, date_of_birth, gender, nationality, religion, medicaldetails, educationaldetails } = req.body;
+    //check if user is authorized to add child
+    if ((!req.orphanageid) && (orphanageid !== req.orphanageid)) return res.sendStatus(401);
+
     try {//database call
         const newChild = await prisma.child.create({
             data: {
@@ -94,6 +107,17 @@ const updateChild = async (req, res) => {
     const childid = req.params.childid;
     const { name, date_of_birth, gender, religion, nationality, medicaldetails, educationaldetails } = req.body;
     try {
+        const child = await prisma.child.findUnique({
+            where: {
+                childid: childid
+            },
+            select: { orphanageid: true }
+        })
+
+        if (!child) return res.sendStatus(404);
+        //check if user is authorized to update child
+        if ((!req.orphanageid) || (child.orphanageid !== req.orphanageid)) return res.sendStatus(401);
+
         await prisma.child.update({
             where: {
                 childid: childid
