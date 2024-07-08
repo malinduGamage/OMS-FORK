@@ -33,9 +33,8 @@ const ChildTable = ({ children }) => {
 
                 </div>
                 {children.map((child) => (
-                    <div onClick={() => handleViewChild(child)}>
+                    <div key={child.childid} onClick={() => handleViewChild(child)}>
                         <ChildTableRow
-                            key={child.childid}
                             name={child.name}
                             age={child.age}
                             gender={child.gender}
