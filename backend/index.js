@@ -53,6 +53,8 @@ app.use ('/orphanage',require('./routes/api/orphanages'))
 
 app.use('/socialworker',require('./routes/api/socialworker'))
 
+app.use('/messages',require('./routes/api/messages'))
+
 
 
 app.listen(PORT,(error)=>{

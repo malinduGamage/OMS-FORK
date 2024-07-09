@@ -15,7 +15,7 @@ export class Navbar extends Component {
                         <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-36' />
                     </a>
                     <div className='space-x-4'>
-                        <NavLink to="/contact" className={`p-2 ${buttonClassesgeneral}`}>Contact</NavLink>
+                        <NavLink to="/inbox" className={`p-2 ${buttonClassesgeneral}`}>Contact</NavLink>
                         <NavLink to="/" className={`p-2 ${buttonClasses}`}>LogOut</NavLink>
                     </div>
                 </div>

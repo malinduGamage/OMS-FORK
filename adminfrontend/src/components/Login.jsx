@@ -58,9 +58,9 @@ const Login = () => {
       const accessToken = response?.data?.accessToken;
       const decoded = jwtDecode(accessToken);
       const roles = decoded?.UserInfo?.roles || [];
-      const userId = decoded?.UserInfo?.userId;
+      const username = decoded?.UserInfo?.username;
 
-      setAuth({ accessToken, roles });
+      setAuth({ accessToken, roles,username });
       setEmail("");
       setPassword("");
 
