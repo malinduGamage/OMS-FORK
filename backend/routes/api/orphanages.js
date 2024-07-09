@@ -7,10 +7,10 @@ const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
 
 router.route('/')
-.post(verifyRoles(ROLES_LIST.Admin),orphanageController.addOrphanage)
-.get(verifyRoles(ROLES_LIST.Admin),orphanageController.getAllOrphanage)
+    .post(verifyRoles(ROLES_LIST.Admin), orphanageController.addOrphanage)
+    .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getAllOrphanage)
 
 router.route('/byHead')
-.get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Head),orphanageController.getOrphanageByHead)
+    .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getOrphanageByHead)
 
 module.exports = router
