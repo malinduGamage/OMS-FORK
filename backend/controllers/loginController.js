@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('../config/dbConn');
+const ROLES_LIST = require('../config/roles_list');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -29,12 +29,38 @@ const handleLogin = async (req, res) => {
             const roles = user.roles ? Object.values(user.roles) : []; // Ensure roles exist and are an array
 
             // Create access token
-            const accessToken = jwt.sign(
+            let accessToken;
+            let RelevetOrphanage;
+
+            if (!roles.includes(ROLES_LIST.Admin) && roles.includes(ROLES_LIST.Head)) {
+                RelevetOrphanage = await prisma.orphanage.findUnique({
+                    where: {
+                        headid: user.userid
+                    },
+                    select: {
+                        orphanageid: true
+                    }
+                })
+            }
+            else if (!roles.includes(ROLES_LIST.Admin) && roles.includes(ROLES_LIST.SocialWorker)) {
+                RelevetOrphanage = await prisma.socialworker.findUnique({
+                    where: {
+                        socialworkerid: user.userid
+                    },
+                    select: {
+                        orphanageid: true
+                    }
+                })
+            }
+            else RelevetOrphanage = null;
+
+            accessToken = jwt.sign(
                 {
                     "UserInfo": {
                         "userId": user.userid,
                         "username": user.username,
-                        "roles": roles
+                        "roles": roles,
+                        "orphanageid": RelevetOrphanage?.orphanageid
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
