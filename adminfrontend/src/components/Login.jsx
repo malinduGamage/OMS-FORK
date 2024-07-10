@@ -5,9 +5,11 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import axios, { axiosPrivate } from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+
 const ROLES = {
   User: 1010,
   Head: 1910,
+  Staff: 5528,
   SocialWorker: 2525,
   Admin: 7788,
 };
@@ -61,7 +63,7 @@ const Login = () => {
 
       const userId = decoded?.UserInfo?.userId;
       const orphanageId = decoded?.UserInfo?.orphanageid || null;
-
+      console.log("Orphanage ID: ", orphanageId, roles);
       setAuth({ accessToken, roles, orphanageId });
 
       setEmail("");
@@ -69,8 +71,7 @@ const Login = () => {
 
       // Check roles to navigate
       if (roles.includes(ROLES.Admin)) navigate("/admin", { replace: true });
-      else if (roles.includes(ROLES.Head)) navigate(`/orphanage/${orphanageId}`, { replace: true });
-      else if (roles.includes(ROLES.SocialWorker)) navigate(`/orphanage/${orphanageId}`, { replace: true });
+      else if (roles.includes(ROLES.Head) || roles.includes(ROLES.SocialWorker) || roles.includes(ROLES.Staff)) navigate(`/orphanage/${orphanageId}`, { replace: true });
       else navigate(`/userdash`, { replace: true });
 
     } catch (err) {

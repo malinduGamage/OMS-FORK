@@ -42,6 +42,7 @@ model orphanage {
   child         child[]
   users         users          @relation(fields: [headid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker  socialworker[]
+  staff         staff[]
 }
 
 model socialworker {
@@ -64,6 +65,7 @@ model users {
   orphanage    orphanage?
   request      request[]
   socialworker socialworker?
+  staff        staff?
 }
 
 model application {
@@ -90,6 +92,13 @@ model request {
   created_at DateTime     @default(now()) @db.Timestamptz(6)
   updated_at DateTime     @default(now()) @db.Timestamptz(6)
   users      users        @relation(fields: [receiver], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model staff {
+  staffid     String    @id @db.Uuid
+  orphanageid String    @db.Uuid
+  orphanage   orphanage @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
+  users       users     @relation(fields: [staffid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum gender_type {

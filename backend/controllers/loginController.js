@@ -52,6 +52,16 @@ const handleLogin = async (req, res) => {
                     }
                 })
             }
+            else if (!roles.includes(ROLES_LIST.Admin) && roles.includes(ROLES_LIST.Staff)) {
+                RelevetOrphanage = await prisma.staff.findUnique({
+                    where: {
+                        staffid: user.userid
+                    },
+                    select: {
+                        orphanageid: true
+                    }
+                })
+            }
             else RelevetOrphanage = null;
 
             accessToken = jwt.sign(

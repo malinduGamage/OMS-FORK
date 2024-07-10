@@ -53,9 +53,11 @@ app.use('/orphanage', require('./routes/api/orphanages'))
 
 app.use('/socialworker', require('./routes/api/socialworker'))
 
+app.use('/staff', require('./routes/api/staff'))
+
 app.use('/child', require('./routes/api/child'))
 
-app.use('/messages',require('./routes/api/messages'))
+app.use('/messages', require('./routes/api/messages'))
 
 
 app.listen(PORT, (error) => {

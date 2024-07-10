@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { districts } from '../constants'; 
+import { districts } from '../constants';
 import Search from './Search';
 import Dropdown from './Dropdown';
 import { Link, useNavigate } from 'react-router-dom';
-import { AssignSocialWorkerModal } from './AssignSocialWorkerModal';
+import { AssignModal } from './AssignModal';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useLogout from '../hooks/useLogout';
 
@@ -12,27 +12,28 @@ const AdminDash = () => {
 
   const axiosPrivate = useAxiosPrivate()
 
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const logout = useLogout()
 
   const [orphanageList, setOrphanageList] = useState([])
-  const [searchTerm, setSearchTerm] = useState(""); 
-  const [selectedDistrict, setSelectedDistrict] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedAssign, setSelectedAssign] = useState("")
 
   const [showModal, setShowModal] = useState(false)
 
-  useEffect(()=>{
-    const getAllOrphanages = async()=>{
+  useEffect(() => {
+    const getAllOrphanages = async () => {
 
       try {
 
         const response = await axiosPrivate.get('/orphanage')
         setOrphanageList(response.data.orphanageList)
-        
+
       } catch (error) {
 
         console.error('Failed to fetch orphanages:', error);
-        
+
       }
 
 
@@ -40,7 +41,7 @@ const AdminDash = () => {
     }
 
     getAllOrphanages()
-  },[])
+  }, [])
 
   const filteredOrphanageList = orphanageList.filter((orphanage) => {
     const matchesSearch = orphanage.orphanagename.toLowerCase().startsWith(searchTerm.toLowerCase());
@@ -52,31 +53,37 @@ const AdminDash = () => {
     console.log('Fetching more data...');
   };
 
-  const sortedOrphanageList = [...filteredOrphanageList].sort((a, b) => 
+  const sortedOrphanageList = [...filteredOrphanageList].sort((a, b) =>
     a.orphanagename.localeCompare(b.orphanagename)
   );
 
-  const handleAssign =async (data)=>{
-   try {
-
-    const response = await axiosPrivate.post('/socialworker',data,{
-      headers:{
-        'Content-Type':'application/json'
+  const handleAssign = async (data) => {
+    try {
+      let response;
+      if (selectedAssign === 'socialworker') {
+        response = await axiosPrivate.post('/socialworker', data, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      } else if (selectedAssign === 'staff') {
+        response = await axiosPrivate.post('/staff', data, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
       }
-    })
 
-    if (response.data.success){
-      console.log('orphanage added successfully');
+      if (response?.data.success) {
+        console.log('assigned successfully');
+      }
+
+    } catch (error) {
+      console.log(error);
     }
-    
-   } catch (error) {
-
-    console.log(error);
-    
-   }
   }
 
-  const signout = async ()=>{
+  const signout = async () => {
     await logout();
     navigate('/')
   }
@@ -126,29 +133,29 @@ const AdminDash = () => {
 
       <div className='grid mb-3 md:grid-cols-2'>
         <div className='w-full '>
-        <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
         <div className='w-full '>
-        <Dropdown 
-        valueList={districts} 
-        onSelect={(district) => setSelectedDistrict(district)}
-      />
+          <Dropdown
+            valueList={districts}
+            onSelect={(district) => setSelectedDistrict(district)}
+          />
 
-      
+
 
         </div>
 
-       
+
       </div>
 
-      
 
-      
+
+
       <InfiniteScroll
-        className='infinite-scroll-container mx-20' 
+        className='infinite-scroll-container mx-20'
         dataLength={sortedOrphanageList.length}
-        next={fetchMoreData}  
-        hasMore={true}        
+        next={fetchMoreData}
+        hasMore={true}
         height={300}
       >
         {sortedOrphanageList.map((item, index) => (
@@ -159,20 +166,34 @@ const AdminDash = () => {
       </InfiniteScroll>
 
       <div >
-      <button className='mx-20 my-3 py-3 text-white bg-primary px-2' onClick={()=>setShowModal(true)}>
-       Assign social worker
-      </button>
+        <button className='mx-20 my-3 py-3 text-white bg-primary px-2'
+          onClick={() => {
+            setShowModal(true)
+            setSelectedAssign('socialworker')
+          }}>
+          Assign social worker
+        </button>
 
-      <AssignSocialWorkerModal
-      showModal={showModal}
-      closeModal={()=>setShowModal(false)}
-      orphanageList ={orphanageList}
-      onSubmit={handleAssign}/>
+        <button className='mx-20 my-3 py-3 text-white bg-primary px-2' onClick={() => {
+          setShowModal(true)
+          setSelectedAssign('staff')
+        }}>
+          Assign staff member
+        </button>
+
+        <AssignModal
+          showModal={showModal}
+          closeModal={() => {
+            setSelectedAssign('')
+            setShowModal(false)
+          }}
+          orphanageList={orphanageList}
+          onSubmit={handleAssign} />
 
       </div>
 
 
-     
+
     </div>
   );
 };

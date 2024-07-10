@@ -20,6 +20,7 @@ import Child from "./components/Child"
 const ROLES = {
   'User': 1010,
   'Head': 1910,
+  'Staff': 5528,
   'SocialWorker': 2525,
   'Admin': 7788
 }
@@ -44,11 +45,11 @@ function App() {
             <Route path='/admin' element={<AdminDash />} />
             <Route path="/addOrphanage" element={<OrphanageForm />} />
           </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker]} />}>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
             <Route path='/orphanage/:id' element={<Orphanage />} />
             <Route path='/orphanage/:id/child/:childid' element={<Child />} />
           </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<UserDash />} />
           </Route>
 
@@ -56,20 +57,20 @@ function App() {
 
 
 
-        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker]}/>}>
-        
-        <Route path='/orphanage/:id' element={<Orphanage/>}/>
-      </Route>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker]} />}>
 
-      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
-      <Route path='/userdash' element={<UserDash/>}/>
-      <Route path='/inbox' element={<Inbox/>}/>
-      </Route>
+            <Route path='/orphanage/:id' element={<Orphanage />} />
+          </Route>
+
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User, ROLES.Staff]} />} >
+            <Route path='/userdash' element={<UserDash />} />
+            <Route path='/inbox' element={<Inbox />} />
+          </Route>
 
 
-</Route>
+        </Route>
 
-        
+
 
 
 
