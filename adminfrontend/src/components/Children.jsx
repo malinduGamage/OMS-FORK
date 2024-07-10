@@ -19,13 +19,13 @@ const Children = () => {
 
   return (
     <div>
-      <div className=" grid md:grid-cols-2  gap-3 mx-8 my-6">
+      <div className="grid gap-3 mx-8 my-6  md:grid-cols-2">
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />{" "}
+        <AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />
       
       </div>
 
-      <div className="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 mx-10">
+      <div className="grid gap-10 mx-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
         {filteredChildren.map((child) => (
           <Child
             key={child.name} 

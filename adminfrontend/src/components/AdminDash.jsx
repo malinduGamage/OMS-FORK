@@ -70,7 +70,9 @@ const AdminDash = () => {
     // };
   
 
-  const handleUpdateOrphanage = () => {
+  const handleUpdateOrphanage = (orphanageId) => {
+    const path = `/orphanage/${orphanageId}/edit`;
+    navigate(path);
     console.log('Updating orphanage...');
   }
 
