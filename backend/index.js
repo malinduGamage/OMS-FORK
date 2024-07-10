@@ -44,7 +44,7 @@ app.use('/refresh', require('./routes/refresh'))
 app.use('/logout', require('./routes/logout'));
 
 
-//for functiosn below we have re.roles an dreq.user as well automatically
+//for functiosn below we have req.roles an req.user as well automatically
 
 app.use(verifyJWT)
 
@@ -56,6 +56,10 @@ app.use('/socialworker', require('./routes/api/socialworker'))
 app.use('/child', require('./routes/api/child'))
 
 app.use('/messages',require('./routes/api/messages'))
+
+app.use ('/application',require('./routes/api/application'))
+
+
 
 
 app.listen(PORT, (error) => {

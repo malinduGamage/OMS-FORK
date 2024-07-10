@@ -8,7 +8,7 @@ export const orphanageTabs = [
     label: 'Children'
   },
   {
-    label: 'reservations'
+    label: 'Applications'
   },
   {
     label: 'donations'

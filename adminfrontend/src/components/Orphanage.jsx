@@ -5,6 +5,7 @@ import Overview from "./Overview";
 import Children from "./Children";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
+import ApplicationList from "./ApplicationList";
 
 const Orphanage = () => {
 
@@ -19,6 +20,9 @@ const Orphanage = () => {
         return <Overview />;
       case "Children":
         return <Children />;
+
+      case 'Applications':
+        return <ApplicationList/>  
       // Add cases for other tabs if needed
       default:
         return null;

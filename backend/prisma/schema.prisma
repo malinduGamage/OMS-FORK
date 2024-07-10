@@ -7,17 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model application {
+  applicationid String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userid        String?   @db.Uuid
+  childid       String?   @db.Uuid
+  childname     String?   @db.VarChar(255)
+  username      String?   @db.VarChar(255)
+  createdat     DateTime? @default(now()) @db.Timestamp(6)
+  child         child?    @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
+  users         users?    @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model child {
-  childid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  orphanageid        String      @db.Uuid
-  name               String      @db.VarChar(100)
-  date_of_birth      DateTime    @db.Date
+  childid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  orphanageid        String        @db.Uuid
+  name               String        @db.VarChar(100)
+  date_of_birth      DateTime      @db.Date
   gender             gender_type
-  nationality        String?     @db.VarChar(10)
-  religion           String?     @db.VarChar(10)
+  nationality        String?       @db.VarChar(10)
+  religion           String?       @db.VarChar(10)
   medicaldetails     String?
   educationaldetails String?
-  orphanage          orphanage   @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
+  application        application[]
+  orphanage          orphanage     @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model messages {
@@ -58,6 +70,7 @@ model users {
   telno        Int?
   roles        Json
   refreshtoken String?       @unique
+  application  application[]
   messages     messages[]
   orphanage    orphanage?
   socialworker socialworker?
