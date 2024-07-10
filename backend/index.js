@@ -1,9 +1,9 @@
-const PORT = process.env.PORT ||4000
+const PORT = process.env.PORT || 4000
 require('dotenv').config();
 const express = require('express')
 const app = express()
 
-const {v4:uuid} = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const cors = require('cors')
 
@@ -20,9 +20,9 @@ app.use(credentials)
 app.use(cors(corsOptions))
 
 //handle images
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({ extended: false }))
 
-app.use (express.json())
+app.use(express.json())
 
 app.use(cookieParser())
 
@@ -35,11 +35,11 @@ const verifyJWT = require('./middleware/verifyJWT')
 
 //routes
 
-app.use('/login',require('./routes/login'))
+app.use('/login', require('./routes/login'))
 
-app.use('/register',require('./routes/register'))
+app.use('/register', require('./routes/register'))
 
-app.use('/refresh',require('./routes/refresh'))
+app.use('/refresh', require('./routes/refresh'))
 
 app.use('/logout', require('./routes/logout'));
 
@@ -49,21 +49,21 @@ app.use('/logout', require('./routes/logout'));
 app.use(verifyJWT)
 
 
-app.use ('/orphanage',require('./routes/api/orphanages'))
+app.use('/orphanage', require('./routes/api/orphanages'))
 
-app.use('/socialworker',require('./routes/api/socialworker'))
+app.use('/socialworker', require('./routes/api/socialworker'))
+
+app.use('/child', require('./routes/api/child'))
+
+app.use('/messages',require('./routes/api/messages'))
 
 
-// app.use('/:id',require('./routes/api/orphanages'))
-
-
-
-app.listen(PORT,(error)=>{
-    if(!error){
+app.listen(PORT, (error) => {
+    if (!error) {
         console.log(`Server running on port ${PORT}`);
     }
-    else{
-        console.log("Error: "+error);
+    else {
+        console.log("Error: " + error);
     }
 })
 

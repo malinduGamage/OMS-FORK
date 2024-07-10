@@ -8,7 +8,7 @@ import useLogout from "../hooks/useLogout";
 
 const Orphanage = () => {
 
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const logout = useLogout()
   const [selectedTab, setSelectedTab] = useState(orphanageTabs[0].label);
 
@@ -25,14 +25,14 @@ const Orphanage = () => {
     }
   };
 
-  
-  const signout = async ()=>{
+
+  const signout = async () => {
     await logout();
     navigate('/')
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto ">
       <div className="h-[50vh] relative">
         <div
           className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
@@ -76,13 +76,12 @@ const Orphanage = () => {
             <nav className="-mb-px flex gap-6 justify-around" aria-label="Tabs">
               {orphanageTabs.map((tab) => (
                 <div
-                
-                 
-                  className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-semibold   ${
-                    selectedTab === tab.label
-                      ? "border-primary text-primary"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  }`}
+
+                  key={tab.label}
+                  className={`shrink-0 border-b-2 px-1 pb-4 font-semibold   ${selectedTab === tab.label
+                    ? "border-primary text-primary"
+                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    }`}
                   onClick={() => setSelectedTab(tab.label)}
                   aria-current={selectedTab === tab.label ? "page" : undefined}
                 >

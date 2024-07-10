@@ -8,6 +8,13 @@ datasource db {
 }
 
 model child {
+  childid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  orphanageid        String      @db.Uuid
+  name               String      @db.VarChar(100)
+  date_of_birth      DateTime    @db.Date
+  gender             gender_type
+  nationality        String?     @db.VarChar(10)
+  religion           String?     @db.VarChar(10)
   childid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   orphanageid        String        @db.Uuid
   name               String        @db.VarChar(100)
@@ -17,6 +24,17 @@ model child {
   religion           String?       @db.VarChar(10)
   medicaldetails     String?
   educationaldetails String?
+  orphanage          orphanage   @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model messages {
+  messageid    String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sendername   String?  @db.VarChar(50)
+  subject      String?
+  context      String?
+  replied      Boolean? @default(false)
+  replycontext String?
+  users        users?   @relation(fields: [sendername], references: [username], onDelete: NoAction, onUpdate: NoAction)
   application        application[]
   cases              cases[]
   orphanage          orphanage     @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
@@ -25,12 +43,15 @@ model child {
 model orphanage {
   orphanageid   String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   headid        String         @unique @db.Uuid
+  headid        String         @unique @db.Uuid
   orphanagename String         @db.VarChar(50)
   address       String?        @db.VarChar(255)
   telno         Int?
   head_email    String         @db.VarChar(255)
   capacity      Int?
   child         child[]
+  users         users          @relation(fields: [headid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  socialworker  socialworker[]
   users         users          @relation(fields: [headid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker  socialworker[]
   staff         staff[]
@@ -41,9 +62,23 @@ model socialworker {
   orphanageid    String    @db.Uuid
   orphanage      orphanage @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
   users          users     @relation(fields: [socialworkerid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  socialworkerid String    @id @db.Uuid
+  orphanageid    String    @db.Uuid
+  orphanage      orphanage @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
+  users          users     @relation(fields: [socialworkerid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model users {
+  userid       String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username     String?       @unique @db.VarChar(50)
+  password     String?       @db.VarChar(255)
+  email        String        @unique @db.VarChar(100)
+  telno        Int?
+  roles        Json
+  refreshtoken String?       @unique
+  messages     messages[]
+  orphanage    orphanage?
+  socialworker socialworker?
   userid                            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   username                          String?       @unique @db.VarChar(50)
   password                          String?       @db.VarChar(255)

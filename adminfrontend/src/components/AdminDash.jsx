@@ -141,6 +141,11 @@ const AdminDash = () => {
 
 
       <button onClick={signout}>Sign Out</button>
+      <button className='mx-20 my-3 py-3 text-white bg-primary px-2'>
+        <Link to={'/inbox'}>inbox</Link>
+      </button>
+
+
 
 
       <button className='mx-20 my-3 py-3 text-white bg-primary px-2'>

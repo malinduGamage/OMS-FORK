@@ -58,38 +58,21 @@ const Login = () => {
       const accessToken = response?.data?.accessToken;
       const decoded = jwtDecode(accessToken);
       const roles = decoded?.UserInfo?.roles || [];
-      const userId = decoded?.UserInfo?.userId;
 
-      setAuth({ accessToken, roles });
+      const userId = decoded?.UserInfo?.userId;
+      const orphanageId = decoded?.UserInfo?.orphanageid || null;
+
+      setAuth({ accessToken, roles, orphanageId });
+
       setEmail("");
       setPassword("");
 
       // Check roles to navigate
-      if (roles.includes(ROLES.Admin)) {
-        navigate("/admin", { replace: true });
-      } else if (roles.includes(ROLES.Head)) {
-        try {
-          const orphanageResponse = await axiosPrivate.get(`/orphanage/byHead`);
-          // Extract the orphanageId from the response
-          const orphanageId = orphanageResponse?.data?.orphanageId;
+      if (roles.includes(ROLES.Admin)) navigate("/admin", { replace: true });
+      else if (roles.includes(ROLES.Head)) navigate(`/orphanage/${orphanageId}`, { replace: true });
+      else if (roles.includes(ROLES.SocialWorker)) navigate(`/orphanage/${orphanageId}`, { replace: true });
+      else navigate(`/userdash`, { replace: true });
 
-          // Navigate to the new route with the obtained orphanageId
-          navigate(`/orphanage/${orphanageId}`, { replace: true });
-        } catch (error) {
-          console.error("Failed to fetch orphanage:", error);
-          setFormError("Failed to fetch orphanage information");
-        }
-      } else if (roles.includes(ROLES.SocialWorker)) {
-        try {
-          const response = await axiosPrivate.get("/socialworker");
-
-          const orphanageId = response.data.orphanageId;
-
-          navigate(`/orphanage/${orphanageId}`, { replace: true });
-        } catch (error) {}
-      } else {
-        navigate(`/userdash`, { replace: true });
-      }
     } catch (err) {
       if (!err?.response) {
         setFormError("No Server Response");
@@ -106,24 +89,24 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-    <div className="hidden lg:block lg:w-3/5 h-full">
-      <div
-        style={{
-          backgroundImage: "url('https://weareworldchallenge.com/wp-content/uploads/2024/01/Orphanages.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          
-          
-        }}
-        className="w-full h-full"
-      >
-        <h1 className="text-6xl font-bold  text-primary  px-10 pt-48 ">Join Our Journey: Adopt or Donate to Make a Difference</h1>
-      </div>
-    </div>
-    <div className="w-full lg:w-2/5 flex flex-col justify-center items-center h-full">
+      <div className="hidden lg:block lg:w-3/5 h-full">
+        <div
+          style={{
+            backgroundImage: "url('https://weareworldchallenge.com/wp-content/uploads/2024/01/Orphanages.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
 
-    <img className="lg:hidden relative  w-full h-full object-cover" src="https://weareworldchallenge.com/wp-content/uploads/2024/01/Orphanages.jpg" alt="" />
-      
+
+          }}
+          className="w-full h-full"
+        >
+          <h1 className="text-6xl font-bold  text-primary  px-10 pt-48 ">Join Our Journey: Adopt or Donate to Make a Difference</h1>
+        </div>
+      </div>
+      <div className="w-full lg:w-2/5 flex flex-col justify-center items-center h-full">
+
+        <img className="lg:hidden relative  w-full h-full object-cover" src="https://weareworldchallenge.com/wp-content/uploads/2024/01/Orphanages.jpg" alt="" />
+
         <div className="w-full lg:w-2/5 absolute sm:px-36 lg:px-10">
           <p
             ref={errRef}
@@ -133,11 +116,11 @@ const Login = () => {
           >
             {formError}
           </p>
-  
+
           <h1 className="text-center text-4xl font-bold text-primary mb-10 ">
             Log In
           </h1>
-  
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-5 backdrop-blur-lg p-5 rounded-xl">
             <div className="flex flex-col w-full">
               <label className="text-lg font-semibold mb-2 text-primary" htmlFor="email">
@@ -154,7 +137,7 @@ const Login = () => {
                 required
               />
             </div>
-  
+
             <div className="flex flex-col w-full">
               <label className="text-lg font-semibold mb-2 text-primary" htmlFor="password">
                 Password:
@@ -168,7 +151,7 @@ const Login = () => {
                 required
               />
             </div>
-  
+
             <div className=" justify-between items-center mt-6">
               <button
                 type="submit"
@@ -176,7 +159,7 @@ const Login = () => {
               >
                 Log in
               </button>
-  
+
               <div className="text-white lg:text-gray-700 mt-5">
                 Don't have an account?{" "}
                 <span className="text-primary underline cursor-pointer">
@@ -186,10 +169,10 @@ const Login = () => {
             </div>
           </form>
         </div>
-      
+
+      </div>
     </div>
-  </div>
-  
+
 
   );
 };
