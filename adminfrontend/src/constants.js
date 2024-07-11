@@ -11,7 +11,7 @@ export const orphanageTabs = [
     label: 'Applications'
   },
   {
-    label: 'donations'
+    label: 'Cases'
   }
 
 ]

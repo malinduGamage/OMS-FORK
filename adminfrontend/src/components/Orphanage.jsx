@@ -6,6 +6,10 @@ import Children from "./Children";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import ApplicationList from "./ApplicationList";
+import CasesList from "./CasesList";
+
+
+
 
 const Orphanage = () => {
 
@@ -23,6 +27,11 @@ const Orphanage = () => {
 
       case 'Applications':
         return <ApplicationList/>  
+
+        case 'Cases':
+          return <CasesList/>
+          
+        
       // Add cases for other tabs if needed
       default:
         return null;

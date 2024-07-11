@@ -62,7 +62,7 @@ const Login = () => {
       const userId = decoded?.UserInfo?.userId;
       const orphanageId = decoded?.UserInfo?.orphanageid || null;
 
-      setAuth({ accessToken, roles, orphanageId });
+      setAuth({ accessToken, roles, orphanageId ,userId });
 
       setEmail("");
       setPassword("");

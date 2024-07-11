@@ -59,6 +59,8 @@ app.use('/messages',require('./routes/api/messages'))
 
 app.use ('/application',require('./routes/api/application'))
 
+app.use('/case',require('./routes/api/case'))
+
 
 
 

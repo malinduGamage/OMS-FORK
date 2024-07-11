@@ -14,6 +14,7 @@ model application {
   childname     String?   @db.VarChar(255)
   username      String?   @db.VarChar(255)
   createdat     DateTime? @default(now()) @db.Timestamp(6)
+  status        String?   @default("Pending")
   child         child?    @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
   users         users?    @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -29,6 +30,7 @@ model child {
   medicaldetails     String?
   educationaldetails String?
   application        application[]
+  cases              cases[]
   orphanage          orphanage     @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -53,6 +55,7 @@ model orphanage {
   child         child[]
   users         users          @relation(fields: [headid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker  socialworker[]
+  staff         staff[]
 }
 
 model socialworker {
@@ -63,20 +66,97 @@ model socialworker {
 }
 
 model users {
-  userid       String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  username     String?       @unique @db.VarChar(50)
-  password     String?       @db.VarChar(255)
-  email        String        @unique @db.VarChar(100)
-  telno        Int?
-  roles        Json
-  refreshtoken String?       @unique
-  application  application[]
-  messages     messages[]
-  orphanage    orphanage?
-  socialworker socialworker?
+  userid                            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username                          String?       @unique @db.VarChar(50)
+  password                          String?       @db.VarChar(255)
+  email                             String        @unique @db.VarChar(100)
+  telno                             Int?
+  roles                             Json
+  refreshtoken                      String?       @unique
+  application                       application[]
+  cases_cases_parentidTousers       cases[]       @relation("cases_parentidTousers")
+  cases_cases_socialworkeridTousers cases[]       @relation("cases_socialworkeridTousers")
+  messages                          messages[]
+  orphanage                         orphanage?
+  request_request_receiverTousers   request[]     @relation("request_receiverTousers")
+  request_request_senderTousers     request[]     @relation("request_senderTousers")
+  socialworker                      socialworker?
+  staff                             staff?
+}
+
+model request {
+  requestid                     String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  type                          request_type
+  entity                        String       @db.VarChar(20)
+  request                       Json
+  receiver                      String       @db.Uuid
+  status                        status_type  @default(pending)
+  message                       String?      @db.VarChar(255)
+  created_at                    DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at                    DateTime     @default(now()) @db.Timestamptz(6)
+  sender                        String       @db.Uuid
+  users_request_receiverTousers users        @relation("request_receiverTousers", fields: [receiver], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  users_request_senderTousers   users        @relation("request_senderTousers", fields: [sender], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model staff {
+  staffid     String    @id @db.Uuid
+  orphanageid String    @db.Uuid
+  orphanage   orphanage @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
+  users       users     @relation(fields: [staffid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model cases {
+  caseid                            String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  childid                           String? @db.Uuid
+  parentid                          String? @db.Uuid
+  socialworkerid                    String? @db.Uuid
+  child                             child?  @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
+  users_cases_parentidTousers       users?  @relation("cases_parentidTousers", fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  users_cases_socialworkeridTousers users?  @relation("cases_socialworkeridTousers", fields: [socialworkerid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model fosterparent {
+  parent_user_id               String                   @db.Uuid
+  first_name                   String                   @db.VarChar(100)
+  last_name                    String?                  @db.VarChar(100)
+  gender                       gender_type
+  dob                          DateTime                 @db.Date
+  NIC                          String                   @db.VarChar(100)
+  occupation                   String?                  @db.VarChar(100)
+  nationality                  String                   @db.VarChar(100)
+  religion                     String                   @db.VarChar(100)
+  family_members               Decimal                  @db.Decimal(50, 0)
+  monthly_income               Decimal                  @db.Decimal(50, 0)
+  addionla_comment_by_parent   String?
+  home_address                 String?
+  city                         String?
+  province                     String?
+  home_tel_no                  Decimal?                 @db.Decimal(100, 0)
+  cell_tel_no                  Decimal?                 @db.Decimal(100, 0)
+  email_address                String                   @db.VarChar(100)
+  child_gender                 gender_type?
+  age_gap                      Unsupported("numrange")?
+  reason_for_foster            String?
+  any_disabilities_consider    String?
+  additional_comments_on_child String?
+
+  @@id([parent_user_id, NIC, email_address])
 }
 
 enum gender_type {
   Male
   Female
+}
+
+enum request_type {
+  create
+  update
+  delete
+}
+
+enum status_type {
+  pending
+  approved
+  rejected
 }

@@ -14,6 +14,7 @@ import MoreInfo from "./components/MoreInfo";
 import Inbox from "./components/Inbox";
 
 import Child from "./components/Child"
+import Case from "./components/Case";
 
 
 
@@ -56,9 +57,15 @@ function App() {
 
 
 
-        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker]}/>}>
+        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.Head]}/>}>
         
         <Route path='/orphanage/:id' element={<Orphanage/>}/>
+      </Route>
+
+      
+      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.Head]}/>}>
+        
+        <Route path='/case/:id' element={<Case/>}/>
       </Route>
 
       <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
