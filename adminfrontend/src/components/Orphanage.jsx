@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import orphanageImage from "../assets/images/orphanage1.jpg";
 import { orphanageTabs } from "../constants"; // Replace this with the correct path
 import Overview from "./Overview";
 import Children from "./Children";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
+import { Requests } from "./Requests";
 
 const Orphanage = () => {
 
   const navigate = useNavigate()
   const logout = useLogout()
   const [selectedTab, setSelectedTab] = useState(orphanageTabs[0].label);
+  const [type, setType] = useState('')
 
   // Function to render the corresponding component based on the selected tab
   const renderTabContent = () => {
@@ -19,11 +21,22 @@ const Orphanage = () => {
         return <Overview />;
       case "Children":
         return <Children />;
-      // Add cases for other tabs if needed
+      case "Sent Requests":
+        return <Requests type={type} />;
+      case "Received Requests":
+        return <Requests type={type} />;
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    if (selectedTab === 'Sent Requests') {
+      setType('sent')
+    } else if (selectedTab === 'Received Requests') {
+      setType('received')
+    }
+  }, [selectedTab])
 
 
   const signout = async () => {

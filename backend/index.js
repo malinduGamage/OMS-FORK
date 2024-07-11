@@ -59,6 +59,8 @@ app.use('/child', require('./routes/api/child'))
 
 app.use('/messages', require('./routes/api/messages'))
 
+app.use('/request', require('./routes/api/request'))
+
 
 app.listen(PORT, (error) => {
     if (!error) {

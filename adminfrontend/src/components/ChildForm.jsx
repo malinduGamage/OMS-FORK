@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import toast from 'react-hot-toast';
+import { ConfirmationModal } from './ConfirmationModal';
 
 const NAME_REGEX = /^[a-zA-Z. ]{0,99}[a-zA-Z]$/;
 const GENDER_REGEX = /^(Male|Female)$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const COMMON_REGEX = /^[a-zA-Z0-9 ]{2,10}$/;
 
-const ChildForm = ({ setFormVisibility, children, setChildren }) => {
+const ChildForm = ({ setFormVisibility }) => {
     const { id } = useParams();
     const axiosPrivate = useAxiosPrivate()
 
@@ -25,18 +27,9 @@ const ChildForm = ({ setFormVisibility, children, setChildren }) => {
     const [validNationality, setValidNationality] = useState(false);
     const [validReligion, setValidReligion] = useState(false);
 
-    const today = new Date().toISOString().split('T')[0];
+    const [confirmModalVisibility, setConfirmModalVisibility] = useState(false);
 
-    const getAge = (dob) => {
-        const today = new Date();
-        const birthDate = new Date(dob);
-        const age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (age > 0 && (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))) {
-            return age - 1;
-        }
-        return age;
-    }
+    const today = new Date().toISOString().split('T')[0];
 
     useEffect(() => {
         setValidName(NAME_REGEX.test(name));
@@ -81,26 +74,30 @@ const ChildForm = ({ setFormVisibility, children, setChildren }) => {
         }
 
         try {
-            const response = await axiosPrivate.post('/child', data)
-            setChildren([...children, { ...response.data.data, age: getAge(data.date_of_birth) }])
-            console.log(response.data.data)
+            const response = await axiosPrivate.post('/request/addChild', data)
+            toast.success(response.data.message)
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data)
         }
+    }
+
+    const handleConfirmation = async () => {
+        await addChild();
+        clearForm();
+        setConfirmModalVisibility(false);
+        setFormVisibility(false);
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addChild();
-        clearForm();
-        setFormVisibility(false);
+        setConfirmModalVisibility(true);
     }
 
     return (
         <div className="fixed inset-0 flex  justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
             <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5">
                 <div className="flex justify-between items-center mb-3">
-                    <h1 className="text-lg font-bold text-gray-700 capitalize">Add Child </h1>
+                    <h1 className="text-lg font-bold text-gray-700 capitalize">Add Child Request</h1>
                     <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setFormVisibility(false)}>Close</button>
                 </div>
                 <div className="overflow-y-auto max-h-[80vh]">
@@ -160,13 +157,13 @@ const ChildForm = ({ setFormVisibility, children, setChildren }) => {
                         <div className="flex justify-end mt-4">
                             <button
                                 disabled={!(validName && validDateOfBirth && validGender && validNationality && validReligion)}
-                                className="px-4 py-2 leading-5 text-gray-700 transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">Submit</button>
+                                className="items-end bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:border-gray-300 disabled:cursor-not-allowed">Submit Request</button>
                         </div>
                     </form>
                 </div>
             </section>
 
-
+            {confirmModalVisibility && <ConfirmationModal head="Add Child Request" body="Are you sure you want to create add child request?" handleConfirmation={handleConfirmation} setVisibility={setConfirmModalVisibility} />}
         </div >
     )
 }

@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import ChildEditForm from './ChildEditForm';
+import toast from 'react-hot-toast';
+import { ConfirmationModal } from './ConfirmationModal';
 
 const Child = () => {
 
@@ -24,6 +26,7 @@ const Child = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   }
+
   const getBasicInfo = (child) => {
     return {
       'Full Name': child.name,
@@ -41,9 +44,10 @@ const Child = () => {
   const axiosPrivate = useAxiosPrivate()
   const [child, setChild] = useState({})
   const [formVisibility, setFormVisibility] = useState(false);
-  const { id, childid } = useParams('')
+  const { childid } = useParams('')
   const [imageURL, setImageURL] = useState('')
   const [basicInfo, setBasicInfo] = useState(getBasicInfo(child))
+  const [confirmModalVisibility, setConfirmModalVisibility] = useState(false)
 
   const getChild = async () => {
     try {
@@ -55,6 +59,17 @@ const Child = () => {
     }
   }
 
+  const deleteChild = async () => {
+    try {
+      await axiosPrivate.post('/request/deleteChild', child)
+
+      toast.success('Delete request logged successfully')
+    } catch (error) {
+      toast.error(error.response.data)
+    } finally {
+      setConfirmModalVisibility(false)
+    }
+  }
   useEffect(() => {
     console.log('setBasic')
     setBasicInfo(getBasicInfo(child))
@@ -88,7 +103,10 @@ const Child = () => {
             <button onClick={() => setFormVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Edit Profile
             </button>
-            <button className="m-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+            <button onClick={() => setConfirmModalVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+              Delete Profile
+            </button>
+            <button className="my-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Upload Documents
             </button>
           </div>
@@ -139,7 +157,7 @@ const Child = () => {
       </div>
 
       {formVisibility ? <ChildEditForm setFormVisibility={setFormVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} /> : null}
-
+      {confirmModalVisibility ? <ConfirmationModal head='Delete Child' body='Are you sure you want to create a delete child request?' handleConfirmation={deleteChild} setVisibility={setConfirmModalVisibility} /> : null}
     </div>
 
 

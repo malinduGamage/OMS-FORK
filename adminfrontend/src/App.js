@@ -13,8 +13,8 @@ import MoreInfo from "./components/MoreInfo";
 
 import Inbox from "./components/Inbox";
 
-import Child from "./components/Child"
-
+import Child from "./components/Child";
+import { Toaster } from 'react-hot-toast';
 
 
 const ROLES = {
@@ -90,6 +90,10 @@ function App() {
           <Route path=":orphanageId" element={<Orphanage />} />
         </Route> */}
       </Routes>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </main>
   );
 }
