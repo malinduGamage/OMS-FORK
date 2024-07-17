@@ -57,6 +57,10 @@ app.use('/child', require('./routes/api/child'))
 
 app.use('/messages',require('./routes/api/messages'))
 
+app.use('/application',require('./routes/api/application'))
+
+// app.use('/fosterparent', require('./routes/api/fosterparent'))
+
 
 app.listen(PORT, (error) => {
     if (!error) {

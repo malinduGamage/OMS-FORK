@@ -13,11 +13,11 @@ const UserDash = () => {
     return(
       <div>
         <Navbar />
-       <div className='w-full h-screen flex flex-col justify-center items-left'>
-          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Background Image" className="absolute inset-0 w-full h-full object-cover opacity-70" />
-          <div className="relative z-10 opacity-100 text-6xl text-black px-4 font-poppins mb-32 ">
+       <div className='flex flex-col justify-center w-full h-screen items-left'>
+          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Background Image" className="absolute inset-0 object-cover w-full h-full opacity-70" />
+          <div className="relative z-10 px-4 mb-32 text-6xl text-black opacity-100 font-poppins ">
             LET’S BRIGHTEN THEIR LIVES
-            <div className='text-lg mb-6'>
+            <div className='mb-6 text-lg'>
               They will make the world in a different way
             </div>
             <Link to="/donateNow" className={`p-2 ${buttonClasses} z-10 inline-block`}>Donate Now</Link>
@@ -44,12 +44,12 @@ const UserDash = () => {
         </div>
         <div>
         </div>
-        <div className='w-full h-screen flex items-center justify-center relative'>
-                <img src="https://images.unsplash.com/photo-1577896852618-01da1dd79f7e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D.jpg" alt="Vision Background Image" className="absolute inset-0 w-full h-full object-cover opacity-70" />
+        <div className='relative flex items-center justify-center w-full h-screen'>
+                <img src="https://images.unsplash.com/photo-1577896852618-01da1dd79f7e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D.jpg" alt="Vision Background Image" className="absolute inset-0 object-cover w-full h-full opacity-70" />
                 <div className='relative z-20 text-[#ff5722] font-poppins text-9xl text-left p-6'>
                     <span style={{ color: '#ff5722', textDecoration: 'underline', textDecorationColor: 'black', textUnderlineOffset: '10px'}}>Our Vision</span>
                 </div>
-                <div className="relative z-20 text-2xl text-black text-right mt-6 px-6">
+                <div className="relative z-20 px-6 mt-6 text-2xl text-right text-black">
                     <b>Create awareness of the right of a child to be protected from abuse and the methods of preventing child abuse. Consult the relevant ministries, Provincial Councils, local authorities, District and Divisional Secretaries, public and private sector organizations, and recommend all necessary measures for preventing child abuse and for protecting and safeguarding the interests of the victims of such abuse.</b>
                 </div>
             </div>
@@ -57,21 +57,18 @@ const UserDash = () => {
         <div className='w-full h-screen'>
             <div className='text-[#ff5722] font-poppins text-3xl text-center pt-10'>
                     <span style={{ textDecoration: 'underline', textDecorationColor: 'black',textUnderlineOffset: '5px' }}>What is Foostering</span>
-                      <div className='text-2xl mt-6'>
+                      <div className='mt-6 text-2xl'>
                             Fostering is the temporary care of children by families who provide a nurturing environment until the children can be reunited with their birth families or adopted. Our mission is to reintegrate children into environments where they can grow up with the love and care of a family. We strongly advocate for fostering, particularly for babies and children with special needs, as a crucial part of this mission. Every child deserves a loving family, and through fostering, we can provide them with the better future they deserve.
                     </div>
                     <div className='m-10'>
-                               <Link to="/fostering" className={`p-2 ${buttonClasses} z-0`}>Fostering</Link>
-                           </div>
-                           <div className="flex justify-center">
-                               <Link to="/moreinfo" className={`p-2 ${buttonClasses} z-0`}>More Info</Link>
+                               <Link to="/fosteringmain" className={`p-2 ${buttonClasses} z-0`}>Fostering</Link>
                            </div>
                        </div>
         </div>  
         <div className='relative w-full h-screen'>
-        <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Background Image" className="absolute inset-x-0 top-0 w-full h-2/3 object-cover z-0 opacity-70" />
+        <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Background Image" className="absolute inset-x-0 top-0 z-0 object-cover w-full h-2/3 opacity-70" />
 
-         <div className="absolute inset-0 w-full h-2/3 flex items-center justify-center z-10 mt-32">
+         <div className="absolute inset-0 z-10 flex items-center justify-center w-full mt-32 h-2/3">
              <Link to="/donateNow" className={`px-56  ${buttonClasses} z-0`}><div className='text-4xl'>Donate Now</div></Link> 
          </div>
         
@@ -82,13 +79,13 @@ const UserDash = () => {
                          Sri Lanka Child Protection Authority
                      </div>
                      <a href="./">
-                         <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-96 h-36 object-contain mt-6' />
+                         <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='object-contain mt-6 w-96 h-36' />
                      </a>
                      <div className='mb-10'>
                          Copyright © 2024 SLCPA. All rights reserved.
                      </div>
                  </div>
-                 <div className='pl-6 pr-80 mt-2'>
+                 <div className='pl-6 mt-2 pr-80'>
                      <div className='mt-10'>
                          The Sri Lanka Child Protection Authority (SLCPA) is dedicated  lo
                      </div>

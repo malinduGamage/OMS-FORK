@@ -89,13 +89,11 @@ const Children = () => {
   }, [])
 
   return (
-    <div>
-      <div className="grid gap-3 mx-8 my-6 md:grid-cols-2">
     <div >
       <button onClick={handleAddChild} class="mx-10 items-end bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded">
         Add Child
       </button>
-      <div className="grid grid-cols-1 gap-3 mx-10 my-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 mx-10 my-6  lg:grid-cols-3">
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />
         <div>
@@ -108,22 +106,10 @@ const Children = () => {
 
       </div>
 
-      <div className="grid gap-10 mx-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
-        {filteredChildren.map((child) => (
-          <Child
-            key={child.name} 
-            name={child.name}
-            age={child.age}
-            imageUrl={child.imageUrl}
-          />
-        ))}
       <div className="mx-10">
         <ChildTable children={filteredChildren} />
       </div>
       {formVisibility ? <ChildForm setFormVisibility={setFormVisibility} children={children} setChildren={setChildren} /> : null}
-    </div>
-    </div>
-    </div>
     </div>
   );
 };

@@ -10,12 +10,12 @@ datasource db {
 model application {
   applicationid String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userid        String?   @db.Uuid
-  childid       String?   @db.Uuid
-  childname     String?   @db.VarChar(255)
   username      String?   @db.VarChar(255)
   createdat     DateTime? @default(now()) @db.Timestamp(6)
-  status        Boolean?  @default(true)
-  child         child?    @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
+  status        String?   @default("Pending")
+  emailaddress  String?   @db.VarChar(255)
+  genderofchild String?   @db.VarChar(255)
+  agerange      Int[]
   users         users?    @relation(fields: [userid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -30,18 +30,17 @@ model cases {
 }
 
 model child {
-  childid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  orphanageid        String        @db.Uuid
-  name               String        @db.VarChar(100)
-  date_of_birth      DateTime      @db.Date
+  childid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  orphanageid        String      @db.Uuid
+  name               String      @db.VarChar(100)
+  date_of_birth      DateTime    @db.Date
   gender             gender_type
-  nationality        String?       @db.VarChar(10)
-  religion           String?       @db.VarChar(10)
+  nationality        String?     @db.VarChar(10)
+  religion           String?     @db.VarChar(10)
   medicaldetails     String?
   educationaldetails String?
-  application        application[]
   cases              cases[]
-  orphanage          orphanage     @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
+  orphanage          orphanage   @relation(fields: [orphanageid], references: [orphanageid], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model messages {
