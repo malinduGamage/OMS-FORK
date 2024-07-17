@@ -15,6 +15,11 @@ router
       ROLES_LIST.Admin
     ),
     applicationController.createApplication
-  );
+  )
+  .get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),applicationController.getApplications)
+  .put(verifyRoles(ROLES_LIST.Admin),applicationController.acceptApplication)
+
+  router.route('/getchildren')
+  .post(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),applicationController.getChildren)
 
 module.exports = router;
