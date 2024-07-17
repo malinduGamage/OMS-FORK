@@ -93,7 +93,7 @@ const Children = () => {
       <button onClick={handleAddChild} class="mx-10 items-end bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-2 px-4 border border-orange-500 hover:border-transparent rounded">
         Add Child
       </button>
-      <div className=" grid grid-cols-1 lg:grid-cols-3 gap-3 mx-10 my-6">
+      <div className="grid grid-cols-1 gap-3 mx-10 my-6  lg:grid-cols-3">
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <AgeSlider ageRange={ageRange} setAgeRange={setAgeRange} />
         <div>
