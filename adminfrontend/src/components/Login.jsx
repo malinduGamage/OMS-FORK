@@ -5,10 +5,8 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import axios, { axiosPrivate } from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-<<<<<<< HEAD
 import toast from "react-hot-toast";
-=======
->>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
+
 
 const ROLES = {
   User: 1010,

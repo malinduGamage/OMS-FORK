@@ -1,17 +1,11 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from "react";
-=======
-import React, { useState, useMemo } from "react";
->>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
+import React, { useState, useEffect, useMemo } from "react";
 import orphanageImage from "../assets/images/orphanage1.jpg";
 import Overview from "./Overview";
 import Children from "./Children";
 import ApplicationList from "./ApplicationList";
 import CasesList from "./CasesList";
 import useLogout from "../hooks/useLogout";
-<<<<<<< HEAD
 import { Requests } from "./Requests";
-=======
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -21,28 +15,22 @@ const ROLES = {
   SocialWorker: 2525,
   Admin: 7788,
 };
->>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
 
 const Orphanage = () => {
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
   const [selectedTab, setSelectedTab] = useState('Overview');
-
-<<<<<<< HEAD
-  const navigate = useNavigate()
-  const logout = useLogout()
-  const [selectedTab, setSelectedTab] = useState(orphanageTabs[0].label);
   const [type, setType] = useState('')
-=======
-  
+
   const orphanageTabs = useMemo(() => {
     const baseTabs = [
       { label: 'Overview' },
       { label: 'Children' },
-      { label: 'Cases' }
+      { label: 'Cases' },
+      { label: 'Sent Requests' },
+      { label: 'Received Requests' }
     ];
->>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
 
     if (auth.roles.includes(ROLES.Head)) {
       baseTabs.splice(2, 0, { label: 'Applications' }); // Add 
@@ -51,30 +39,26 @@ const Orphanage = () => {
     return baseTabs;
   }, [auth.roles]);
 
-  
+
   const renderTabContent = () => {
     switch (selectedTab) {
       case "Overview":
         return <Overview />;
       case "Children":
         return <Children />;
-<<<<<<< HEAD
       case "Sent Requests":
         return <Requests type={type} />;
       case "Received Requests":
         return <Requests type={type} />;
-=======
       case "Applications":
         return <ApplicationList />;
       case "Cases":
         return <CasesList />;
->>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
       default:
         return null;
     }
   };
 
-<<<<<<< HEAD
   useEffect(() => {
     if (selectedTab === 'Sent Requests') {
       setType('sent')
@@ -84,8 +68,6 @@ const Orphanage = () => {
   }, [selectedTab])
 
 
-=======
->>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
   const signout = async () => {
     await logout();
     navigate('/');
