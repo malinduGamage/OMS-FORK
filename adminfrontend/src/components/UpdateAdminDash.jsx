@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useParams } from "react-router-dom";
 
@@ -68,7 +67,7 @@ const UpdateAdminDash = () => {
 
   return (
     <div className="mx-10">
-      <h1 className="text-2xl font-bold text-center my-10 relative">
+      <h1 className="relative my-10 text-2xl font-bold text-center">
         Update Orphanage
         <span className="block w-[100px] h-1 bg-primary mx-auto mt-3"></span>
       </h1>
@@ -76,7 +75,7 @@ const UpdateAdminDash = () => {
       <form className="flex flex-col gap-5" onSubmit={updateOrphanage}>
         <div className="flex flex-col gap-5 md:flex-row">
           <div className="flex flex-col w-full">
-            <label className="text-md font-semibold mb-3" htmlFor="orphanagename">
+            <label className="mb-3 font-semibold text-md" htmlFor="orphanagename">
               Orphanage Name:
             </label>
             <input
@@ -91,7 +90,7 @@ const UpdateAdminDash = () => {
           </div>
 
           <div className="flex flex-col w-full">
-            <label className="text-md font-semibold mb-3" htmlFor="address">
+            <label className="mb-3 font-semibold text-md" htmlFor="address">
               Address:
             </label>
             <input
@@ -108,7 +107,7 @@ const UpdateAdminDash = () => {
 
         <div className="flex flex-col gap-5 md:flex-row">
           <div className="flex flex-col w-full">
-            <label className="text-md font-semibold mb-3" htmlFor="capacity">
+            <label className="mb-3 font-semibold text-md" htmlFor="capacity">
               Capacity:
             </label>
             <input
@@ -124,7 +123,7 @@ const UpdateAdminDash = () => {
           </div>
 
           <div className="flex flex-col w-full">
-            <label className="text-md font-semibold mb-3" htmlFor="telno">
+            <label className="mb-3 font-semibold text-md" htmlFor="telno">
               Tel Number:
             </label>
             <input
@@ -141,7 +140,7 @@ const UpdateAdminDash = () => {
 
         <div className="flex flex-col gap-5 md:flex-row">
           <div className="flex flex-col w-full">
-            <label className="text-md font-semibold mb-3" htmlFor="head_email">
+            <label className="mb-3 font-semibold text-md" htmlFor="head_email">
               Head Email:
             </label>
             <input
@@ -157,7 +156,7 @@ const UpdateAdminDash = () => {
         </div>
 
         <div className="flex flex-col w-full">
-          <label className="text-md font-semibold mb-3" htmlFor="district">
+          <label className="mb-3 font-semibold text-md" htmlFor="district">
             District:
           </label>
           <select
@@ -179,7 +178,7 @@ const UpdateAdminDash = () => {
 
         <button
           type="submit"
-          className="bg-primary text-white font-semibold mb-10 w-1/4 py-3 hover:bg-white hover:border-2 hover:border-primary hover:text-primary transition-all duration-300"
+          className="w-1/4 py-3 mb-10 font-semibold text-white transition-all duration-300 bg-primary hover:bg-white hover:border-2 hover:border-primary hover:text-primary"
         >
           Update Orphanage
         </button>

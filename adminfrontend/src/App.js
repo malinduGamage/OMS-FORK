@@ -9,12 +9,12 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
-import MoreInfo from "./components/MoreInfo";
 import UpdateAdminDash from "./components/UpdateAdminDash";
 import FosteringApplication from "./components/FosteringApplication";
 import FosteringApplication2 from "./components/FosteringApplication2";
 import FosteringApplication3 from "./components/FosteringApplication3";
 import FosteringMain from "./components/FosteringMain";
+import Payment from "./components/Payment";
 
 import Inbox from "./components/Inbox";
 
@@ -42,7 +42,12 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
+
+        
+        <Route path='/donateNow' element={<Payment/>}/>
+
         <Route path='/myapplications' element={<Myapplications />} />
+
 
         {/* Protected Routes */}
 
@@ -67,6 +72,7 @@ function App() {
         
         <Route path='/orphanage/:id' element={<Orphanage/>}/>
         <Route path= '/orphanage/:id/edit' element={<UpdateAdminDash/>}/>
+        
       </Route>
 
       
