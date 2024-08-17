@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import ChildEditForm from './ChildEditForm';
+import DocumentUploadForm from './DocumentUploadForm';
 import toast from 'react-hot-toast';
 import { ConfirmationModal } from './ConfirmationModal';
 
@@ -43,7 +44,8 @@ const Child = () => {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate()
   const [child, setChild] = useState({})
-  const [formVisibility, setFormVisibility] = useState(false);
+  const [editFormVisibility, setEditVisibility] = useState(false);
+  const [uploadFormVisibility, setUploadVisibility] = useState(false);
   const { childid } = useParams('')
   const [imageURL, setImageURL] = useState('')
   const [basicInfo, setBasicInfo] = useState(getBasicInfo(child))
@@ -100,13 +102,13 @@ const Child = () => {
             {child.gender} &#183; {getAge(child.date_of_birth)} years old
           </p>
           <div>
-            <button onClick={() => setFormVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+            <button onClick={() => setEditVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Edit Profile
             </button>
             <button onClick={() => setConfirmModalVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Delete Profile
             </button>
-            <button className="my-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+            <button onClick={() => setUploadVisibility(true)} className="my-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Upload Documents
             </button>
           </div>
@@ -155,8 +157,8 @@ const Child = () => {
           </div>
         </div>
       </div>
-
-      {formVisibility ? <ChildEditForm setFormVisibility={setFormVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} /> : null}
+      {uploadFormVisibility ? <DocumentUploadForm setUploadVisibility={setUploadVisibility} /> : null}
+      {editFormVisibility ? <ChildEditForm setEditVisibility={setEditVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} /> : null}
       {confirmModalVisibility ? <ConfirmationModal head='Delete Child' body='Are you sure you want to create a delete child request?' handleConfirmation={deleteChild} setVisibility={setConfirmModalVisibility} /> : null}
     </div>
 

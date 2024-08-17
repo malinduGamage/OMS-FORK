@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Search from "./Search";
 import AgeSlider from "./AgeSlider";
 import ChildTable from "./ChildTable";
-import ChildForm from "./ChildForm";
+import { ChildForm } from "./ChildForm";
 
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
@@ -22,8 +22,6 @@ const Children = () => {
   const handleAddChild = () => {
     setFormVisibility(!formVisibility);
   };
-
-
 
   const getAge = (dob) => {
     const today = new Date();

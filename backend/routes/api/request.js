@@ -21,5 +21,8 @@ router.route('/editChild')
 router.route('/deleteChild')
     .post(verifyRoles(ROLES_LIST.Staff), requestController.createDeleteChildRequest)
     .put(verifyRoles(ROLES_LIST.Head), requestController.handleDeleteChildRequest)
+router.route('/childDocument')
+    .post(verifyRoles(ROLES_LIST.Staff), requestController.createChildDocumentRequest)
+    .put(verifyRoles(ROLES_LIST.Head), requestController.handleChildDocumentRequest)
 
 module.exports = router

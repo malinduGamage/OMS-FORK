@@ -8,7 +8,7 @@ const GENDER_REGEX = /^(Male|Female)$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const COMMON_REGEX = /^[a-zA-Z0-9 ]{2,10}$/;
 
-const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageURL }) => {
+const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageURL }) => {
     const axiosPrivate = useAxiosPrivate()
     const today = new Date().toISOString().split('T')[0];
     const dobFormatted = new Date(child.date_of_birth).toISOString().split('T')[0];
@@ -105,7 +105,7 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
     const handleConfirmation = async () => {
         await updateChild();
         setConfirmModelVisibility(false);
-        setFormVisibility(false);
+        setEditVisibility(false);
     }
 
     const handleSubmit = (e) => {
@@ -118,7 +118,7 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
             <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 max-w-3xl">
                 <div className="flex justify-between items-center mb-3">
                     <h1 className="text-lg font-bold text-gray-700 capitalize flex"> Edit profile of <p className='text-orange-500 mx-2'> {child.name} </p></h1>
-                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setFormVisibility(false)}>Close</button>
+                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setEditVisibility(false)}>Close</button>
                 </div>
                 <div className="overflow-y-auto max-h-[80vh]">
                     <form onSubmit={handleSubmit}>
