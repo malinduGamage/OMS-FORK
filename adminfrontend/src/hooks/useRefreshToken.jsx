@@ -19,6 +19,9 @@ export const useRefreshToken = () => {
         const decoded = jwtDecode(accessToken);
         const roles = decoded?.UserInfo?.roles || [];
         const username = decoded?.UserInfo?.username;
+        const userId = decoded?.UserInfo?.userId
+
+
         const orphanageid = decoded?.UserInfo?.orphanageid;
 
 
@@ -26,7 +29,8 @@ export const useRefreshToken = () => {
         setAuth(prev => {
 
             return {
-                ...prev, accessToken: response.data.accessToken, roles: roles, username: username, orphanageid: orphanageid
+                ...prev, accessToken: response.data.accessToken, roles: roles, username: username, orphanageid: orphanageid, userId: userId
+
 
             }
         })

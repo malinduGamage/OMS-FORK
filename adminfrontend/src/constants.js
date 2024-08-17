@@ -1,20 +1,4 @@
-export const orphanageTabs = [
 
-
-  {
-    label: 'Overview'
-  },
-  {
-    label: 'Children'
-  },
-  {
-    label: 'Sent Requests'
-  },
-  {
-    label: 'Received Requests'
-  }
-
-]
 
 export const childrenDetails = [
   {
