@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import toast from 'react-hot-toast';
+import { ConfirmationModal } from './ConfirmationModal';
 
 const NAME_REGEX = /^[a-zA-Z. ]{0,99}[a-zA-Z]$/;
 const GENDER_REGEX = /^(Male|Female)$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const COMMON_REGEX = /^[a-zA-Z0-9 ]{2,10}$/;
 
-const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageURL }) => {
+const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageURL }) => {
     const axiosPrivate = useAxiosPrivate()
     const today = new Date().toISOString().split('T')[0];
-    console.log(child)
     const dobFormatted = new Date(child.date_of_birth).toISOString().split('T')[0];
 
     const [name, setName] = useState(child.name);
@@ -35,6 +35,7 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
     const [changedMedicalDetails, setChangedMedicalDetails] = useState(false);
     const [changedEducationalDetails, setChangedEducationalDetails] = useState(false);
 
+    const [confirmModelVisibility, setConfirmModelVisibility] = useState(false);
 
     useEffect(() => {
         setValidName(NAME_REGEX.test(name));
@@ -80,8 +81,9 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
 
     const updateChild = async () => {
         const data = {
+            childid: child.childid,
             name,
-            date_of_birth: new Date(dateOfBirth).toISOString(),
+            date_of_birth: dateOfBirth,
             gender,
             religion,
             nationality,
@@ -90,26 +92,25 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
         }
 
         try {
-            const response = await axiosPrivate.put(`/child/${child.childid}`, data)
-            if (response.data.success) {
-                console.log('updated')
-                setChild({ childid: child.childid, ...data })
-                setImageURL(`https://avatar.iran.liara.run/public/${data.gender === 'Male' ? 'boy' : 'girl'}?username=${data.name.split(' ').join('')}`)
-                console.log(data.gender)
-            }
+            const response = await axiosPrivate.post(`/request/editChild`, data)
+            toast.success(response.data.message);
             return true
 
         } catch (error) {
-            console.error('Database query failed:', error);
+            toast.error(error.response.data);
             return false
         }
     }
 
+    const handleConfirmation = async () => {
+        await updateChild();
+        setConfirmModelVisibility(false);
+        setEditVisibility(false);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const res = updateChild();
-        if (res) setFormVisibility(false);
-
+        setConfirmModelVisibility(true);
     }
 
     return (
@@ -117,7 +118,7 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
             <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 max-w-3xl">
                 <div className="flex justify-between items-center mb-3">
                     <h1 className="text-lg font-bold text-gray-700 capitalize flex"> Edit profile of <p className='text-orange-500 mx-2'> {child.name} </p></h1>
-                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setFormVisibility(false)}>Close</button>
+                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setEditVisibility(false)}>Close</button>
                 </div>
                 <div className="overflow-y-auto max-h-[80vh]">
                     <form onSubmit={handleSubmit}>
@@ -183,7 +184,7 @@ const ChildEditForm = ({ setFormVisibility, child, setChild, imageURL, setImageU
                 </div>
             </section>
 
-
+            {confirmModelVisibility && <ConfirmationModal head='Child Update Request' body='Are you sure you want to create a update child request' handleConfirmation={handleConfirmation} setVisibility={setConfirmModelVisibility} />}
         </div >
     )
 }

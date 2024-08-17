@@ -36,12 +36,20 @@ const handleRefreshToken = async (req, res) => {
             }
         })
     }
+    else if (!Object.values(user.roles).includes(ROLES_LIST.Admin) && (Object.values(user.roles).includes(ROLES_LIST.Staff))) {
+
+        orphanage = await prisma.staff.findUnique({
+            where: {
+                staffid: user.userid
+            }
+        })
+    }
 
     jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
-            if (err || user.username !== decoded.username) res.sendStatus(403)
+            if (err || user.email !== decoded.email) res.sendStatus(403)
 
             const roles = Object.values(user.roles)
 

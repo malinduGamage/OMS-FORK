@@ -5,10 +5,15 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import axios, { axiosPrivate } from "../api/axios";
 import { jwtDecode } from "jwt-decode";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+<<<<<<< HEAD
+import toast from "react-hot-toast";
+=======
+>>>>>>> 5b28d27d4f04894e2593ac2141e003227daef874
 
 const ROLES = {
   User: 1010,
   Head: 1910,
+  Staff: 5528,
   SocialWorker: 2525,
   Admin: 7788,
 };
@@ -65,27 +70,31 @@ const Login = () => {
       const username = decoded?.UserInfo?.username;
 
 
-      setAuth({ accessToken, roles, orphanageId,userId,username });
+      setAuth({ accessToken, roles, orphanageId, userId, username });
 
 
       setEmail("");
       setPassword("");
-
+      toast.success("Login Successful");
       // Check roles to navigate
       if (roles.includes(ROLES.Admin)) navigate("/admin", { replace: true });
-      else if (roles.includes(ROLES.Head)) navigate(`/orphanage/${orphanageId}`, { replace: true });
-      else if (roles.includes(ROLES.SocialWorker)) navigate(`/orphanage/${orphanageId}`, { replace: true });
+      else if (roles.includes(ROLES.Head) || roles.includes(ROLES.SocialWorker) || roles.includes(ROLES.Staff)) navigate(`/orphanage/${orphanageId}`, { replace: true });
       else navigate(`/userdash`, { replace: true });
+
 
     } catch (err) {
       if (!err?.response) {
-        setFormError("No Server Response");
+        toast.error("No Server Response");
+        //setFormError("No Server Response");
       } else if (err.response?.status === 400) {
-        setFormError("Missing Username or Password");
+        toast.error("Missing Username or Password");
+        //setFormError("Missing Username or Password");
       } else if (err.response?.status === 401) {
-        setFormError("Unauthorized");
+        toast.error("Unauthorized");
+        //setFormError("Unauthorized");
       } else {
-        setFormError("Login Failed");
+        toast.error("Login Failed");
+        //setFormError("Login Failed");
       }
       errRef.current.focus();
     }

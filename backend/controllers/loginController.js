@@ -52,6 +52,16 @@ const handleLogin = async (req, res) => {
                     }
                 })
             }
+            else if (!roles.includes(ROLES_LIST.Admin) && roles.includes(ROLES_LIST.Staff)) {
+                RelevetOrphanage = await prisma.staff.findUnique({
+                    where: {
+                        staffid: user.userid
+                    },
+                    select: {
+                        orphanageid: true
+                    }
+                })
+            }
             else RelevetOrphanage = null;
 
             accessToken = jwt.sign(
@@ -69,7 +79,7 @@ const handleLogin = async (req, res) => {
 
             // Create refresh token
             const refreshToken = jwt.sign(
-                { "username": user.username },
+                { "email": user.email },
                 process.env.REFRESH_TOKEN_SECRET,
                 { expiresIn: '1d' }
             );

@@ -4,7 +4,7 @@ const ChildTableRow = ({ name, gender, age }) => {
 
         <div
             className="grid grid-cols-3 border-b border-stroke  hover:bg-orange-600 text-gray-500  hover:text-white font-medium rounded"
-        >{/* onClick={handleViewChild(id)} */}
+        >
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
                 <div className="flex-shrink-0 w-8">
                     <img src={imageURL} alt="Brand" />

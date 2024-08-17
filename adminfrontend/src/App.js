@@ -18,7 +18,8 @@ import Payment from "./components/Payment";
 
 import Inbox from "./components/Inbox";
 
-import Child from "./components/Child"
+import Child from "./components/Child";
+import { Toaster } from 'react-hot-toast';
 import Case from "./components/Case";
 import Myapplications from "./components/MoreInfo";
 
@@ -27,6 +28,7 @@ import Myapplications from "./components/MoreInfo";
 const ROLES = {
   'User': 1010,
   'Head': 1910,
+  'Staff': 5528,
   'SocialWorker': 2525,
   'Admin': 7788
 }
@@ -43,8 +45,8 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
 
-        
-        <Route path='/donateNow' element={<Payment/>}/>
+
+        <Route path='/donateNow' element={<Payment />} />
 
         <Route path='/myapplications' element={<Myapplications />} />
 
@@ -56,11 +58,11 @@ function App() {
             <Route path='/admin' element={<AdminDash />} />
             <Route path="/addOrphanage" element={<OrphanageForm />} />
           </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker]} />}>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
             <Route path='/orphanage/:id' element={<Orphanage />} />
             <Route path='/orphanage/:id/child/:childid' element={<Child />} />
           </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<UserDash />} />
           </Route>
 
@@ -68,32 +70,33 @@ function App() {
 
 
 
-        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.Head]}/>}>
-        
-        <Route path='/orphanage/:id' element={<Orphanage/>}/>
-        <Route path= '/orphanage/:id/edit' element={<UpdateAdminDash/>}/>
-        
-      </Route>
 
-      
-      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.Head]}/>}>
-        
-        <Route path='/case/:id' element={<Case/>}/>
-      </Route>
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Head]} />}>
 
-      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
-      <Route path='/userdash' element={<UserDash/>}/>
-      <Route path='/inbox' element={<Inbox/>}/>
-      <Route path='fosteringmain' element={<FosteringMain/>}/>
-      <Route path= 'fostering' element={<FosteringApplication/>}/>
-      <Route path= 'fostering2' element={<FosteringApplication2/>}/>
-      <Route path= 'fostering3' element={<FosteringApplication3/>}/>
-      </Route>
+            <Route path='/orphanage/:id' element={<Orphanage />} />
+            <Route path='/orphanage/:id/edit' element={<UpdateAdminDash />} />
+
+          </Route>
 
 
-</Route>
+          <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head]} />}>
 
-        
+            <Route path='/case/:id' element={<Case />} />
+          </Route>
+
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
+            <Route path='/userdash' element={<UserDash />} />
+            <Route path='/inbox' element={<Inbox />} />
+            <Route path='fosteringmain' element={<FosteringMain />} />
+            <Route path='fostering' element={<FosteringApplication />} />
+            <Route path='fostering2' element={<FosteringApplication2 />} />
+            <Route path='fostering3' element={<FosteringApplication3 />} />
+          </Route>
+
+
+        </Route>
+
+
 
 
 
@@ -113,6 +116,10 @@ function App() {
           <Route path=":orphanageId" element={<Orphanage />} />
         </Route> */}
       </Routes>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </main>
   );
 }

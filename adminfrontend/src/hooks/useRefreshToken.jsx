@@ -5,28 +5,32 @@ import { jwtDecode } from 'jwt-decode'
 
 export const useRefreshToken = () => {
 
-    const {setAuth} = useAuth()
+    const { setAuth } = useAuth()
 
-    const refresh =async ()=>{
+    const refresh = async () => {
 
-        const response = await axios.get('/refresh',{
-            withCredentials:true
+        const response = await axios.get('/refresh', {
+            withCredentials: true
         })
 
         const accessToken = response.data.accessToken;
 
-       
-      const decoded = jwtDecode(accessToken);
-      const roles = decoded?.UserInfo?.roles || [];
-      const username = decoded?.UserInfo?.username;
-      const userId = decoded?.UserInfo?.userId
 
-      
+        const decoded = jwtDecode(accessToken);
+        const roles = decoded?.UserInfo?.roles || [];
+        const username = decoded?.UserInfo?.username;
+        const userId = decoded?.UserInfo?.userId
 
-        setAuth(prev=>{
-          
 
-            return{...prev,accessToken:response.data.accessToken,roles:roles,username:username,userId:userId
+        const orphanageid = decoded?.UserInfo?.orphanageid;
+
+
+
+        setAuth(prev => {
+
+            return {
+                ...prev, accessToken: response.data.accessToken, roles: roles, username: username, orphanageid: orphanageid, userId: userId
+
 
             }
         })
@@ -36,7 +40,7 @@ export const useRefreshToken = () => {
 
     return refresh
 
-  
+
 }
 
 export default useRefreshToken
