@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AssignSocialWorkerModal } from './AssignSocialWorkerModal';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useLogout from '../hooks/useLogout';
+import ApplicationList from './ApplicationList';
+import ApplicationListAdmin from './ApplicationListAdmin';
 
 const AdminDash = () => {
 
@@ -301,9 +303,15 @@ const AdminDash = () => {
 
       </div>
 
+     
+      <ApplicationListAdmin/>
 
      
     </div>
+
+    
+
+   
   );
 };
 

@@ -90,8 +90,8 @@ export default function FosteringApplication3() {
               required
             >
               <option value="" disabled selected>Select gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
               <option value="any">Any</option>
             </select>
           </div>
