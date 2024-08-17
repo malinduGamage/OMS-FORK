@@ -15,6 +15,7 @@ import FosteringApplication from "./components/FosteringApplication";
 import FosteringApplication2 from "./components/FosteringApplication2";
 import FosteringApplication3 from "./components/FosteringApplication3";
 import FosteringMain from "./components/FosteringMain";
+import Payment from "./components/Payment";
 
 import Inbox from "./components/Inbox";
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
         <Route path='/moreinfo' element={<MoreInfo />} />
+        <Route path='/donateNow' element={<Payment/>}/>
 
         {/* Protected Routes */}
 
@@ -65,6 +67,7 @@ function App() {
         
         <Route path='/orphanage/:id' element={<Orphanage/>}/>
         <Route path= '/orphanage/:id/edit' element={<UpdateAdminDash/>}/>
+        
       </Route>
 
       <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
