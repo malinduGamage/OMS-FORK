@@ -86,7 +86,11 @@ const ApplicationModalAdmin = ({ application, closeModal }) => {
     </div>
     <div className="bg-white p-4 rounded-lg shadow-sm">
       <p className="font-medium text-gray-700">Monthly Income:</p>
-      <p className="text-gray-600">{application.monthlyincome.toFixed(2)}</p>
+      <p className="text-gray-600">
+    {application.monthlyincome !== null && application.monthlyincome !== undefined
+      ? application.monthlyincome.toFixed(2)
+      : "N/A"}
+  </p>
     </div>
     <div className="bg-white p-4 rounded-lg shadow-sm">
       <p className="font-medium text-gray-700">Home Address:</p>
