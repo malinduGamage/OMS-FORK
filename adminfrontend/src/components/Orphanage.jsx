@@ -1,38 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import orphanageImage from "../assets/images/orphanage1.jpg";
-import { orphanageTabs } from "../constants"; // Replace this with the correct path
 import Overview from "./Overview";
 import Children from "./Children";
-import { useNavigate } from "react-router-dom";
+import ApplicationList from "./ApplicationList";
+import CasesList from "./CasesList";
 import useLogout from "../hooks/useLogout";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+
+const ROLES = {
+  User: 1010,
+  Head: 1910,
+  SocialWorker: 2525,
+  Admin: 7788,
+};
 
 const Orphanage = () => {
+  const navigate = useNavigate();
+  const logout = useLogout();
+  const { auth } = useAuth();
+  const [selectedTab, setSelectedTab] = useState('Overview');
 
-  const navigate = useNavigate()
-  const logout = useLogout()
-  const [selectedTab, setSelectedTab] = useState(orphanageTabs[0].label);
+  
+  const orphanageTabs = useMemo(() => {
+    const baseTabs = [
+      { label: 'Overview' },
+      { label: 'Children' },
+      { label: 'Cases' }
+    ];
 
-  // Function to render the corresponding component based on the selected tab
+    if (auth.roles.includes(ROLES.Head)) {
+      baseTabs.splice(2, 0, { label: 'Applications' }); // Add 
+    }
+
+    return baseTabs;
+  }, [auth.roles]);
+
+  
   const renderTabContent = () => {
     switch (selectedTab) {
       case "Overview":
         return <Overview />;
       case "Children":
         return <Children />;
-      // Add cases for other tabs if needed
+      case "Applications":
+        return <ApplicationList />;
+      case "Cases":
+        return <CasesList />;
       default:
         return null;
     }
   };
 
-
   const signout = async () => {
     await logout();
-    navigate('/')
-  }
+    navigate('/');
+  };
 
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto">
       <div className="h-[50vh] relative">
         <div
           className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
@@ -71,14 +97,13 @@ const Orphanage = () => {
         </div>
 
         {/* Desktop tabs */}
-        <div className="hidden sm:block ">
+        <div className="hidden sm:block">
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex gap-6 justify-around" aria-label="Tabs">
               {orphanageTabs.map((tab) => (
                 <div
-
                   key={tab.label}
-                  className={`shrink-0 border-b-2 px-1 pb-4 font-semibold   ${selectedTab === tab.label
+                  className={`shrink-0 border-b-2 px-1 pb-4 font-semibold ${selectedTab === tab.label
                     ? "border-primary text-primary"
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                     }`}

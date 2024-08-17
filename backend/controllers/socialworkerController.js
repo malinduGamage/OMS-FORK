@@ -2,6 +2,52 @@ const db = require("../config/dbConn");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+
+
+const getAllSocialWorkers = async(req,res)=>{
+
+  try {
+
+    const {orphanageid} = req.query
+
+    const socialWorkerList = await prisma.socialworker.findMany({
+      where:{
+        orphanageid:orphanageid
+      },
+
+      include:{
+        users:{
+          select:{
+           
+            username:true,
+            email:true
+          }
+        }
+      }
+    })
+
+    res.json({
+      success:true,
+      socialWorkerList:socialWorkerList.map((sw)=>({
+        socialworkerid:sw.socialworkerid,
+        username:sw.users.username,
+        email:sw.users.email
+      }))
+    })
+    
+  } catch (error) {
+
+    console.error('Database query failed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching social workers.'
+    });
+
+
+    
+  }
+}
+
 const addSocialWorker = async (req, res) => {
   const { email, orphanageId } = req.body;
 
@@ -42,6 +88,8 @@ const addSocialWorker = async (req, res) => {
   }
 };
 
+
+
 const getOrphanage = async (req, res) => {
 
   const { userId } = req;
@@ -67,5 +115,5 @@ const getOrphanage = async (req, res) => {
 }
 
 module.exports = {
-  addSocialWorker, getOrphanage
+  addSocialWorker, getOrphanage,getAllSocialWorkers
 }

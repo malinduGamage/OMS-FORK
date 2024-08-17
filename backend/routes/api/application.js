@@ -1,3 +1,4 @@
+
 const express = require("express");
 const router = express.Router();
 
@@ -22,4 +23,15 @@ router
   router.route('/getchildren')
   .post(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),applicationController.getChildren)
 
+  router.route('/approve')
+  .get(verifyRoles(ROLES_LIST.Head),applicationController.getApprovedApplications)
+  .post(verifyRoles(ROLES_LIST.User),applicationController.addToApprovedList)
+
 module.exports = router;
+
+
+
+
+
+
+

@@ -15,7 +15,7 @@ const UserApplicationList = () => {
         const getAllApplications = async () => {
             try {
                 const response = await axiosPrivate.get('/application')
-                const filteredApplicationList = response.data.applicationList.filter((application) => application.userid !== auth.userId )
+                const filteredApplicationList = response.data.applicationList.filter((application) => application.userid === auth.userId )
                 setApplicationList(filteredApplicationList)
             } catch (error) {
                 console.error('Failed to fetch applications:', error)
@@ -31,37 +31,30 @@ const UserApplicationList = () => {
 
     return (
         <div>
-            <div className="overflow-x-auto px-10">
-                <table className="min-w-full bg-white border-b text-center">
-                    <thead className='text-primary'>
-                        <tr>
-                            <th className="py-2 px-4 border-b">Applicant Name</th>
-                            <th className="py-2 px-4 border-b">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {applicationList.map((application) => (
-                            <tr
-                                key={application.applicationid}
-                                onClick={application.status === 'Accepted' ? () => handleOpenModal(application) : null}
-                                className="cursor-pointer hover:bg-gray-100"
-                            >
-                                <td className="py-3 px-4 border-b">{application.username}</td>
-                                <td
-                                    className={`py-3 px-4 border-b ${
-                                        application.status === 'Accepted'
-                                            ? 'text-green-500'
-                                            : application.status === 'Rejected'
-                                            ? 'text-red-500'
-                                            : 'text-yellow-500'
-                                    }`}
-                                >
-                                    {application.status}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className=" px-10 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {applicationList.map((application) => (
+        <div
+            key={application.applicationid}
+            onClick={application.status === 'Accepted' ? () => handleOpenModal(application) : null}
+            className="p-4 bg-white shadow-lg rounded-lg cursor-pointer hover:bg-gray-100"
+        >
+            <p className="text-gray-500">{new Date(application.createdat).toLocaleDateString()}</p>
+            <p
+                className={`mt-2 text-lg font-semibold ${
+                    application.status === 'Accepted'
+                        ? 'text-green-500'
+                        : application.status === 'Rejected'
+                        ? 'text-red-500'
+                        : 'text-yellow-500'
+                }`}
+            >
+                {application.status}
+            </p>
+        </div>
+    ))}
+</div>
+
             </div>
             {showModal && selectedApplication && (
                 <UserApplicationModal

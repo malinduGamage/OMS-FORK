@@ -11,14 +11,12 @@ export default function FosteringMain() {
         <Link to="/fostering" className={`p-2 ${buttonClasses} z-0`}>Fostering Application</Link>
     </div>
     <div className="flex justify-center">
-        <Link to="/moreinfo" className={`p-2 ${buttonClasses} z-0`}>More Info</Link>
+        <Link to="/myapplications" className={`p-2 ${buttonClasses} z-0`}>Applications</Link>
     </div>
 
-    <div>
-      <h1>User applications</h1>
-      <UserApplicationList/>
 
-    </div>
+
+    
     </div>
   )
 }
