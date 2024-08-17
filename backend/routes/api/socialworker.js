@@ -10,5 +10,8 @@ router.route('/')
 .post(verifyRoles(ROLES_LIST.Admin),socialworkerController.addSocialWorker)
 .get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.SocialWorker),socialworkerController.getOrphanage)
 
+router.route('/all')
+.get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Head),socialworkerController.getAllSocialWorkers)
+
 
 module.exports = router

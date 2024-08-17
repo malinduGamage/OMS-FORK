@@ -8,6 +8,7 @@ import { AssignSocialWorkerModal } from './AssignSocialWorkerModal';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useLogout from '../hooks/useLogout';
 import ApplicationList from './ApplicationList';
+import ApplicationListAdmin from './ApplicationListAdmin';
 
 const AdminDash = () => {
 
@@ -227,7 +228,7 @@ const AdminDash = () => {
       </div>
 
      
-      <ApplicationList/>
+      <ApplicationListAdmin/>
 
      
     </div>

@@ -19,6 +19,8 @@ import FosteringMain from "./components/FosteringMain";
 import Inbox from "./components/Inbox";
 
 import Child from "./components/Child"
+import Case from "./components/Case";
+import Myapplications from "./components/MoreInfo";
 
 
 
@@ -40,7 +42,7 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/moreinfo' element={<MoreInfo />} />
+        <Route path='/myapplications' element={<Myapplications />} />
 
         {/* Protected Routes */}
 
@@ -61,10 +63,16 @@ function App() {
 
 
 
-        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker]}/>}>
+        <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.Head]}/>}>
         
         <Route path='/orphanage/:id' element={<Orphanage/>}/>
         <Route path= '/orphanage/:id/edit' element={<UpdateAdminDash/>}/>
+      </Route>
+
+      
+      <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.SocialWorker,ROLES.Head]}/>}>
+        
+        <Route path='/case/:id' element={<Case/>}/>
       </Route>
 
       <Route element={<RequireAuth allowedRoles={[ROLES.Head,ROLES.Head,ROLES.SocialWorker,ROLES.User]}/>} >
