@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import ApplicationModal from './ApplicationModal'
+import ApplicationModal from './ApplicationModalAdmin'
+import ApplicationModalAdmin from './ApplicationModalAdmin'
 
-const ApplicationList = () => {
+const ApplicationListAdmin = () => {
 
 
     const axiosPrivate = useAxiosPrivate()
@@ -71,7 +72,7 @@ const ApplicationList = () => {
 
 
     {showModal && selectedApplication && (
-        <ApplicationModal
+        <ApplicationModalAdmin
             application={selectedApplication}
             
             closeModal={() => setShowModal(false)}
@@ -81,4 +82,4 @@ const ApplicationList = () => {
   )
 }
 
-export default ApplicationList
+export default ApplicationListAdmin

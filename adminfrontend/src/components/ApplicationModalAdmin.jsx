@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
-const ApplicationModal = ({ application, closeModal }) => {
+const ApplicationModalAdmin = ({ application, closeModal }) => {
    
     const axiosPrivate = useAxiosPrivate();
 
@@ -64,4 +64,4 @@ const ApplicationModal = ({ application, closeModal }) => {
     );
 };
 
-export default ApplicationModal;
+export default ApplicationModalAdmin;
