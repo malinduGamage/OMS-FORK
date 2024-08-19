@@ -22,6 +22,7 @@ import Child from "./components/Child";
 import { Toaster } from 'react-hot-toast';
 import Case from "./components/Case";
 import Myapplications from "./components/MoreInfo";
+import UserCaseList from "./components/UserCaseList";
 
 
 
@@ -49,6 +50,8 @@ function App() {
         <Route path='/donateNow' element={<Payment />} />
 
         <Route path='/myapplications' element={<Myapplications />} />
+
+        <Route path='/mycases' element={<UserCaseList />} />
 
 
         {/* Protected Routes */}
@@ -79,7 +82,7 @@ function App() {
           </Route>
 
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head]} />}>
+          <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head,ROLES.User]} />}>
 
             <Route path='/case/:id' element={<Case />} />
           </Route>

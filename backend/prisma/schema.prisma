@@ -54,6 +54,7 @@ model cases {
   socialworkerid String       @db.Uuid
   parentid       String       @db.Uuid
   childid        String       @db.Uuid
+  documents      Json?
   child          child        @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
   users          users        @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker   socialworker @relation(fields: [socialworkerid], references: [socialworkerid], onDelete: NoAction, onUpdate: NoAction)
@@ -156,6 +157,12 @@ model users {
   request_request_senderTousers   request[]              @relation("request_senderTousers")
   socialworker                    socialworker?
   staff                           staff?
+}
+
+model broadcastmassages {
+  id      Int     @id @default(autoincrement())
+  message String
+  role    String? @db.VarChar
 }
 
 enum document_type {

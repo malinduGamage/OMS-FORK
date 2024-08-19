@@ -90,8 +90,79 @@ const createCase = async (req,res)=>{
     }
 }
 
+const getCaseById = async (req, res) => {
+    try {
+        const { caseid } = req.query;
+
+        const rawCaseDetails = await prisma.cases.findUnique({
+            where: {
+                caseid: caseid
+            },
+            include: {
+                child: true, 
+                users: true, 
+                socialworker: {
+                    include: {
+                        users: true 
+                    }
+                }
+            }
+        });
+        
+       
+        const caseItem = {
+            caseid: rawCaseDetails.caseid,
+            child: rawCaseDetails.child,
+            parent: rawCaseDetails.users, 
+            socialworker: rawCaseDetails.socialworker.users 
+        };
+        
+
+
+
+        res.status(200).json(caseItem);
+
+    } catch (error) {
+        console.error("Error fetching case details:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getUserCases = async (req, res) => {
+    const {userId} = req;
+
+    try {
+
+        
+
+        const userCases = await prisma.cases.findMany({
+            where: {
+                parentid: userId
+            },
+            select: {
+                
+                caseid:true,
+                
+            }
+        });
+
+        res.json({
+            success: true,
+            userCases: userCases
+        });
+        
+    } catch (error) {
+        console.error("Error fetching user cases:", error); // Log the error for debugging
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while fetching user cases."
+        });
+        
+    }
+}
 
 
 
 
-module.exports = {createCase , getAllCases}
+
+module.exports = {createCase , getAllCases,getCaseById,getUserCases}
