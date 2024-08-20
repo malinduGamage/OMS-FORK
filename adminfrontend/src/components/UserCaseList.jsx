@@ -2,15 +2,9 @@ import React, { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 
-
 const UserCaseList = () => {
-
-   
-   
- const axiosprivate = useAxiosPrivate()
-
- const navigate = useNavigate();
-
+    const axiosprivate = useAxiosPrivate();
+    const navigate = useNavigate();
     const [cases, setCases] = useState([]);
 
     useEffect(() => {
@@ -23,27 +17,49 @@ const UserCaseList = () => {
             }
         };
 
-       
-            getUserCases();
-     
-    }, []); 
+        getUserCases();
+    }, []);
 
     return (
-        <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+        <div className="p-6 ">
             {cases.length > 0 ? (
                 <ul className="space-y-4">
                     {cases.map((userCase, index) => (
                         <li
                             key={index}
-                            className="p-4 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-200 transition-transform transform hover:scale-105"
+                            className="p-6 bg-white border border-gray-300 rounded-lg shadow-lg hover:bg-gray-50 cursor-pointer"
                             onClick={() => navigate(`/case/${userCase.caseid}`, { replace: true })}
                         >
-                            {userCase.caseid}
+                            <div className=" mb-4">
+                                <h3 className="text-xl font-semibold text-gray-800">CaseID : {userCase.caseid}</h3>
+                               
+                            </div>
+                            <div className="flex justify-between items-center mb-4">
+                                <div>
+                                    <p className="text-md font-medium text-gray-700">Child Name:</p>
+                                    <p className="text-lg font-semibold text-gray-900">{userCase.childName}</p>
+                                    <p className="text-md font-medium text-gray-700">Social Worker:</p>
+                                    <p className="text-lg font-semibold text-gray-900">{userCase.socialWorkerName}</p>
+                                </div>
+                               
+                            </div>
+                            <div className="mb-4">
+                                <p className="text-md font-medium text-gray-700">Orphanage Name:</p>
+                                <p className="text-lg font-semibold text-gray-900">{userCase.orphanageName}</p>
+                            </div>
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={() => navigate(`/case/${userCase.caseid}`, { replace: true })}
+                                    className="px-4 py-2 bg-primary text-white rounded-md "
+                                >
+                                    View Details
+                                </button>
+                            </div>
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p className="text-gray-600">No cases found.</p>
+                <p className="text-gray-600 text-center">No cases found.</p>
             )}
         </div>
     );

@@ -18,6 +18,9 @@ router.route('/byId')
 router.route('/byUser')
 .get(verifyRoles(ROLES_LIST.User),caseController.getUserCases)
 
+router.route('/phase1')
+.put(verifyRoles(ROLES_LIST.Head,ROLES_LIST.SocialWorker),caseController.phase1Completed)
+
 module.exports = router
 
 
