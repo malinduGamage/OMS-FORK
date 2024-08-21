@@ -90,8 +90,124 @@ const createCase = async (req,res)=>{
     }
 }
 
+const getCaseById = async (req, res) => {
+    try {
+        const { caseid } = req.query;
+
+        const rawCaseDetails = await prisma.cases.findUnique({
+            where: {
+                caseid: caseid
+            },
+            include: {
+                child: true, 
+                users: true, 
+                socialworker: {
+                    include: {
+                        users: true 
+                    }
+                }
+            }
+        });
+        
+        if (!rawCaseDetails) {
+            return res.status(404).json({ message: "Case not found" });
+        }
+
+        const caseItem = {
+            caseid: rawCaseDetails.caseid,
+            phase1: rawCaseDetails.phase1,
+            phase2: rawCaseDetails.phase2,
+            child: rawCaseDetails.child,
+            parent: rawCaseDetails.users, 
+            socialworker: rawCaseDetails.socialworker.users 
+        };
+
+        res.status(200).json(caseItem);
+
+    } catch (error) {
+        console.error("Error fetching case details:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+const getUserCases = async (req, res) => {
+    const { userId } = req;
+
+    try {
+        const userCases = await prisma.cases.findMany({
+            where: {
+                parentid: userId
+            },
+            include: {
+                child: {
+                    select: {
+                        name: true
+                    }
+                },
+                socialworker: {
+                    select: {
+                        users: {
+                            select: {
+                                username: true
+                            }
+                        },
+                        orphanage: {
+                            select: {
+                                orphanagename: true
+                            }
+                        }
+                    }
+                },
+           
+            }
+        });
+
+        res.json({
+            success: true,
+            userCases: userCases.map(caseItem => ({
+                ...caseItem,
+                childName: caseItem.child.name,
+                socialWorkerName: caseItem.socialworker.users.username,
+                orphanageName: caseItem.socialworker.orphanage.orphanagename
+            }))
+        });
+
+    } catch (error) {
+        console.error("Error fetching user cases:", error); // Log the error for debugging
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while fetching user cases."
+        });
+    }
+}
+
+const phase1Completed = async (req, res) => {
+
+    try {
+
+        const {caseId}= req.query;
+        
+        const updatedCase = await prisma.cases.update({
+
+            where: {
+                caseid: caseId
+            },
+            data: {
+                phase1: "Completed"
+            }
+        })
+
+        res.status(200).json({message:"Phase 1 completed"})
+    } catch (error) {
+        console.log("Error updating case:", error);
+    res.status(500).json({ error: "Failed to update case." });
+    }
+
+}
 
 
 
 
-module.exports = {createCase , getAllCases}
+
+module.exports = {createCase , getAllCases,getCaseById,getUserCases,phase1Completed}

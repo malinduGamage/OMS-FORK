@@ -7,6 +7,8 @@ const { v4: uuid } = require('uuid')
 
 const cors = require('cors')
 
+const fileUpload = require('express-fileupload')
+
 const db = require('./config/dbConn')
 
 const corsOptions = require('./config/corsOptions')
@@ -22,13 +24,16 @@ app.use(cors(corsOptions))
 //handle images
 app.use(express.urlencoded({ extended: false }))
 
+app.use(fileUpload())
+
 app.use(express.json())
 
 app.use(cookieParser())
 
 //importing custom middleware
 
-const verifyJWT = require('./middleware/verifyJWT')
+const verifyJWT = require('./middleware/verifyJWT');
+
 
 
 
