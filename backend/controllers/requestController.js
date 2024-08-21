@@ -1,5 +1,5 @@
 const { addChild, updateChild, deleteChild } = require("./childController");
-const { moveFileInS3 } = require('./fileController');
+const { moveFileInS3, copyFileInS3, deleteFileInS3 } = require('./fileController');
 const { s3 } = require('../config/s3Client');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -153,7 +153,7 @@ const handleAddChildRequest = async (req, res) => {
         //check if request exists
         if (!request) return res.status(404).json({ 'success': false, message: 'Resource not found' });
         //check if request is of type create and entity is child
-        if (request.type !== 'create' || request.entity !== 'child' || request.status === 'approved' || request.status === 'rejected') return res.status(400).json({ 'success': false, message: 'Bad request' });
+        if (request.type !== 'create' || request.entity !== 'child' || request.status === 'approved' || request.status === 'rejected') return res.sendStatus(400);
         //check if user is authorized to handle request
         if (request.receiver !== req.userId) return res.status(401).json({ 'success': false, message: 'Unauthorized' });
         //if request is accepted, add child
@@ -173,8 +173,8 @@ const handleAddChildRequest = async (req, res) => {
 
             const data = await s3.listObjectsV2(params).promise();
             if (data.Contents.length > 0) {
-                const destinationKey = `child/${result.childid}.` + data.Contents[0].Key.split('.').pop();
-                moveFileInS3(data.Contents[0].Key, destinationKey);
+                const destinationKey = `child/photo/${result.childid}.` + data.Contents[0].Key.split('.').pop();
+                copyFileInS3(data.Contents[0].Key, destinationKey);
             }
 
         }
@@ -277,7 +277,7 @@ const handleEditChildRequest = async (req, res) => {
         //check if request exists
         if (!request) return res.sendStatus(404);
         //check if request is of type update and entity is child
-        if (request.type !== 'update' || request.entity !== 'child' || request.status === 'approved' || request.status === 'rejected') return res.status(400).json({ 'success': false, message: 'Bad request' });
+        if (request.type !== 'update' || request.entity !== 'child' || request.status === 'approved' || request.status === 'rejected') return res.sendStatus(400);
         //check if user is authorized to handle request
         if (request.receiver !== req.userId) return res.status(401).json({ 'success': false, message: 'Unauthorized' });
         //if request is accepted, update child
@@ -404,6 +404,18 @@ const handleDeleteChildRequest = async (req, res) => {
             const result = await deleteChild(req);
             if (result === 500) return res.status(result).json({ 'success': false, message: 'An error occurred' });
             else if (result === 404) return res.status(result).json({ 'success': false, message: 'Resource not found' });
+
+            //check if document exists in s3 bucket
+            const params = {
+                Bucket: process.env.S3_BUCKET,
+                Prefix: `child/photo/${req.body.childid}`, // Search for objects with this prefix
+                MaxKeys: 1 // Limit the number of keys returned
+            };
+
+            const data = await s3.listObjectsV2(params).promise();
+            if (data.Contents.length != 0) {
+                deleteFileInS3(data.Contents[0].Key);
+            }
         }
         //update request with response
         const updatedRequest = await prisma.request.update({
@@ -463,9 +475,6 @@ const createChildDocumentRequest = async (req, res) => {
                     childid: childid,
                     document_type: req.body.document_type,
                     document_name: req.body.document_name
-                },
-                select: {
-                    documentid: true
                 }
             });
 
@@ -488,7 +497,7 @@ const createChildDocumentRequest = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Request created successfully.',
-            data: document
+            data: result.document
         })
 
     } catch (error) {
@@ -512,35 +521,65 @@ const handleChildDocumentRequest = async (req, res) => {
                 requestid: requestid
             }
         })
+        const documentId = request.request;
+        console.log(request)
         //check if request exists
         if (!request) return res.status(404).json({ 'success': false, message: 'Resource not found' });
         //check if request is of type create and entity is document
-        if (request.type !== 'create' || request.entity !== 'document' || request.status === 'approved' || request.status === 'rejected') return res.status(400).json({ 'success': false, message: 'Bad request' });
+        if (request.type !== 'create' || request.entity !== 'Document' || request.status === 'approved' || request.status === 'rejected') return res.sendStatus(400);
         //check if user is authorized to handle request
         if (request.receiver !== req.userId) return res.status(401).json({ 'success': false, message: 'Unauthorized' });
         //if request is accepted, add document
         if (response === 'approved') {
             const document = await prisma.child_document.findUnique({
                 where: {
-                    documentid: request.request
+                    documentid: documentId
                 }
             })
-            if (!document) return res.status(404).json({ 'success': false, message: 'Resource not found' });
+            if (!document) {
+                await prisma.$transaction(async (prisma) => {
+                    prisma.request.delete({
+                        where: {
+                            requestid: requestid
+                        }
+                    })
+                    prisma.child_document.delete({
+                        where: {
+                            documentid: documentId
+                        }
+                    })
+                })
+                return res.status(404).json({ 'success': false, message: 'Resource not found' });
+            }
 
             //check if document exists in s3 bucket
             const params = {
                 Bucket: process.env.S3_BUCKET,
-                Prefix: `child/${documentid}`, // Search for objects with this prefix
+                Prefix: `child/document/${documentId}`, // Search for objects with this prefix
                 MaxKeys: 1 // Limit the number of keys returned
             };
 
-            const data = await client.listObjectsV2(params).promise();
+            const data = await s3.listObjectsV2(params).promise();
             if (data.Contents.length == 0) {
-                return res.status(404).json({ 'success': false, message: 'Resource not found' });
+                await prisma.$transaction(async (prisma) => {
+                    prisma.request.delete({
+                        where: {
+                            requestid: requestid
+                        }
+                    })
+                    prisma.child_document.delete({
+                        where: {
+                            documentid: documentId
+                        }
+                    })
+                })
+                return res.status(404).json({
+                    success: false,
+                    message: 'Resource not found'
+                });
             }
 
         }
-
         const result = await prisma.$transaction(async (prisma) => {
             const updatedRequest = await prisma.request.update({
                 where: {
@@ -557,8 +596,10 @@ const handleChildDocumentRequest = async (req, res) => {
                     created_at: true
                 }
             })
-
             await prisma.child_document.update({
+                where: {
+                    documentid: documentId
+                },
                 data: {
                     status: response
                 }
@@ -566,8 +607,8 @@ const handleChildDocumentRequest = async (req, res) => {
 
             return { updatedRequest };
         });
-
-        res.status(200).json({ 'success': true, data: result });
+        console.log(result)
+        res.status(200).json({ 'success': true, data: result.updatedRequest });
 
     } catch (error) {
         console.error('Database query failed:', error);

@@ -1,77 +1,40 @@
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { useEffect, useState } from 'react'
-import { ConfirmationModal } from './ConfirmationModal'
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-export const ChildPreview = ({ requests, setRequests, setVisibility, requestId }) => {
-    const [child, setChild] = useState({})
-    const [imageURL, setImageURL] = useState('')
-    const [confirmModalVisibility, setConfirmModalVisibility] = useState(false)
-    const axiosPrivate = useAxiosPrivate()
-    const [res, setRes] = useState('')
-    const [request, setRequest] = useState({})
-    const [pageLoading, setPageLoading] = useState(true)
+export const ChildPreview = ({ childId, setPreviewVisibility, setFileVisibility }) => {
 
-    console.log(requestId)
+    const [child, setChild] = useState({});
+    const [imageURL, setImageURL] = useState(null);
+    const axiosPrivate = useAxiosPrivate();
 
-    const handleResponse = async (response) => {
-
+    const getPhotoURL = async (childId) => {
         try {
-            let data
-            let updatedRequest
-            switch (request.type) {
-                case 'create':
-                    data = await axiosPrivate.put('/request/addChild', {
-                        requestid: requestId,
-                        response: response
-                    })
-                    updatedRequest = data.data.data
-                    console.log(updatedRequest)
-                    setRequests(requests.filter(request => request.requestid !== requestId).concat(updatedRequest))
-                    break;
-                case 'update':
-                    data = await axiosPrivate.put('/request/editChild', {
-                        requestid: requestId,
-                        response: response
-                    })
-                    updatedRequest = data.data.data
-                    setRequests(requests.filter(request => request.requestid !== requestId).concat(updatedRequest))
-                    break;
-                case 'delete':
-                    data = await axiosPrivate.put('/request/deleteChild', {
-                        requestid: requestId,
-                        response: response
-                    })
-                    updatedRequest = data.data.data
-                    setRequests(requests.filter(request => request.requestid !== requestId).concat(updatedRequest))
-                    break;
-                default:
-                    break;
+            const response = await axiosPrivate.get(`/file/childPhotoDownload/${childId}`);
+            if (!response.data.success) {
+                throw new Error(response.data.message)
             }
-
-            toast.success(`Request ${response} successfully`)
-        }
-        catch (error) {
-            toast.error(error.response.data)
-        } finally {
-            setVisibility(false)
+            if (response.data.URL) {
+                setImageURL(response.data.URL)
+            }
+        } catch (error) {
+            console.error('Failed to fetch photo:', error)
         }
     }
 
     useEffect(() => {
-        const getRequestData = async () => {
+        const getChildData = async (childId) => {
             try {
-                const response = await axiosPrivate.get(`/request/get/${requestId}`)
-                setChild(response.data.request.request)
-                setRequest(response.data.request)
-                setImageURL(`https://avatar.iran.liara.run/public/${response.data.request.request.gender === 'Male' ? 'boy' : 'girl'}?username=${response.data.request.request.name.split(' ').join('')}`)
-            }
-            catch (error) {
-                console.error('Failed to fetch child:', error)
+                console.log('childId : ', childId)
+                const response = await axiosPrivate.get(`/child/${childId}`);
+                setChild(response.data.child)
+                getPhotoURL(response.data.child.childid)
+            } catch (error) {
+                toast.error('Failed to fetch child:', error.message);
+                console.error("Failed to fetch child:", error);
             }
         }
-        getRequestData()
-        setPageLoading(false)
+        getChildData(childId)
     }, [])
 
     return (
@@ -80,8 +43,13 @@ export const ChildPreview = ({ requests, setRequests, setVisibility, requestId }
             <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 max-w-3xl">
 
                 <div className="flex justify-between items-center mb-3">
-                    <h1 className="text-lg font-bold text-gray-700 capitalize flex"> {request.type} profile Request </h1>
-                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setVisibility(false)}>Close</button>
+                    <h1 className="text-lg font-bold text-gray-700 capitalize flex"> {child.name}  </h1>
+                    <button
+                        className="px-2 py-1 bg-red-500 text-white rounded-md"
+                        onClick={() => {
+                            setFileVisibility(true)
+                            setPreviewVisibility(false)
+                        }}>Go Back</button>
                 </div>
                 <div className="overflow-y-auto max-h-[80vh]">
 
@@ -117,37 +85,8 @@ export const ChildPreview = ({ requests, setRequests, setVisibility, requestId }
                         </div>
 
                     </div>
-                    <div className="flex justify-end mt-4">
-                        <button
-                            onClick={() => {
-                                setRes('approved')
-                                setConfirmModalVisibility(true)
-                            }}
-                            className="mx-4 px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">
-                            Approve
-                        </button>
-                        <button
-                            onClick={() => {
-                                setRes('rejected')
-                                setConfirmModalVisibility(true)
-                            }}
-                            className="mx-4 px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">
-                            Reject
-                        </button>
-                    </div>
-
                 </div>
             </section>
-
-            {confirmModalVisibility &&
-                <ConfirmationModal
-                    head="Are you sure?" body={`Are you sure you want to ${res === 'approved' ? 'approve' : 'reject'} this request?`}
-                    setVisibility={setConfirmModalVisibility}
-                    handleConfirmation={() => {
-                        handleResponse(res)
-                        setConfirmModalVisibility(false)
-                    }}
-                />}
         </div >
     )
 }

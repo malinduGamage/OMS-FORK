@@ -21,11 +21,12 @@ export const ChildAddFormStep2 = ({ reqId, setFormVisibility }) => {
         if (response) {
             setFormVisibility(false);
         }
+        setConfirmModalVisibility(false);
 
     }
 
     const handleSubmit = async () => {
-        setConfirmModalVisibility(false);
+
         if (!file) {
             toast.error('Please select a file');
             return false;
@@ -40,7 +41,7 @@ export const ChildAddFormStep2 = ({ reqId, setFormVisibility }) => {
         }
 
         try {
-            const response = await axiosPrivate.get(`/file/childPhoto/${reqId}.${file.type.split('/')[1]}`); /********************** */
+            const response = await axiosPrivate.get(`/file/childPhotoUpload/${reqId}.${file.type.split('/')[1]}`); /********************** */
 
             if (!response.data.success) {
                 toast.error(response.data.message);

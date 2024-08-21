@@ -1,8 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { ChildPreview } from './ChildPreview'
+import { PDFView } from './PDFView'
+import toast from 'react-hot-toast'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
-export const RequestTable = ({ requests, setVisibility, setSelectedRequest, selectedRequest }) => {
+export const RequestTable = ({ requests, setChildVisibility, setSelectedRequest, selectedRequest, setFileVisibility }) => {
+
     useEffect(() => { console.log(requests) }, [requests])
+
+    const axiosPrivate = useAxiosPrivate()
+
+    const handleClick = async (request) => {
+        await setSelectedRequest(request)
+        switch (request.entity) {
+            case 'child':
+                setChildVisibility(true)
+                break;
+            case 'Document':
+                setFileVisibility(true)
+                break;
+            default:
+                break;
+        }
+    }
 
     return (
         <div>
@@ -51,10 +71,7 @@ export const RequestTable = ({ requests, setVisibility, setSelectedRequest, sele
                             </div>
                             <div className="m-auto">
                                 <button
-                                    onClick={() => {
-                                        setSelectedRequest(request)
-                                        setVisibility(true)
-                                    }}
+                                    onClick={() => handleClick(request)}
                                     className="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700">
                                     view
                                 </button>
@@ -63,7 +80,6 @@ export const RequestTable = ({ requests, setVisibility, setSelectedRequest, sele
                     ))}
                 </div>
             </div>
-
         </div>
     )
 }

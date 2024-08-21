@@ -4,6 +4,7 @@ const ROLES_LIST = require('../config/roles_list')
 
 const getChild = async (req, res) => {
     const childid = req.params.childid
+    console.log(childid)
 
     try {
         const child = await prisma.child.findUnique({

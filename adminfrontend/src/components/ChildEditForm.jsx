@@ -8,7 +8,7 @@ const GENDER_REGEX = /^(Male|Female)$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const COMMON_REGEX = /^[a-zA-Z0-9 ]{2,10}$/;
 
-const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageURL }) => {
+const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageURL, avatarPlaceHolder }) => {
     const axiosPrivate = useAxiosPrivate()
     const today = new Date().toISOString().split('T')[0];
     const dobFormatted = new Date(child.date_of_birth).toISOString().split('T')[0];
@@ -123,7 +123,7 @@ const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageU
                 <div className="overflow-y-auto max-h-[80vh]">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                            <img className="w-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL} alt="ERROR" />
+                            <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL ? imageURL : avatarPlaceHolder} alt="ERROR" />
                             <div className="col-span-1 sm:col-span-2 ">
                                 <label className="text-gray-700" htmlFor="name">Name of the child {!validName ? <span className='text-red-500 text-xs'>*invalid</span> : changedName ? <span className='text-green-500 text-xs'>valid</span> : <span className='text-blue-500 text-xs'>unchanged</span>}</label>
                                 <input value={name} onChange={(e) => { setName(e.target.value) }} id="name" type="text" className="block w-full px-3 py-1 mt-1 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-orange-500 focus:outline-none" />

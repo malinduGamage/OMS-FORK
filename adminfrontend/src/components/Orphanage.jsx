@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 const ROLES = {
   User: 1010,
   Head: 1910,
+  Staff: 5528,
   SocialWorker: 2525,
   Admin: 7788,
 };
@@ -35,7 +36,6 @@ const Orphanage = () => {
     if (auth.roles.includes(ROLES.Head)) {
       baseTabs.splice(2, 0, { label: 'Applications' }); // Add 
     }
-
     return baseTabs;
   }, [auth.roles]);
 
