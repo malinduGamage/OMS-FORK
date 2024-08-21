@@ -22,7 +22,7 @@ const Orphanage = () => {
   const logout = useLogout();
   const { auth } = useAuth();
   const [selectedTab, setSelectedTab] = useState('Overview');
-  const [type, setType] = useState('')
+  const [type, setType] = useState('');
 
   const orphanageTabs = useMemo(() => {
     const baseTabs = [
@@ -34,11 +34,10 @@ const Orphanage = () => {
     ];
 
     if (auth.roles.includes(ROLES.Head)) {
-      baseTabs.splice(2, 0, { label: 'Applications' }); // Add 
+      baseTabs.splice(2, 0, { label: 'Applications' }); // Add Applications tab
     }
     return baseTabs;
   }, [auth.roles]);
-
 
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -61,12 +60,11 @@ const Orphanage = () => {
 
   useEffect(() => {
     if (selectedTab === 'Sent Requests') {
-      setType('sent')
+      setType('sent');
     } else if (selectedTab === 'Received Requests') {
-      setType('received')
+      setType('received');
     }
-  }, [selectedTab])
-
+  }, [selectedTab]);
 
   const signout = async () => {
     await logout();
@@ -75,67 +73,69 @@ const Orphanage = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="h-[50vh] relative">
-        <div
-          className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
-          style={{
-            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)), url(${orphanageImage})`,
-          }}
-        ></div>
-        <div className="absolute bottom-20 left-5">
-          <h1 className="text-white font-bold text-3xl">
-            Somawathi Child Orphanage
-          </h1>
-
-          <button className="text-white" onClick={signout}>Sign Out</button>
+      {/* Fixed Navbar */}
+      <nav className='fixed top-0 left-0 right-0 h-[70px] bg-white border-b-2 border-gray-200 z-10'>
+        <div className='p-4 flex items-center justify-between'>
+          <a href="#">
+            <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-36' />
+          </a>
+          <ul className='flex space-x-6'>
+            <li>
+              <button className='p-2 text-primary font-semibold border-2 border-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-300' onClick={signout}>
+                Sign Out
+              </button>
+            </li>
+          </ul>
         </div>
-      </div>
+      </nav>
 
-      {/* Tab selection area */}
-      <div className="relative mt-10">
-        {/* Mobile dropdown */}
-        <div className="sm:hidden">
-          <label htmlFor="Tab" className="sr-only">
-            Tab
-          </label>
-          <select
-            id="Tab"
-            className="w-full rounded-md border-gray-200"
-            value={selectedTab}
-            onChange={(e) => setSelectedTab(e.target.value)}
-          >
-            {orphanageTabs.map((tab) => (
-              <option key={tab.label} value={tab.label}>
-                {tab.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Desktop tabs */}
-        <div className="hidden sm:block">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex gap-6 justify-around" aria-label="Tabs">
+      
+      <div className="pt-[60px]">
+        <div className="relative">
+          {/* Mobile dropdown */}
+          <div className="sm:hidden">
+            <label htmlFor="Tab" className="sr-only">
+              Tab
+            </label>
+            <select
+              id="Tab"
+              className="w-full rounded-md border-gray-200"
+              value={selectedTab}
+              onChange={(e) => setSelectedTab(e.target.value)}
+            >
               {orphanageTabs.map((tab) => (
-                <div
-                  key={tab.label}
-                  className={`shrink-0 border-b-2 px-1 pb-4 font-semibold ${selectedTab === tab.label
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                    }`}
-                  onClick={() => setSelectedTab(tab.label)}
-                  aria-current={selectedTab === tab.label ? "page" : undefined}
-                >
+                <option key={tab.label} value={tab.label}>
                   {tab.label}
-                </div>
+                </option>
               ))}
-            </nav>
+            </select>
           </div>
-        </div>
 
-        {/* Render tab content */}
-        <div className="mt-5">
-          {renderTabContent()}
+          <div className="lg:flex">
+            {/* Fixed side */}
+            <div className="hidden lg:block lg:w-[20%] lg:fixed lg:top-[100px] lg:left-0 lg:h-[calc(100vh-60px)] lg:overflow-y-auto">
+              <nav className="gap-6" aria-label="Tabs">
+                {orphanageTabs.map((tab) => (
+                  <div
+                    key={tab.label}
+                    className={`py-5 pl-5 border-y border-gray-200 font-semibold ${selectedTab === tab.label
+                      ? "text-primary"
+                      : "text-gray-500 hover:border-gray-300 hover:text-gray-700 hover:bg-gray-100"
+                      }`}
+                    onClick={() => setSelectedTab(tab.label)}
+                    aria-current={selectedTab === tab.label ? "page" : undefined}
+                  >
+                    {tab.label}
+                  </div>
+                ))}
+              </nav>
+            </div>
+
+            {/* Scrollable side */}
+            <div className="lg:ml-[20%] bg-gray-50 w-full h-[calc(100vh-80px)] overflow-y-auto">
+              {renderTabContent()}
+            </div>
+          </div>
         </div>
       </div>
     </div>

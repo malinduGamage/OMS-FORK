@@ -1,5 +1,7 @@
+const { json } = require("express");
 const db = require("../config/dbConn");
 const { PrismaClient } = require('@prisma/client');
+const { head } = require("../routes/api/orphanages");
 const prisma = new PrismaClient();
 
 const getAllOrphanage = async (req, res) => {
@@ -94,9 +96,48 @@ const getOrphanageByHead = async (req, res) => {
   }
 };
 
+const getOrphanageHead = async (req, res) => {
+  try {
+    const { orphanageid } = req.query;
+
+   
+    const orphanage = await prisma.orphanage.findUnique({
+      where: { orphanageid: orphanageid },
+      select: { headid: true }
+    });
+
+    if (!orphanage) {
+      return res.status(404).json({ error: 'Orphanage not found' });
+    }
+
+    
+    const headDetails = await prisma.users.findUnique({
+      where: { userid: orphanage.headid },
+      select: {
+        username: true,
+        email: true,
+        telno: true
+      }
+    });
+
+    if (!headDetails) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ headDetails });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 
 module.exports = {
   addOrphanage
   , getOrphanageByHead,
-  getAllOrphanage
+  getAllOrphanage,
+  getOrphanageHead
+  
 }
