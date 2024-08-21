@@ -63,6 +63,8 @@ app.use('/request', require('./routes/api/request'))
 
 app.use('/file', require('./routes/api/file'))
 
+app.use('/broadcast', require('./routes/api/broadcast')) 
+
 
 
 app.use ('/application',require('./routes/api/application'))

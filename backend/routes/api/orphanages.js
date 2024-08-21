@@ -19,6 +19,8 @@ router.route('/:id')
 router.route('/byHead')
     .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getOrphanageByHead)
 
+
+
 // router.route('/:id')
 // .delete(verifyRoles(ROLES_LIST.Admin),deleteOrphanageController.deleteOrphanage)
 

@@ -8,6 +8,7 @@ import useLogout from "../hooks/useLogout";
 import { Requests } from "./Requests";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 const ROLES = {
   User: 1010,
@@ -74,16 +75,18 @@ const Orphanage = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    
+    <div className="w-full mx-auto">
+      <Navbar />
       <div className="h-[50vh] relative">
         <div
-          className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+          className="absolute top-0 left-0 w-full h-full bg-center bg-cover"
           style={{
             backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)), url(${orphanageImage})`,
           }}
         ></div>
         <div className="absolute bottom-20 left-5">
-          <h1 className="text-white font-bold text-3xl">
+          <h1 className="text-3xl font-bold text-white">
             Somawathi Child Orphanage
           </h1>
 
@@ -100,7 +103,7 @@ const Orphanage = () => {
           </label>
           <select
             id="Tab"
-            className="w-full rounded-md border-gray-200"
+            className="w-full border-gray-200 rounded-md"
             value={selectedTab}
             onChange={(e) => setSelectedTab(e.target.value)}
           >
@@ -115,7 +118,7 @@ const Orphanage = () => {
         {/* Desktop tabs */}
         <div className="hidden sm:block">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px flex gap-6 justify-around" aria-label="Tabs">
+            <nav className="flex justify-around gap-6 -mb-px" aria-label="Tabs">
               {orphanageTabs.map((tab) => (
                 <div
                   key={tab.label}

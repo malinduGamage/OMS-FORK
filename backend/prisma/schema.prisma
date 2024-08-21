@@ -49,11 +49,21 @@ model approvedapplications {
   users         users       @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
 }
 
+model broadcastmassages {
+  id      Int     @id @default(autoincrement())
+  message String
+  role    String? @db.VarChar
+}
+
 model cases {
   caseid         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   socialworkerid String       @db.Uuid
   parentid       String       @db.Uuid
   childid        String       @db.Uuid
+  documents      Json?
+  phase1         String?      @default("Ongoing") @db.VarChar(255)
+  phase2         String?      @default("Ongoing") @db.VarChar(255)
+  phase3         String?      @default("Ongoing") @db.VarChar(255)
   child          child        @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
   users          users        @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker   socialworker @relation(fields: [socialworkerid], references: [socialworkerid], onDelete: NoAction, onUpdate: NoAction)
