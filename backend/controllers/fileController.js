@@ -359,7 +359,6 @@ const moveFileInS3 = async (sourceKey, destinationKey) => {
 
 }
 
-<<<<<<< HEAD
 /// Move a file from one location to another in S3
 const copyFileInS3 = async (sourceKey, destinationKey) => {
 
@@ -519,9 +518,6 @@ const getDocumentUrls = async (req, res) => {
     }
 };
 
-
-
-module.exports = { getChildPhotoUploadURL, getChildDocUploadURL, moveFileInS3 };
 module.exports = {
     moveFileInS3,
     copyFileInS3,

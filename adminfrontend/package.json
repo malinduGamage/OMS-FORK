@@ -21,11 +21,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
     "jwt-decode": "^4.0.0",
-<<<<<<< HEAD
-    "pdfjs-dist": "^3.11.174",
-=======
     "pdfjs-dist": "^4.5.136",
->>>>>>> 7440dd70b1b0e0f6c62b2c7e083f26de339ee9ab
     "query-string": "^9.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
