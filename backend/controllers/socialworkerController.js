@@ -20,7 +20,8 @@ const getAllSocialWorkers = async(req,res)=>{
           select:{
            
             username:true,
-            email:true
+            email:true,
+            telno:true
           }
         }
       }
@@ -31,7 +32,8 @@ const getAllSocialWorkers = async(req,res)=>{
       socialWorkerList:socialWorkerList.map((sw)=>({
         socialworkerid:sw.socialworkerid,
         username:sw.users.username,
-        email:sw.users.email
+        email:sw.users.email,
+        telno:sw.users.telno
       }))
     })
     

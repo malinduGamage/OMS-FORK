@@ -13,7 +13,7 @@ const ROLES = {
 const CasesList = () => {
   const navigate = useNavigate()
   const { id } = useParams();
-  const { auth} = useAuth(); // Assuming useAuth hook provides roles and userId
+  const { auth} = useAuth(); 
   const axiosPrivate = useAxiosPrivate();
   const [cases, setCases] = useState([]);
 
@@ -21,7 +21,7 @@ const CasesList = () => {
     const getAllCases = async () => {
       try {
         const response = await axiosPrivate.get(`/case?orphanageid=${id}`);
-        setCases(response.data.casesList);  // Ensure it matches the backend's response structure
+        setCases(response.data.casesList);  
       } catch (error) {
         console.error('Failed to fetch cases:', error);
       }
@@ -49,7 +49,7 @@ const CasesList = () => {
       <tbody>
         {filteredCases.map((caseItem) => (
           <tr
-          onClick={()=>navigate(`/case/${caseItem.caseid}`,{replace:true})}
+          onClick={()=>navigate(`/orphanage/${id}/case/${caseItem.caseid}`)}
             key={caseItem.caseid}
             className="cursor-pointer hover:bg-gray-100"
           >

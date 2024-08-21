@@ -23,6 +23,7 @@ import { Toaster } from 'react-hot-toast';
 import Case from "./components/Case";
 import Myapplications from "./components/MoreInfo";
 import UserCaseList from "./components/UserCaseList";
+import CaseSW from "./components/CaseSW";
 
 
 
@@ -64,7 +65,11 @@ function App() {
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
             <Route path='/orphanage/:id' element={<Orphanage />} />
             <Route path='/orphanage/:id/child/:childid' element={<Child />} />
+            
+            <Route path='/orphanage/:id/case/:caseId' element={<Case />} />
+
           </Route>
+          
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<UserDash />} />
           </Route>
@@ -84,7 +89,7 @@ function App() {
 
           <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head,ROLES.User]} />}>
 
-            <Route path='/case/:id' element={<Case />} />
+            <Route path='/case/:caseId' element={<Case />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >

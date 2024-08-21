@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const Case = () => {
-  const { id } = useParams();
+  const { caseId } = useParams();
   const axiosPrivate = useAxiosPrivate();
   const [caseDetails, setCaseDetails] = useState(null);
   const [isPhase1Open, setIsPhase1Open] = useState(false);
@@ -14,7 +14,7 @@ const Case = () => {
   useEffect(() => {
     const getCase = async () => {
       try {
-        const response = await axiosPrivate.get(`/case/byId?caseid=${id}`);
+        const response = await axiosPrivate.get(`/case/byId?caseid=${caseId}`);
         setCaseDetails(response.data);
       } catch (error) {
         console.error("Failed to fetch case:", error);
@@ -22,7 +22,7 @@ const Case = () => {
     };
 
     getCase();
-  }, [id, axiosPrivate]);
+  }, [caseId, axiosPrivate]);
 
   const togglePhase1 = () => {
     setIsPhase1Open((prevState) => !prevState);
@@ -73,7 +73,7 @@ const Case = () => {
           </button>
           {isPhase1Open && (
             <div className="p-4 bg-white">
-              <Phase1 caseId={id} caseDetails={caseDetails} />
+              <Phase1 caseId={caseId} caseDetails={caseDetails} />
             </div>
           )}
         </div>
