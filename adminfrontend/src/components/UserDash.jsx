@@ -14,7 +14,7 @@ const UserDash = () => {
       <div>
         <Navbar />
        <div className='flex flex-col justify-center w-full h-screen items-left'>
-          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Background Image" className="absolute inset-0 object-cover w-full h-full opacity-70" />
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCmDF0vUYnyS8DQ7rBWWfrYYWg408LBsqRxw&s" alt="Background Image" className="absolute inset-0 object-cover w-full h-full opacity-70" />
           <div className="relative z-10 px-4 mb-32 text-6xl text-black opacity-100 font-poppins ">
             LET’S BRIGHTEN THEIR LIVES
             <div className='mb-6 text-lg'>
