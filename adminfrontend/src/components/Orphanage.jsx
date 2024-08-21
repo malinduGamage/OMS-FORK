@@ -17,6 +17,7 @@ const ROLES = {
 };
 
 const Orphanage = () => {
+  
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
@@ -75,13 +76,13 @@ const Orphanage = () => {
     <div className="container mx-auto">
       {/* Fixed Navbar */}
       <nav className='fixed top-0 left-0 right-0 h-[70px] bg-white border-b-2 border-gray-200 z-10'>
-        <div className='p-4 flex items-center justify-between'>
+        <div className='flex items-center justify-between p-4'>
           <a href="#">
             <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-36' />
           </a>
           <ul className='flex space-x-6'>
             <li>
-              <button className='p-2 text-primary font-semibold border-2 border-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-300' onClick={signout}>
+              <button className='p-2 font-semibold transition-colors duration-300 border-2 rounded-md text-primary border-primary hover:bg-primary hover:text-white' onClick={signout}>
                 Sign Out
               </button>
             </li>
@@ -99,7 +100,7 @@ const Orphanage = () => {
             </label>
             <select
               id="Tab"
-              className="w-full rounded-md border-gray-200"
+              className="w-full border-gray-200 rounded-md"
               value={selectedTab}
               onChange={(e) => setSelectedTab(e.target.value)}
             >
