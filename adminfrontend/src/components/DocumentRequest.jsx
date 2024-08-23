@@ -5,41 +5,50 @@ import { PDFView } from './PDFView';
 import { ConfirmationModal } from './ConfirmationModal';
 import { ChildPreview } from './ChildPreview';
 
-export const DocumentRequest = ({ requests, setRequests, setFileVisibility, requestId, setChildId, childId, setPreviewVisibility }) => {
+export const DocumentRequest = ({ requests, setRequests, setFileVisibility, requestId, setChild, child, setPreviewVisibility }) => {
     const axiosPrivate = useAxiosPrivate();
     const [documentUrl, setDocumentUrl] = useState(null);
     const [res, setRes] = useState('');
     const [confirmModalVisibility, setConfirmModalVisibility] = useState(false)
+    const [documentData, setDocumentData] = useState(null); // add to UI
+    const [req, setReq] = useState(null);
 
     const getDocument = async (documentId) => {
         try {
-            const response = await axiosPrivate.get(`/file/childDocumentDownload/${documentId}`);
-            if (!response.data.success) {
-                throw new Error(response.data.message);
+            let response
+            console.log(req.type)
+            response = await axiosPrivate.get(`/file/tempDocument/${documentId}`);
+            if (response) {
+                setDocumentUrl(response.data.URL);
+                setChild(response.data.child);
+                setDocumentData(response.data.document);
             }
-            setDocumentUrl(response.data.URL); // Make sure this is a valid URL string
+            else throw new Error('Failed to fetch document');
+
         } catch (error) {
             toast.error('Failed to fetch document:', error.message);
         }
     };
 
-    const getDocumentData = async (documentId) => {
-        try {
-            console.log('datafunc : ', documentId)
-            const response = await axiosPrivate.get(`/document/${documentId}`);
-            console.log('child : ', response.data.document.childid)
-            setChildId(response.data.document.childid);
-        } catch (error) {
-            console.error('Failed to fetch child:', error);
-        }
-    }
-
     const handleResponse = async (response) => {
         try {
-            const data = await axiosPrivate.put('/request/childDocument/', {
-                requestid: requestId,
-                response: response
-            })
+            let data;
+            switch (req.type) {
+                case 'create':
+                    data = await axiosPrivate.put('/request/childDocument/', {
+                        requestid: requestId,
+                        response: response
+                    })
+                    break;
+                case 'delete':
+                    data = await axiosPrivate.put('/request/deleteChildDocument/', {
+                        requestid: requestId,
+                        response: response
+                    })
+                    break;
+                default:
+                    break;
+            }
             console.log(data.data)
             const updatedRequest = data.data.data
 
@@ -55,14 +64,20 @@ export const DocumentRequest = ({ requests, setRequests, setFileVisibility, requ
         const getRequestData = async () => {
             try {
                 const response = await axiosPrivate.get(`/request/get/${requestId}`);
-                getDocument(response.data.request.request);
-                getDocumentData(response.data.request.request);
+                setReq(response.data.request);
             } catch (error) {
                 console.error('Failed to fetch child:', error);
             }
         };
         getRequestData();
     }, [requestId, axiosPrivate]);
+
+    useEffect(() => {
+        if (req) {
+            console.log(req)
+            getDocument(req.entity_key);
+        }
+    }, [req])
 
     return (
         <div className="fixed inset-0 flex justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
@@ -90,7 +105,7 @@ export const DocumentRequest = ({ requests, setRequests, setFileVisibility, requ
                         Reject
                     </button>
                     <button
-                        disabled={!childId}
+                        disabled={!child}
                         onClick={() => {
                             setPreviewVisibility(true)
                             setFileVisibility(false)

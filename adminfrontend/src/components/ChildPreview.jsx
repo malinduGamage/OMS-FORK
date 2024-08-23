@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import AvatarPlaceHolder from '../assets/images/avatar_placeholder.jpg'
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-export const ChildPreview = ({ childId, setPreviewVisibility, setFileVisibility }) => {
+export const ChildPreview = ({ child, setPreviewVisibility, setFileVisibility }) => {
 
-    const [child, setChild] = useState({});
     const [imageURL, setImageURL] = useState(null);
     const axiosPrivate = useAxiosPrivate();
 
@@ -23,18 +23,7 @@ export const ChildPreview = ({ childId, setPreviewVisibility, setFileVisibility 
     }
 
     useEffect(() => {
-        const getChildData = async (childId) => {
-            try {
-                console.log('childId : ', childId)
-                const response = await axiosPrivate.get(`/child/${childId}`);
-                setChild(response.data.child)
-                getPhotoURL(response.data.child.childid)
-            } catch (error) {
-                toast.error('Failed to fetch child:', error.message);
-                console.error("Failed to fetch child:", error);
-            }
-        }
-        getChildData(childId)
+        getPhotoURL(child.childid)
     }, [])
 
     return (
@@ -54,7 +43,7 @@ export const ChildPreview = ({ childId, setPreviewVisibility, setFileVisibility 
                 <div className="overflow-y-auto max-h-[80vh]">
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                        <img className="w-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL} alt="ERROR" />
+                        <img className="w-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL ? imageURL : AvatarPlaceHolder} alt="ERROR" />
                         <div className="col-span-1 sm:col-span-2 lg:col-span-2">
                             <label className="text-gray-700" htmlFor="name">Name of the child </label>
                             <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.name}</label>

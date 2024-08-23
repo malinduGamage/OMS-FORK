@@ -67,7 +67,7 @@ export const ChildAddFormStep1 = ({ setTab, tabs, setReqId }) => {
         const data = {
             orphanageid: id,
             name,
-            date_of_birth: dateOfBirth,
+            date_of_birth: new Date(dateOfBirth),
             gender,
             religion,
             nationality,
@@ -77,11 +77,12 @@ export const ChildAddFormStep1 = ({ setTab, tabs, setReqId }) => {
 
         try {
             const response = await axiosPrivate.post('/request/addChild', data)
+            console.log(response.data)
             await setReqId(response.data.data.requestid)
             toast.success(response.data.message)
             return true
         } catch (error) {
-            toast.error(error.response.data)
+            toast.error(error.message)
         }
     }
 

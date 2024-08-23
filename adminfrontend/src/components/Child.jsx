@@ -53,7 +53,6 @@ const Child = () => {
   const { childid } = useParams('')
   const [imageURL, setImageURL] = useState('')
   const [basicInfo, setBasicInfo] = useState(getBasicInfo(child))
-  const [confirmModalVisibility, setConfirmModalVisibility] = useState(false)
   const [medicalDocuments, setMedicalDocuments] = useState([])
   const [legalDocuments, setLegalDocuments] = useState([])
   const [educationalDocuments, setEducationalDocuments] = useState([])
@@ -66,6 +65,9 @@ const Child = () => {
 
   const [viewDocument, setViewDocument] = useState('')
   const [docVisibility, setDocVisibility] = useState(false)
+  const [childDeleteVisibility, setChildDeleteVisibility] = useState(false)
+  const [documentDeleteVisibility, setDocumentDeleteVisibility] = useState(false)
+  const [selectedDoc, setSelectedDoc] = useState(null)
 
   const getChild = async () => {
     try {
@@ -78,24 +80,23 @@ const Child = () => {
 
   const deleteChild = async () => {
     try {
+      console.log(child)
       await axiosPrivate.post('/request/deleteChild', child)
 
       toast.success('Delete request logged successfully')
     } catch (error) {
       toast.error(error.response.data)
     } finally {
-      setConfirmModalVisibility(false)
+      setChildDeleteVisibility(false)
     }
   }
 
-  const getDocument = async () => {
+  const getDocuments = async () => {
     try {
       const response = await axiosPrivate.get(`/document/child/${childid}`);
-      if (!response.data.success) { throw new Error(response.data.message) }
-
-      setMedicalDocuments(response.data.documents.filter(doc => doc.document_type === 'medical' && doc.status !== 'rejected'))
-      setLegalDocuments(response.data.documents.filter(doc => doc.document_type === 'legal' && doc.status !== 'rejected'))
-      setEducationalDocuments(response.data.documents.filter(doc => doc.document_type === 'educational' && doc.status !== 'rejected'))
+      setMedicalDocuments(response.data.documents.filter(doc => doc.document_type === 'medical'))
+      setLegalDocuments(response.data.documents.filter(doc => doc.document_type === 'legal'))
+      setEducationalDocuments(response.data.documents.filter(doc => doc.document_type === 'educational'))
 
     } catch (error) {
       toast.error(error.message)
@@ -104,7 +105,7 @@ const Child = () => {
 
   const getDocumentLink = async (documentId) => {
     try {
-      const response = await axiosPrivate.get(`/file/childDocumentDownload/${documentId}`);
+      const response = await axiosPrivate.get(`/file/childDocument/${documentId}`);
       if (!response.data.success) {
         throw new Error(response.data.message)
       }
@@ -124,43 +125,19 @@ const Child = () => {
       }
       //log the request
       setLoading(true)
-      const request = await axiosPrivate.post('/request/childDocument', {
+      // get the signed url
+      const urlRequest = await axiosPrivate.get(`/file/childDocumentUpload/${childid}`)
+      //upload the file
+      await axios.put(urlRequest.data.URL, document)
+
+      const tempId = urlRequest.data.tempId
+      //if upload successful log the request
+      await axiosPrivate.post('/request/childDocument', {
         childid: childid,
         document_type: category,
         document_name: type,
-        document: document
+        tempId: tempId
       })
-
-      if (!request.data.success) {
-        throw new Error(request.data.message)
-      }
-
-      const documentId = request.data.data.documentid
-
-      // get the signed url
-      const urlRequest = await axiosPrivate.get(`/file/childDocumentUpload/${documentId}.${document.type.split('/')[1]}`)
-
-      if (!urlRequest.data.success) {
-        throw new Error(urlRequest.data.message)
-      }
-
-      //upload the file
-      await axios.put(urlRequest.data.URL, document)
-      //update the state
-      const newDoc = request.data.data
-      switch (category) {
-        case 'medical':
-          setMedicalDocuments([...medicalDocuments, newDoc])
-          break;
-        case 'legal':
-          setLegalDocuments([...legalDocuments, newDoc])
-          break;
-        case 'educational':
-          setEducationalDocuments([...educationalDocuments, newDoc])
-          break;
-        default:
-          break;
-      }
 
       setLoading(false)
       setConfirmVisibility(false)
@@ -170,6 +147,20 @@ const Child = () => {
     } catch (error) {
       setLoading(false)
       setConfirmVisibility(false)
+      toast.error(error.message)
+    }
+  }
+
+  const deleteDocument = async () => {
+    try {
+      console.log(selectedDoc)
+      await axiosPrivate.post(`/request/deleteChildDocument`,
+        {
+          documentId: selectedDoc
+        })
+      setSelectedDoc(null)
+      toast.success('Delete Request Created successfully')
+    } catch (error) {
       toast.error(error.message)
     }
   }
@@ -194,7 +185,7 @@ const Child = () => {
   useEffect(() => {
     const gc = async () => {
       await getChild()
-      getDocument()
+      getDocuments()
       getPhoto()
     }
     gc()
@@ -227,7 +218,7 @@ const Child = () => {
             <button onClick={() => setEditVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Edit Profile
             </button>
-            <button onClick={() => setConfirmModalVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+            <button onClick={() => setChildDeleteVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Delete Profile
             </button>
             <button onClick={() => setUploadVisibility(true)} className="my-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
@@ -279,23 +270,20 @@ const Child = () => {
                 <tbody >
                   {legalDocuments.map(doc => (
                     <tr key={doc.documentid} className=" border-neutral-200 border-b">
-                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left"><Link >
+                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left">
                         <span
                           onClick={() => {
-                            if (doc.status === 'approved') {
-                              setDocVisibility(true)
-                              getDocumentLink(doc.documentid)
-                            }
+                            setDocVisibility(true)
+                            getDocumentLink(doc.documentid)
                           }}
-                          className={`text-blue-400 hover:text-blue-600 ${doc.status !== 'approved' ? "text-slate-400 hover:text-slate-400" : ""}`}>{doc.document_name}</span></Link></td>
-                      <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
-                        {doc.status === 'approved' ?
-                          <span className='rounded bg-green-400 py-1 px-3 font-bold text-green-800 text-xs'>{doc.status}</span>
-                          : <span className='rounded bg-blue-400 py-1 px-3 font-bold text-blue-800 text-xs'>{doc.status}</span>}
-                      </td>
+                          className={`text-blue-400 hover:text-blue-600`}>{doc.document_name}</span></td>
+
                       <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
                         <button
-                          disabled={!(doc.status === 'approved')}
+                          onClick={() => {
+                            setSelectedDoc(doc.documentid)
+                            setDocumentDeleteVisibility(true)
+                          }}
                           className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400 disabled:text-black">
                           Delete
                         </button>
@@ -310,24 +298,21 @@ const Child = () => {
                 <tbody >
                   {medicalDocuments.map(doc => (
                     <tr key={doc.documentid} className=" border-neutral-200 border-b">
-                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left"><Link >
+                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left">
                         <span
                           onClick={() => {
-                            if (doc.status === 'approved') {
-                              setDocVisibility(true)
-                              getDocumentLink(doc.documentid)
-                            }
+                            setDocVisibility(true)
+                            getDocumentLink(doc.documentid)
                           }}
-                          className={`text-blue-400 hover:text-blue-600 ${doc.status !== 'approved' ? "text-slate-400 hover:text-slate-400" : ""}`}>{doc.document_name}</span></Link></td>
-                      <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
-                        {doc.status === 'approved' ?
-                          <span className='rounded bg-green-400 py-1 px-3 font-bold text-green-800 text-xs'>{doc.status}</span>
-                          : <span className='rounded bg-blue-400 py-1 px-3 font-bold text-blue-800 text-xs'>{doc.status}</span>}
-                      </td>
+                          className={`text-blue-400 hover:text-blue-600`}>{doc.document_name}</span></td>
+
                       <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
                         <button
-                          disabled={!(doc.status === 'approved')}
-                          className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400  disabled:text-black">
+                          onClick={() => {
+                            setSelectedDoc(doc.documentid)
+                            setDocumentDeleteVisibility(true)
+                          }}
+                          className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400 disabled:text-black">
                           Delete
                         </button>
                       </td>
@@ -341,23 +326,20 @@ const Child = () => {
                 <tbody >
                   {educationalDocuments.map(doc => (
                     <tr key={doc.documentid} className=" border-neutral-200 border-b">
-                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left"><Link >
+                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left">
                         <span
                           onClick={() => {
-                            if (doc.status === 'approved') {
-                              setDocVisibility(true)
-                              getDocumentLink(doc.documentid)
-                            }
+                            setDocVisibility(true)
+                            getDocumentLink(doc.documentid)
                           }}
-                          className={`text-blue-400 hover:text-blue-600 ${doc.status !== 'approved' ? "text-slate-400 hover:text-slate-400" : ""}`}>{doc.document_name}</span></Link></td>
-                      <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
-                        {doc.status === 'approved' ?
-                          <span className='rounded bg-green-400 py-1 px-3 font-bold text-green-800 text-xs'>{doc.status}</span>
-                          : <span className='rounded bg-blue-400 py-1 px-3 font-bold text-blue-800 text-xs'>{doc.status}</span>}
-                      </td>
+                          className={`text-blue-400 hover:text-blue-600`}>{doc.document_name}</span></td>
+
                       <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
                         <button
-                          disabled={!(doc.status === 'approved')}
+                          onClick={() => {
+                            setSelectedDoc(doc.documentid)
+                            setDocumentDeleteVisibility(true)
+                          }}
                           className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400 disabled:text-black">
                           Delete
                         </button>
@@ -366,8 +348,6 @@ const Child = () => {
                   ))}
                 </tbody>
               </table>
-
-
             </div>
           </div>
         </div>
@@ -375,7 +355,8 @@ const Child = () => {
       {loading && <LoadingAnimation />}
       {uploadFormVisibility ? <DocumentUploadForm setUploadVisibility={setUploadVisibility} category={category} setCategory={setCategory} type={type} setType={setType} document={document} setDocument={setDocument} uploadDocument={uploadDocument} /> : null}
       {editFormVisibility ? <ChildEditForm setEditVisibility={setEditVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} avatarPlaceHolder={AvatarPlaceHolder} /> : null}
-      {confirmModalVisibility ? <ConfirmationModal head='Delete Child' body='Are you sure you want to create a delete child request?' handleConfirmation={deleteChild} setVisibility={setConfirmModalVisibility} /> : null}
+      {childDeleteVisibility ? <ConfirmationModal head='Delete Child' body='not implemented yet' handleConfirmation={() => setChildDeleteVisibility(false)} setVisibility={setChildDeleteVisibility} /> : null}
+      {documentDeleteVisibility ? <ConfirmationModal head='Delete Document' body='Are you sure you want to create a delete document request?' handleConfirmation={deleteDocument} setVisibility={setDocumentDeleteVisibility} /> : null}
       {docVisibility &&
         <div className="fixed inset-0 flex justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
           <section className="px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 w-[80vw]">

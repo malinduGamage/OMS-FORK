@@ -16,7 +16,7 @@ export const RequestTable = ({ requests, setChildVisibility, setSelectedRequest,
             case 'child':
                 setChildVisibility(true)
                 break;
-            case 'Document':
+            case 'document':
                 setFileVisibility(true)
                 break;
             default:

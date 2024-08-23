@@ -12,7 +12,7 @@ export const Requests = ({ type }) => {
     const [requests, setRequests] = useState([])
     // const { auth } = useAuth();
     // const [role, setRole] = useState(auth?.role)
-    const [childId, setChildId] = useState(null)
+    const [child, setChild] = useState(null)
     const [childVisibility, setChildVisibility] = useState(false)
     const [fileVisibility, setFileVisibility] = useState(false)
     const [previewVisibility, setPreviewVisibility] = useState(false)
@@ -65,13 +65,13 @@ export const Requests = ({ type }) => {
                     setRequests={setRequests}
                     setFileVisibility={setFileVisibility}
                     requestId={selectedRequest.requestid}
-                    setChildId={setChildId}
-                    childId={childId}
+                    setChild={setChild}
+                    child={child}
                     setPreviewVisibility={setPreviewVisibility} />
                 : null}
             {previewVisibility ?
                 <ChildPreview
-                    childId={childId}
+                    child={child}
                     setPreviewVisibility={setPreviewVisibility}
                     setFileVisibility={setFileVisibility} />
                 : null}

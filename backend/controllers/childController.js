@@ -72,16 +72,7 @@ const addChild = async (req) => {
 
     try {//database call
         const newChild = await prisma.child.create({
-            data: {
-                orphanageid: orphanageid,
-                name: name,
-                date_of_birth: new Date(date_of_birth),
-                gender: gender,
-                nationality: nationality,
-                religion: religion,
-                medicaldetails: medicaldetails,
-                educationaldetails: educationaldetails
-            }
+            data: req.body
         })
         //sending response
         return {
@@ -146,6 +137,16 @@ const deleteChild = async (req) => {
         if (!child) return 404;
         //check if user is authorized to delete child
         if ((!req.orphanageid) || (child.orphanageid !== req.orphanageid)) return 401;
+
+        const documents = await prisma.child_document.findMany({
+            where: {
+                childid: childid
+            }
+        })
+
+        for (let i = 0; i < documents.length; i++) {
+            deleteFileInS3(`child/document/${documents[i].documentid}.pdf`);
+        }
 
         await prisma.child.delete({
             where: {

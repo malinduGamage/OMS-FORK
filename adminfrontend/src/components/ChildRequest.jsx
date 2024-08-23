@@ -30,7 +30,6 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
     }
 
     const handleResponse = async (response) => {
-
         try {
             let data
             let updatedRequest
@@ -84,9 +83,9 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
         const getRequestData = async () => {
             try {
                 const response = await axiosPrivate.get(`/request/get/${requestId}`)
-                setChild(response.data.request.request)
+                console.log(response.data.data)
+                setChild(response.data.data)
                 setRequest(response.data.request)
-
             }
             catch (error) {
                 console.error('Failed to fetch child:', error)
@@ -109,7 +108,7 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
                 <div className="overflow-y-auto max-h-[80vh]">
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                        <img className="w-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL} alt="ERROR" />
+                        <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL} alt="ERROR" />
                         <div className="col-span-1 sm:col-span-2 lg:col-span-2">
                             <label className="text-gray-700" htmlFor="name">Name of the child </label>
                             <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.name}</label>
