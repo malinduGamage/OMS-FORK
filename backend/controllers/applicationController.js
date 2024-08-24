@@ -50,7 +50,7 @@ const createApplication = async (req, res) => {
         agerange: ageRange,
         firstname: firstname,
         lastname: lastname,
-        dob: dobISO, // Pass the ISO string
+        dob: dobISO, 
         nic: nic,
         occupation: occupation,
         nationality: nationality,

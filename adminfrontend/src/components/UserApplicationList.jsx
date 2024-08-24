@@ -22,7 +22,7 @@ const UserApplicationList = () => {
             }
         }
         getAllApplications()
-    }, [axiosPrivate, auth.userId])
+    }, [ auth.userId])
 
     const handleOpenModal = (application) => {
         setSelectedApplication(application)
