@@ -21,7 +21,6 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
             <div className='bg-white rounded p-5 shadow-lg w-1/3'>
                 <h2 className='text-xl font-bold mb-4'>Assign {type}</h2>
                 <label className='block mb-2'>{type} Email:</label>
-
                 <input
                     type='email'
                     value={email}
@@ -44,13 +43,13 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
                 <div className='flex justify-end'>
                     <button
                         onClick={closeModal}
-                        className='px-4 py-2 mr-4 bg-gray-300 rounded'
+                        className='mr-4 px-4 py-2 bg-gray-300 rounded'
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className='px-4 py-2 text-white rounded bg-primary'
+                        className='px-4 py-2 bg-primary text-white rounded'
                     >
                         Assign
                     </button>

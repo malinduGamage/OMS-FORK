@@ -18,7 +18,7 @@ const ROLES = {
 };
 
 const Orphanage = () => {
-  
+
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
@@ -33,7 +33,10 @@ const Orphanage = () => {
       { label: 'Requests' }
     ];
 
-    if (auth.roles.includes(ROLES.Head)) {
+    if (auth.roles.includes(ROLES.Admin)) {
+      baseTabs.splice(1, 3);
+    }
+    else if (auth.roles.includes(ROLES.Head)) {
       baseTabs.splice(2, 0, { label: 'Applications' }); // Add Applications tab
       setType('received');
     }
@@ -41,7 +44,7 @@ const Orphanage = () => {
       setType('sent');
     }
     else {
-      baseTabs.splice(0, 4, { label: 'Cases' }); // Add Applications tab
+      baseTabs.splice(0, 4, { label: 'Cases' }); // Add Cases tab
       setSelectedTab('Cases');
     }
     return baseTabs;

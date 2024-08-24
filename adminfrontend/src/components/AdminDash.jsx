@@ -17,8 +17,6 @@ import { AdminAssign } from './AdminAssign';
 import ApplicationListAdmin from './ApplicationListAdmin';
 import { AdminOverView } from './AdminOverView';
 
-import BroadcastMsg from "./BroadcastMsg";
-
 const AdminDash = () => {
 
   const baseTabs = [
