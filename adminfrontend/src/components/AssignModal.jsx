@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit }) => {
+export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, type }) => {
 
     const [email, setEmail] = useState('')
     const [selectedOrphanageId, setSelectedOrphanageId] = useState('')
@@ -19,8 +19,8 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit }) 
     return (
         <div className='fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center'>
             <div className='bg-white rounded p-5 shadow-lg w-1/3'>
-                <h2 className='text-xl font-bold mb-4'>Assign Social Worker</h2>
-                <label className='block mb-2'>Social Worker Email:</label>
+                <h2 className='text-xl font-bold mb-4'>Assign {type}</h2>
+                <label className='block mb-2'>{type} Email:</label>
                 <input
                     type='email'
                     value={email}
