@@ -72,7 +72,7 @@ const Case = () => {
             />
           </button>
           {isPhase1Open && (
-            <div className="p-4 bg-white">
+            <div className="px-10 py-5 bg-white">
               <Phase1 caseId={caseId} caseDetails={caseDetails} />
             </div>
           )}

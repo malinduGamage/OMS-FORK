@@ -15,7 +15,7 @@ const UserApplicationList = () => {
         const getAllApplications = async () => {
             try {
                 const response = await axiosPrivate.get('/application')
-                const filteredApplicationList = response.data.applicationList.filter((application) => application.userid === auth.userId )
+                const filteredApplicationList = response.data.applicationList.filter((application) => application.userid == auth.userId )
                 setApplicationList(filteredApplicationList)
             } catch (error) {
                 console.error('Failed to fetch applications:', error)
