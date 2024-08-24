@@ -7,8 +7,12 @@ import Fostering from "../assets/images/fostering.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import logo from '../assets/images/logo.png'
+import useAuth from "../hooks/useAuth";
 
 const UserDash = () => {
+
+  const {auth} = useAuth();
+
   const buttonClasses =
     "focus:outline-none text-black bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 rounded-lg text-2xl px-5 py-2.5 me-2 mb-2 dark:focus:ring-orange-800";
   const Orphanages = orphanageList.map(
@@ -39,6 +43,9 @@ const UserDash = () => {
             <p className="mt-4 text-right text-xl text-white font-serif italic">
               - Oprah Winfrey
             </p>
+
+            
+
           </div>
         </div>
       </div>
