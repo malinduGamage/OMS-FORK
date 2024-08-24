@@ -12,12 +12,13 @@ import { useNavigate } from "react-router-dom";
 const ROLES = {
   User: 1010,
   Head: 1910,
+  Staff: 5528,
   SocialWorker: 2525,
   Admin: 7788,
 };
 
 const Orphanage = () => {
-  
+
   const navigate = useNavigate();
   const logout = useLogout();
   const { auth } = useAuth();
@@ -29,14 +30,23 @@ const Orphanage = () => {
       { label: 'Overview' },
       { label: 'Children' },
       { label: 'Cases' },
-      { label: 'Sent Requests' },
-      { label: 'Received Requests' }
+      { label: 'Requests' }
     ];
 
-    if (auth.roles.includes(ROLES.Head)) {
-      baseTabs.splice(2, 0, { label: 'Applications' }); // Add Applications tab
+    if (auth.roles.includes(ROLES.Admin)) {
+      baseTabs.splice(1, 3);
     }
-
+    else if (auth.roles.includes(ROLES.Head)) {
+      baseTabs.splice(2, 0, { label: 'Applications' }); // Add Applications tab
+      setType('received');
+    }
+    else if (auth.roles.includes(ROLES.Staff)) {
+      setType('sent');
+    }
+    else {
+      baseTabs.splice(0, 4, { label: 'Cases' }); // Add Cases tab
+      setSelectedTab('Cases');
+    }
     return baseTabs;
   }, [auth.roles]);
 
@@ -46,9 +56,7 @@ const Orphanage = () => {
         return <Overview />;
       case "Children":
         return <Children />;
-      case "Sent Requests":
-        return <Requests type={type} />;
-      case "Received Requests":
+      case "Requests":
         return <Requests type={type} />;
       case "Applications":
         return <ApplicationList />;
@@ -59,13 +67,7 @@ const Orphanage = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedTab === 'Sent Requests') {
-      setType('sent');
-    } else if (selectedTab === 'Received Requests') {
-      setType('received');
-    }
-  }, [selectedTab]);
+
 
   const signout = async () => {
     await logout();
@@ -90,7 +92,7 @@ const Orphanage = () => {
         </div>
       </nav>
 
-      
+
       <div className="pt-[60px]">
         <div className="relative">
           {/* Mobile dropdown */}

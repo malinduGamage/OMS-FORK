@@ -1,11 +1,15 @@
 // Child.js
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import axios from 'axios';
 import ChildEditForm from './ChildEditForm';
 import DocumentUploadForm from './DocumentUploadForm';
 import toast from 'react-hot-toast';
 import { ConfirmationModal } from './ConfirmationModal';
+import LoadingAnimation from './LoadingAnimation';
+import AvatarPlaceHolder from '../assets/images/avatar_placeholder.jpg'
+import { PDFView } from './PDFView';
 
 const Child = () => {
 
@@ -49,13 +53,26 @@ const Child = () => {
   const { childid } = useParams('')
   const [imageURL, setImageURL] = useState('')
   const [basicInfo, setBasicInfo] = useState(getBasicInfo(child))
-  const [confirmModalVisibility, setConfirmModalVisibility] = useState(false)
+  const [medicalDocuments, setMedicalDocuments] = useState([])
+  const [legalDocuments, setLegalDocuments] = useState([])
+  const [educationalDocuments, setEducationalDocuments] = useState([])
+
+  //for document upload
+  const [category, setCategory] = useState()
+  const [type, setType] = useState()
+  const [document, setDocument] = useState()
+  const [loading, setLoading] = useState(false);
+
+  const [viewDocument, setViewDocument] = useState('')
+  const [docVisibility, setDocVisibility] = useState(false)
+  const [childDeleteVisibility, setChildDeleteVisibility] = useState(false)
+  const [documentDeleteVisibility, setDocumentDeleteVisibility] = useState(false)
+  const [selectedDoc, setSelectedDoc] = useState(null)
 
   const getChild = async () => {
     try {
       const response = await axiosPrivate.get(`/child/${childid}`);
       setChild(response.data.child)
-      setImageURL(`https://avatar.iran.liara.run/public/${response.data.child.gender === 'Male' ? 'boy' : 'girl'}?username=${response.data.child.name.split(' ').join('')}`)
     } catch (error) {
       console.error("Failed to fetch child:", error);
     }
@@ -63,23 +80,119 @@ const Child = () => {
 
   const deleteChild = async () => {
     try {
+      console.log(child)
       await axiosPrivate.post('/request/deleteChild', child)
 
       toast.success('Delete request logged successfully')
     } catch (error) {
       toast.error(error.response.data)
     } finally {
-      setConfirmModalVisibility(false)
+      setChildDeleteVisibility(false)
     }
   }
+
+  const getDocuments = async () => {
+    try {
+      const response = await axiosPrivate.get(`/document/child/${childid}`);
+      setMedicalDocuments(response.data.documents.filter(doc => doc.document_type === 'medical'))
+      setLegalDocuments(response.data.documents.filter(doc => doc.document_type === 'legal'))
+      setEducationalDocuments(response.data.documents.filter(doc => doc.document_type === 'educational'))
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const getDocumentLink = async (documentId) => {
+    try {
+      const response = await axiosPrivate.get(`/file/childDocument/${documentId}`);
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+      setViewDocument(response.data.URL)
+    } catch (error) {
+      console.error('Failed to fetch document:', error.message)
+      toast.error('Failed to fetch document:', error.message)
+    }
+  }
+
+  //upload flow
+  const uploadDocument = async (setConfirmVisibility) => {
+    try {
+
+      if (document.size > 1024 * 1024 * 10) {
+        throw new Error('File size should not exceed 10MB')
+      }
+      //log the request
+      setLoading(true)
+      // get the signed url
+      const urlRequest = await axiosPrivate.get(`/file/childDocumentUpload/${childid}`)
+      //upload the file
+      await axios.put(urlRequest.data.URL, document)
+
+      const tempId = urlRequest.data.tempId
+      //if upload successful log the request
+      await axiosPrivate.post('/request/childDocument', {
+        childid: childid,
+        document_type: category,
+        document_name: type,
+        tempId: tempId
+      })
+
+      setLoading(false)
+      setConfirmVisibility(false)
+      setUploadVisibility(false)
+      toast.success('File uploaded successfully');
+
+    } catch (error) {
+      setLoading(false)
+      setConfirmVisibility(false)
+      toast.error(error.message)
+    }
+  }
+
+  const deleteDocument = async () => {
+    try {
+      console.log(selectedDoc)
+      await axiosPrivate.post(`/request/deleteChildDocument`,
+        {
+          documentId: selectedDoc
+        })
+      setSelectedDoc(null)
+      toast.success('Delete Request Created successfully')
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const getPhoto = async () => {
+    try {
+      const response = await axiosPrivate.get(`/file/childPhotoDownload/${childid}`);
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+      setImageURL(response.data.URL)
+    } catch (error) {
+      console.error('Failed to fetch photo:', error)
+    }
+  }
+
   useEffect(() => {
     console.log('setBasic')
     setBasicInfo(getBasicInfo(child))
   }, [child]);
 
   useEffect(() => {
-    getChild()
+    const gc = async () => {
+      await getChild()
+      getDocuments()
+      getPhoto()
+    }
+    gc()
+
   }, []);
+
+
 
   return (
     <div className='mx-auto my-5 w-2/3'>
@@ -89,7 +202,7 @@ const Child = () => {
           Back
         </button>
         <div className='lg:w-1/3 flex justify-center'>
-          <img className="w-64 my-auto p-10 rounded-full md:rounded-full" src={imageURL} alt="ERROR" />
+          <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full" src={imageURL ? imageURL : AvatarPlaceHolder} alt="ERROR" />
         </div>
         <div className="p-6 my-auto text-center lg:text-left lg:w-2/3">
           <h5 className="block mb-2 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
@@ -105,7 +218,7 @@ const Child = () => {
             <button onClick={() => setEditVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Edit Profile
             </button>
-            <button onClick={() => setConfirmModalVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
+            <button onClick={() => setChildDeleteVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Delete Profile
             </button>
             <button onClick={() => setUploadVisibility(true)} className="my-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
@@ -147,19 +260,114 @@ const Child = () => {
 
         <div>
           <div className="p-6 m-auto text-left ">
-            <h5 className="block mb-4 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
+            <h5 className="block mb-4 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900 disabled:text-black">
               Documents
             </h5>
             <div className='block font-sans text-m md:text-2xl antialiased font-light leading-relaxed text-inherit ml-5'>
-              <p>Medical Documents</p>
-              <p>Legal Documents</p>
+
+              <p className='my-5'>Legal Documents</p>
+              <table className="min-w-full font-light text-surface text-center">
+                <tbody >
+                  {legalDocuments.map(doc => (
+                    <tr key={doc.documentid} className=" border-neutral-200 border-b">
+                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left">
+                        <span
+                          onClick={() => {
+                            setDocVisibility(true)
+                            getDocumentLink(doc.documentid)
+                          }}
+                          className={`text-blue-400 hover:text-blue-600`}>{doc.document_name}</span></td>
+
+                      <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
+                        <button
+                          onClick={() => {
+                            setSelectedDoc(doc.documentid)
+                            setDocumentDeleteVisibility(true)
+                          }}
+                          className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400 disabled:text-black">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <p className='my-5'>Medical Documents</p>
+              <table className="min-w-full font-light text-surface text-center">
+                <tbody >
+                  {medicalDocuments.map(doc => (
+                    <tr key={doc.documentid} className=" border-neutral-200 border-b">
+                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left">
+                        <span
+                          onClick={() => {
+                            setDocVisibility(true)
+                            getDocumentLink(doc.documentid)
+                          }}
+                          className={`text-blue-400 hover:text-blue-600`}>{doc.document_name}</span></td>
+
+                      <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
+                        <button
+                          onClick={() => {
+                            setSelectedDoc(doc.documentid)
+                            setDocumentDeleteVisibility(true)
+                          }}
+                          className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400 disabled:text-black">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <p className='my-5'>Educational Documents</p>
+              <table className="min-w-full font-light text-surface text-center">
+                <tbody >
+                  {educationalDocuments.map(doc => (
+                    <tr key={doc.documentid} className=" border-neutral-200 border-b">
+                      <td className="whitespace-nowrap px-6 py-2 w-9/12 text-left">
+                        <span
+                          onClick={() => {
+                            setDocVisibility(true)
+                            getDocumentLink(doc.documentid)
+                          }}
+                          className={`text-blue-400 hover:text-blue-600`}>{doc.document_name}</span></td>
+
+                      <td className="whitespace-nowrap px-6 py-2 w-1/12 ">
+                        <button
+                          onClick={() => {
+                            setSelectedDoc(doc.documentid)
+                            setDocumentDeleteVisibility(true)
+                          }}
+                          className="hover:bg-red-600 rounded bg-red-400 py-1 px-3 font-bold text-red-900 text-xs disabled:bg-slate-400 disabled:text-black">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
-      {uploadFormVisibility ? <DocumentUploadForm setUploadVisibility={setUploadVisibility} /> : null}
-      {editFormVisibility ? <ChildEditForm setEditVisibility={setEditVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} /> : null}
-      {confirmModalVisibility ? <ConfirmationModal head='Delete Child' body='Are you sure you want to create a delete child request?' handleConfirmation={deleteChild} setVisibility={setConfirmModalVisibility} /> : null}
+      {loading && <LoadingAnimation />}
+      {uploadFormVisibility ? <DocumentUploadForm setUploadVisibility={setUploadVisibility} category={category} setCategory={setCategory} type={type} setType={setType} document={document} setDocument={setDocument} uploadDocument={uploadDocument} /> : null}
+      {editFormVisibility ? <ChildEditForm setEditVisibility={setEditVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} avatarPlaceHolder={AvatarPlaceHolder} /> : null}
+      {childDeleteVisibility ? <ConfirmationModal head='Delete Child' body='not implemented yet' handleConfirmation={() => setChildDeleteVisibility(false)} setVisibility={setChildDeleteVisibility} /> : null}
+      {documentDeleteVisibility ? <ConfirmationModal head='Delete Document' body='Are you sure you want to create a delete document request?' handleConfirmation={deleteDocument} setVisibility={setDocumentDeleteVisibility} /> : null}
+      {docVisibility &&
+        <div className="fixed inset-0 flex justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
+          <section className="px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 w-[80vw]">
+            <div className="flex justify-between items-center mb-3">
+              <h1 className="text-lg font-bold text-gray-700 capitalize flex"> Document </h1>
+              <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setDocVisibility(false)}>Close</button>
+            </div>
+            <PDFView documentUrl={viewDocument} />
+          </section>
+        </div>
+      }
     </div>
 
 

@@ -2,15 +2,20 @@ import { useState, useEffect } from "react"
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { RequestTable } from "./RequestTable"
 import useAuth from "../hooks/useAuth"
-import { ChildPreview } from "./ChildPreview"
+import { ChildRequest } from "./ChildRequest"
 import toast from "react-hot-toast"
+import { DocumentRequest } from "./DocumentRequest"
+import { ChildPreview } from "./ChildPreview"
 
 export const Requests = ({ type }) => {
     const axiosPrivate = useAxiosPrivate()
     const [requests, setRequests] = useState([])
     // const { auth } = useAuth();
     // const [role, setRole] = useState(auth?.role)
-    const [visibility, setVisibility] = useState(false)
+    const [child, setChild] = useState(null)
+    const [childVisibility, setChildVisibility] = useState(false)
+    const [fileVisibility, setFileVisibility] = useState(false)
+    const [previewVisibility, setPreviewVisibility] = useState(false)
     const [selectedRequest, setSelectedRequest] = useState(null)
 
 
@@ -42,16 +47,33 @@ export const Requests = ({ type }) => {
             <div className="mx-10">
                 <RequestTable
                     requests={requests}
-                    setVisibility={setVisibility}
+                    setChildVisibility={setChildVisibility}
                     setSelectedRequest={setSelectedRequest}
-                    selectedRequest={selectedRequest} />
+                    selectedRequest={selectedRequest}
+                    setFileVisibility={setFileVisibility} />
             </div>
-            {visibility ?
-                <ChildPreview
+            {childVisibility ?
+                <ChildRequest
                     requests={requests}
                     setRequests={setRequests}
-                    setVisibility={setVisibility}
+                    setChildVisibility={setChildVisibility}
                     requestId={selectedRequest.requestid} />
+                : null}
+            {fileVisibility ?
+                <DocumentRequest
+                    requests={requests}
+                    setRequests={setRequests}
+                    setFileVisibility={setFileVisibility}
+                    requestId={selectedRequest.requestid}
+                    setChild={setChild}
+                    child={child}
+                    setPreviewVisibility={setPreviewVisibility} />
+                : null}
+            {previewVisibility ?
+                <ChildPreview
+                    child={child}
+                    setPreviewVisibility={setPreviewVisibility}
+                    setFileVisibility={setFileVisibility} />
                 : null}
         </div>
     )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit }) => {
+export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, type }) => {
 
     const [email, setEmail] = useState('')
     const [selectedOrphanageId, setSelectedOrphanageId] = useState('')
@@ -17,10 +17,10 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit }) 
     if (!showModal) return null
 
     return (
-        <div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75'>
-            <div className='w-1/3 p-5 bg-white rounded shadow-lg'>
-                <h2 className='mb-4 text-xl font-bold'>Assign Staff Member</h2>
-                <label className='block mb-2'>Staff Member Email:</label>
+        <div className='fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center'>
+            <div className='bg-white rounded p-5 shadow-lg w-1/3'>
+                <h2 className='text-xl font-bold mb-4'>Assign {type}</h2>
+                <label className='block mb-2'>{type} Email:</label>
                 <input
                     type='email'
                     value={email}
@@ -43,13 +43,13 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit }) 
                 <div className='flex justify-end'>
                     <button
                         onClick={closeModal}
-                        className='px-4 py-2 mr-4 bg-gray-300 rounded'
+                        className='mr-4 px-4 py-2 bg-gray-300 rounded'
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className='px-4 py-2 text-white rounded bg-primary'
+                        className='px-4 py-2 bg-primary text-white rounded'
                     >
                         Assign
                     </button>
