@@ -1,54 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { districts } from '../constants';
-import Search from './Search';
-import Dropdown from './Dropdown';
-import { Link, useNavigate } from 'react-router-dom';
-import { AssignModal } from './AssignModal';
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import useLogout from '../hooks/useLogout';
-import ApplicationList from './ApplicationList';
-import ApplicationListAdmin from './ApplicationListAdmin';
+import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { districts,rolesList } from "../constants";
+import Search from "./Search";
+import Dropdown from "./Dropdown";
+import { Link, useNavigate } from "react-router-dom";
+import { AssignModal } from "./AssignModal";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import useLogout from "../hooks/useLogout";
+import ApplicationList from "./ApplicationList";
+import ApplicationListAdmin from "./ApplicationListAdmin";
+import BroadcastMsg from "./BroadcastMsg";
 
 const AdminDash = () => {
+  const axiosPrivate = useAxiosPrivate();
 
-  const axiosPrivate = useAxiosPrivate()
+  const navigate = useNavigate();
+  const logout = useLogout();
 
-  const navigate = useNavigate()
-  const logout = useLogout()
-
-  const [orphanageList, setOrphanageList] = useState([])
+  const [orphanageList, setOrphanageList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedAssign, setSelectedAssign] = useState("")
+  const [selectedAssign, setSelectedAssign] = useState("");
+  const [SelectedRole,setSelectedRole] = useState("");
 
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
 
   useEffect(() => {
     const getAllOrphanages = async () => {
-
       try {
-
-        const response = await axiosPrivate.get('/orphanage')
-        console.log(response.data.orphanageList)
-        setOrphanageList(response.data.orphanageList)
-
+        const response = await axiosPrivate.get("/orphanage");
+        console.log(response.data.orphanageList);
+        setOrphanageList(response.data.orphanageList);
       } catch (error) {
-
-        console.error('Failed to fetch orphanages:', error);
-
+        console.error("Failed to fetch orphanages:", error);
       }
+    };
 
-    }
-
-    getAllOrphanages()
-  }, [])
-
-
+    getAllOrphanages();
+  }, []);
 
   const filteredOrphanageList = orphanageList.filter((orphanage) => {
-    const matchesSearch = orphanage.orphanagename.toLowerCase().startsWith(searchTerm.toLowerCase());
-    const matchesDistrict = selectedDistrict ? orphanage.district === selectedDistrict : true;
+    const matchesSearch = orphanage.orphanagename
+      .toLowerCase()
+      .startsWith(searchTerm.toLowerCase());
+    const matchesDistrict = selectedDistrict
+      ? orphanage.district === selectedDistrict
+      : true;
     return matchesSearch && matchesDistrict;
   });
 
@@ -59,28 +57,30 @@ const AdminDash = () => {
 
   const handleDeleteOrphanage = async (orphanageId) => {
     try {
-      console.log('Inside the handle Delete orphanage...');
-      setOrphanageList(orphanageList.filter((orphanage) => orphanage.orphanageid !== orphanageId));
-      console.log('filtere orphanage list...')
+      console.log("Inside the handle Delete orphanage...");
+      setOrphanageList(
+        orphanageList.filter(
+          (orphanage) => orphanage.orphanageid !== orphanageId
+        )
+      );
+      console.log("filtere orphanage list...");
       await axiosPrivate.delete(`/orphanage/${orphanageId}`);
-      console.log('Deleted orphanage');
-
+      console.log("Deleted orphanage");
     } catch (error) {
-      console.error('Failed to delete orphanage:', error);
+      console.error("Failed to delete orphanage:", error);
 
       setOrphanageList(orphanageList);
     }
   };
 
-
   const handleUpdateOrphanage = (orphanageId) => {
     const path = `/orphanage/${orphanageId}/edit`;
     navigate(path);
-    console.log('Updating orphanage...');
-  }
+    console.log("Updating orphanage...");
+  };
 
   const fetchMoreData = () => {
-    console.log('Fetching more data...');
+    console.log("Fetching more data...");
   };
 
   const sortedOrphanageList = [...filteredOrphanageList].sort((a, b) =>
@@ -90,62 +90,88 @@ const AdminDash = () => {
   const handleAssign = async (data) => {
     try {
       let response;
-      if (selectedAssign === 'socialworker') {
-        response = await axiosPrivate.post('/socialworker', data, {
+      if (selectedAssign === "socialworker") {
+        response = await axiosPrivate.post("/socialworker", data, {
           headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      } else if (selectedAssign === 'staff') {
-        response = await axiosPrivate.post('/staff', data, {
+            "Content-Type": "application/json",
+          },
+        });
+      } else if (selectedAssign === "staff") {
+        response = await axiosPrivate.post("/staff", data, {
           headers: {
-            'Content-Type': 'application/json'
-          }
-        })
+            "Content-Type": "application/json",
+          },
+        });
       }
 
       if (response?.data.success) {
-        console.log('assigned successfully');
+        console.log("assigned successfully");
       }
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const handleMassage = async (data) => {
+    console.log("Inside the handle massage...");
+    try {
+      let response;
+        response = await axiosPrivate.post("/broadcast", data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+      });
+      if (response?.data.success) {
+        console.log("assigned successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+      
+      
+
+
 
   const signout = async () => {
     await logout();
-    navigate('/')
-  }
-
-
+    navigate("/");
+  };
 
   return (
     <div>
-      <nav className='flex items-center justify-between h-20 overflow-hidden bg-transparent shadow-lg ro-unded'>
-        <div className='p-4'>
+      <nav className="flex items-center justify-between h-20 overflow-hidden bg-transparent shadow-lg ro-unded">
+        <div className="p-4">
           <a href="./admin">
-            <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-36' />
+            <img
+              src="https://i.imgur.com/VXw99Rp.jpg"
+              alt="logo"
+              className="w-36"
+            />
           </a>
         </div>
-        <div className='p-4'>
-          <ul className='flex space-x-6'>
+        <div className="p-4">
+          <ul className="flex space-x-6">
             <li>
-              <Link to={'/admin'}>
-                <button className='p-3 text-white rounded-xl bg-primary focus:outline-none hover:bg-orange-700'>
+              <Link to={"/admin"}>
+                <button className="p-3 text-white rounded-xl bg-primary focus:outline-none hover:bg-orange-700">
                   Home
                 </button>
               </Link>
             </li>
             <li>
-              <Link to={'/inbox'}>
-                <button className='p-3 mx-5 text-white rounded-xl bg-primary focus:outline-none hover:bg-orange-700'>
+              <Link to={"/inbox"}>
+                <button className="p-3 mx-5 text-white rounded-xl bg-primary focus:outline-none hover:bg-orange-700">
                   Inbox
                 </button>
               </Link>
             </li>
             <li>
-              <button className='p-3 text-white rounded-xl bg-primary focus:outline-none hover:bg-orange-700' onClick={signout}>
+              <button
+                className="p-3 text-white rounded-xl bg-primary focus:outline-none hover:bg-orange-700"
+                onClick={signout}
+              >
                 Sign Out
               </button>
             </li>
@@ -176,29 +202,39 @@ const AdminDash = () => {
           background: #db4b1f;
         }
       `}</style>
-      <div className='flex m-10'>
+      <div className="flex m-10">
         <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Sunset in the mountains" />
+          <img
+            src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg"
+            alt="Sunset in the mountains"
+          />
           <div class="px-6 py-4">
             <div class="font-bold text-xl mb-2">Add an Orphanage</div>
             <p class="text-gray-700 text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Voluptatibus quia, nulla! Maiores et perferendis eaque,
+              exercitationem praesentium nihil.
             </p>
-            <button className='p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700'>
-              <Link to={'/addOrphanage'}>Add an orphanage</Link>
+            <button className="p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700">
+              <Link to={"/addOrphanage"}>Add an orphanage</Link>
             </button>
           </div>
         </div>
 
         <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Sunset in the mountains" />
+          <img
+            src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg"
+            alt="Sunset in the mountains"
+          />
           <div class="px-6 py-4">
             <div class="font-bold text-xl mb-2">Assign Social Worker</div>
             <p class="text-gray-700 text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Voluptatibus quia, nulla! Maiores et perferendis eaque,
+              exercitationem praesentium nihil.
             </p>
             <button
-              className='p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700'
+              className="p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700"
               onClick={() => setShowModal(true)}
             >
               Assign social worker
@@ -207,62 +243,87 @@ const AdminDash = () => {
         </div>
 
         <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Sunset in the mountains" />
+          <img
+            src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg"
+            alt="Sunset in the mountains"
+          />
           <div class="px-6 py-4">
             <div class="font-bold text-xl mb-2">Reports</div>
             <p class="text-gray-700 text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Voluptatibus quia, nulla! Maiores et perferendis eaque,
+              exercitationem praesentium nihil.
             </p>
-            <button
-              className='p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700'
-            >
-              <Link to={'/viewReports'}>View Reports</Link>
+            <button className="p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700">
+              <Link to={"/viewReports"}>View Reports</Link>
             </button>
           </div>
         </div>
 
         <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-          <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Sunset in the mountains" />
+          <img
+            src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg"
+            alt="Sunset in the mountains"
+          />
           <div class="px-6 py-4">
             <div class="font-bold text-xl mb-2">Search Orphanages</div>
             <p class="text-gray-700 text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Voluptatibus quia, nulla! Maiores et perferendis eaque,
+              exercitationem praesentium nihil.
             </p>
-            <button
-              className='p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700'
-            >
-              <Link to={'/searchOrphanges'}>Search Orphanages</Link>
+            <button className="p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700">
+              <Link to={"/searchOrphanges"}>Search Orphanages</Link>
             </button>
           </div>
         </div>
-
       </div>
 
+      <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
+        <img
+          src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg"
+          alt="Sunset in the mountains"
+        />
+        <div class="px-6 py-4">
+          <div class="font-bold text-xl mb-2">Send Broadcast Massage</div>
+          <p class="text-gray-700 text-base">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            Voluptatibus quia, nulla! Maiores et perferendis eaque,
+            exercitationem praesentium nihil.
+          </p>
+          <button
+            className="p-3 m-5 text-white align-middle-full m rounded-xl bg-primary focus:outline-none hover:bg-orange-700"
+            onClick={() => 
+              setShowModal2(true)
+            }
+          >
+            Send Broadcast Massages
+          </button>
+          {showModal2 && <BroadcastMsg
+            rolesList={rolesList}
+            closeModal={() => {
+              setSelectedRole("");
+              setShowModal2(false);
+            }}
+            onSubmit={handleMassage}
+          />}
+        </div>
+      </div>
 
-      <div className='grid mb-3 md:grid-cols-2'>
-        <div className='w-full '>
+      <div className="grid mb-3 md:grid-cols-2">
+        <div className="w-full ">
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
-        <div className='w-full '>
+        <div className="w-full ">
           <Dropdown
             valueList={districts}
             onSelect={(district) => setSelectedDistrict(district)}
           />
-
-
-
-
         </div>
-
-
       </div>
 
-
-
-
       <InfiniteScroll
-
-        className='mx-20 infinite-scroll-container'
+        className="mx-20 infinite-scroll-container"
         dataLength={sortedOrphanageList.length}
         next={fetchMoreData}
         hasMore={true}
@@ -270,14 +331,14 @@ const AdminDash = () => {
       >
         {sortedOrphanageList.map((item, index) => (
           <div
-            className='flex items-center justify-between px-10 py-2 text-sm border-gray-100 border-y-2 hover:bg-gray-100'
+            className="flex items-center justify-between px-10 py-2 text-sm border-gray-100 border-y-2 hover:bg-gray-100"
             key={index}
             onClick={() => handleClickOrphanage(item.orphanageid)}
           >
             {item.orphanagename}
-            <div className='flex space-x-2'>
+            <div className="flex space-x-2">
               <button
-                className='px-3 py-1 text-xs text-white bg-blue-500 rounded hover:bg-blue-600'
+                className="px-3 py-1 text-xs text-white bg-blue-500 rounded hover:bg-blue-600"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleUpdateOrphanage(item.orphanageid);
@@ -286,7 +347,7 @@ const AdminDash = () => {
                 Update
               </button>
               <button
-                className='px-3 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600'
+                className="px-3 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteOrphanage(item.orphanageid);
@@ -296,48 +357,41 @@ const AdminDash = () => {
               </button>
             </div>
           </div>
-
         ))}
       </InfiniteScroll>
-
-      <div >
-
-        <button className='mx-20 my-3 py-3 text-white bg-primary px-2'
+      <div>
+        <button
+          className="px-2 py-3 mx-20 my-3 text-white bg-primary"
           onClick={() => {
-            setShowModal(true)
-            setSelectedAssign('socialworker')
-          }}>
+            setShowModal(true);
+            setSelectedAssign("socialworker");
+          }}
+        >
           Assign social worker
         </button>
 
-
-        <button className='mx-20 my-3 py-3 text-white bg-primary px-2' onClick={() => {
-          setShowModal(true)
-          setSelectedAssign('staff')
-        }}>
+        <button
+          className="px-2 py-3 mx-20 my-3 text-white bg-primary"
+          onClick={() => {
+            setShowModal(true);
+            setSelectedAssign("staff");
+          }}
+        >
           Assign staff member
         </button>
-
         <AssignModal
           showModal={showModal}
           closeModal={() => {
-            setSelectedAssign('')
-            setShowModal(false)
+            setSelectedAssign("");
+            setShowModal(false);
           }}
           orphanageList={orphanageList}
-          onSubmit={handleAssign} />
-
+          onSubmit={handleAssign}
+        />
+      
       </div>
-
-
       <ApplicationListAdmin />
-
-
     </div>
-
-
-
-
   );
 };
 

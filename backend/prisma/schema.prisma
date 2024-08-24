@@ -49,6 +49,12 @@ model approvedapplications {
   users         users       @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
 }
 
+model broadcastmassages {
+  id      Int     @id @default(autoincrement())
+  message String
+  role    String? @db.VarChar
+}
+
 model cases {
   caseid         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   socialworkerid String       @db.Uuid

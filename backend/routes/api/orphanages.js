@@ -18,8 +18,13 @@ router.route('/:id')
 
 router.route('/byHead')
     .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getOrphanageByHead)
+
 router.route('/head')
 .get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.SocialWorker,ROLES_LIST.Head,ROLES_LIST.Staff),orphanageController.getOrphanageHead)
+
+
+
+
 // router.route('/:id')
 // .delete(verifyRoles(ROLES_LIST.Admin),deleteOrphanageController.deleteOrphanage)
 

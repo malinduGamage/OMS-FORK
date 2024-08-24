@@ -22,8 +22,12 @@ import Child from "./components/Child";
 import { Toaster } from 'react-hot-toast';
 import Case from "./components/Case";
 import Myapplications from "./components/MoreInfo";
+
 import UserCaseList from "./components/UserCaseList";
 import CaseSW from "./components/CaseSW";
+
+import Notification from "./components/Notification";
+
 
 
 
@@ -51,6 +55,7 @@ function App() {
         <Route path='/donateNow' element={<Payment />} />
 
         <Route path='/myapplications' element={<Myapplications />} />
+        <Route path='/notification' element={<Notification />} />
 
         <Route path='/mycases' element={<UserCaseList />} />
 
