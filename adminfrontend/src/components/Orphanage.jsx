@@ -29,12 +29,19 @@ const Orphanage = () => {
       { label: 'Overview' },
       { label: 'Children' },
       { label: 'Cases' },
-      { label: 'Sent Requests' },
-      { label: 'Received Requests' }
+      { label: 'Requests' }
     ];
 
     if (auth.roles.includes(ROLES.Head)) {
       baseTabs.splice(2, 0, { label: 'Applications' }); // Add Applications tab
+      setType('received');
+    }
+    else if (auth.roles.includes(ROLES.Staff)) {
+      setType('sent');
+    }
+    else {
+      baseTabs.splice(0, 4, { label: 'Cases' }); // Add Applications tab
+      setSelectedTab('Cases');
     }
     return baseTabs;
   }, [auth.roles]);
@@ -45,9 +52,7 @@ const Orphanage = () => {
         return <Overview />;
       case "Children":
         return <Children />;
-      case "Sent Requests":
-        return <Requests type={type} />;
-      case "Received Requests":
+      case "Requests":
         return <Requests type={type} />;
       case "Applications":
         return <ApplicationList />;
@@ -58,13 +63,7 @@ const Orphanage = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedTab === 'Sent Requests') {
-      setType('sent');
-    } else if (selectedTab === 'Received Requests') {
-      setType('received');
-    }
-  }, [selectedTab]);
+
 
   const signout = async () => {
     await logout();
@@ -89,7 +88,7 @@ const Orphanage = () => {
         </div>
       </nav>
 
-      
+
       <div className="pt-[60px]">
         <div className="relative">
           {/* Mobile dropdown */}
