@@ -70,6 +70,8 @@ app.use('/file', require('./routes/api/file'))
 
 app.use('/document', require('./routes/api/document'))
 
+app.use('/broadcast', require('./routes/api/broadcast'))
+
 app.use('/application', require('./routes/api/application'))
 
 app.use('/case', require('./routes/api/case'))

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
@@ -15,6 +16,8 @@ import { AdminOrphanage } from './AdminOrphanage';
 import { AdminAssign } from './AdminAssign';
 import ApplicationListAdmin from './ApplicationListAdmin';
 import { AdminOverView } from './AdminOverView';
+
+import BroadcastMsg from "./BroadcastMsg";
 
 const AdminDash = () => {
 
@@ -80,7 +83,6 @@ const AdminDash = () => {
     navigate('/')
   }
 
-
   return (
     <div >
       {/*nav bar*/}
@@ -141,11 +143,13 @@ const AdminDash = () => {
             })}
           </ul>
         </div>
+
       </div>
       {/*main content*/}
       <div className='fixed top-[8vh] left-[15vw] w-[85vw] h-[92vh] p-2 overflow-y-auto m-2'>
         {renderTabContent()}
       </div>
+
     </div>
   );
 };
