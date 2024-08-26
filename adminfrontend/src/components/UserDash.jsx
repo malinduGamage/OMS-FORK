@@ -9,6 +9,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import logo from '../assets/images/logo.png'
 import useAuth from "../hooks/useAuth";
 
+
 const UserDash = () => {
 
   const {auth} = useAuth();
@@ -251,9 +252,11 @@ const UserDash = () => {
         /></div>
       </div>
 
+      
+
       <footer className="border-t shadow-xl bg-white py-10 px-20">
   <div className="flex justify-between items-start">
-    {/* Logo and Branding Section */}
+   
     <div className="flex items-center space-x-4">
       <img src={logo} alt="OrphanCare Logo" className="h-20 w-20" />
       <div>
@@ -262,7 +265,7 @@ const UserDash = () => {
       </div>
     </div>
 
-    {/* Quick Links Section */}
+    
     <div className="flex space-x-16">
       <div>
         <h3 className="text-xl font-semibold text-primary mb-4">Quick Links</h3>
@@ -274,7 +277,7 @@ const UserDash = () => {
         </ul>
       </div>
 
-      {/* Contact Information Section */}
+     
       <div>
         <h3 className="text-xl font-semibold text-primary mb-4">Contact Us</h3>
         <ul className="space-y-2">

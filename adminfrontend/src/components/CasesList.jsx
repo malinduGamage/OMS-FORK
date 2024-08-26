@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import useAuth from '../hooks/useAuth';
+import Loading from './Loading';
 
 const ROLES = {
   User: 1010,
@@ -16,6 +17,7 @@ const CasesList = () => {
   const { auth} = useAuth(); 
   const axiosPrivate = useAxiosPrivate();
   const [cases, setCases] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getAllCases = async () => {
@@ -25,6 +27,7 @@ const CasesList = () => {
       } catch (error) {
         console.error('Failed to fetch cases:', error);
       }
+      setIsLoading(false)
     };
 
     getAllCases();
@@ -37,30 +40,35 @@ const CasesList = () => {
   }
 
   return (
-    <div>
-    <table className="min-w-full bg-white border-b text-center">
-      <thead className='text-primary'>
-        <tr>
-          <th className="py-2 px-4 border-b">Child Name</th>
-          <th className="py-2 px-4 border-b">Social Worker Name</th>
-          <th className="py-2 px-4 border-b">Parent Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredCases.map((caseItem) => (
-          <tr
-          onClick={()=>navigate(`/orphanage/${id}/case/${caseItem.caseid}`)}
-            key={caseItem.caseid}
-            className="cursor-pointer hover:bg-gray-100"
-          >
-            <td className="py-3 px-4 border-b">{caseItem.childName}</td>
-            <td className="py-3 px-4 border-b">{caseItem.socialWorkerName}</td>
-            <td className="py-3 px-4 border-b">{caseItem.parentName}</td>
+    <>
+
+    {isLoading ? (<Loading/>):  <div>
+      
+      <table className="min-w-full bg-white border-b text-center">
+        <thead className='text-primary'>
+          <tr>
+            <th className="py-2 px-4 border-b">Child Name</th>
+            <th className="py-2 px-4 border-b">Social Worker Name</th>
+            <th className="py-2 px-4 border-b">Parent Name</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {filteredCases.map((caseItem) => (
+            <tr
+            onClick={()=>navigate(`/orphanage/${id}/case/${caseItem.caseid}`)}
+              key={caseItem.caseid}
+              className="cursor-pointer hover:bg-gray-100"
+            >
+              <td className="py-3 px-4 border-b">{caseItem.childName}</td>
+              <td className="py-3 px-4 border-b">{caseItem.socialWorkerName}</td>
+              <td className="py-3 px-4 border-b">{caseItem.parentName}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>}
+    </>
+  
   
   
   );

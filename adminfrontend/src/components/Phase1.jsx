@@ -24,7 +24,8 @@ const Phase1 = ({ caseId, caseDetails }) => {
     birthCertificate: null,
   });
   const [uploadStatus, setUploadStatus] = useState("");
-
+  const [isUploading,setIsUploading] =useState(false);
+ 
   useEffect(() => {
     const fetchDocumentUrls = async () => {
       try {
@@ -76,6 +77,8 @@ const Phase1 = ({ caseId, caseDetails }) => {
   };
 
   const handleUpload = async () => {
+
+    setIsUploading(true)
     if (
       !files.marriageCertificate ||
       !files.incomeCertificate ||
@@ -99,11 +102,14 @@ const Phase1 = ({ caseId, caseDetails }) => {
       });
 
       console.log(response.status);
+      
       setUploadStatus("Files uploaded successfully!");
     } catch (error) {
       console.error("Failed to upload files:", error);
       setUploadStatus("Files upload failed. Please try again.");
     }
+
+    setIsUploading(false)
   };
 
   if (!caseDetails) return <div>Loading...</div>; 
@@ -214,14 +220,15 @@ const Phase1 = ({ caseId, caseDetails }) => {
 <button
   onClick={handleUpload}
   className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark mt-6"
+  disabled={isUploading}
 >
-  Upload Documents
+  {isUploading ? "Uploading" : "Upload Documents"}
 </button>
 {uploadStatus && (
-  <p className="mt-4 text-sm text-red-600">{uploadStatus}</p>
+  <p className="mt-4 text-ld text-green-500">{uploadStatus}</p>
 )}</div>
 ) : (
-  <div><span className='text-green-500 text-xl'>Documents has been verified</span></div>
+  <div><span className='text-green-500 font-semibold text-xl'>Documents has been verified</span></div>
 )}
 
 
@@ -250,7 +257,7 @@ const Phase1 = ({ caseId, caseDetails }) => {
                   download
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 font-semibold underline"
+                  className="text-primary hover:text-primary font-semibold underline"
                 >
                   Download {doc.name.replace('Certificate', ' Certificate')}
                 </a>

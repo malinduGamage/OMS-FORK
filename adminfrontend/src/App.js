@@ -54,7 +54,7 @@ function App() {
 
         <Route path='/donateNow' element={<Payment />} />
 
-        <Route path='/myapplications' element={<Myapplications />} />
+        
         <Route path='/notification' element={<Notification />} />
 
         <Route path='/mycases' element={<UserCaseList />} />
@@ -74,6 +74,8 @@ function App() {
             <Route path='/orphanage/:id/case/:caseId' element={<Case />} />
 
           </Route>
+
+          <Route path='/myapplications' element={<Myapplications />} />
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<UserDash />} />

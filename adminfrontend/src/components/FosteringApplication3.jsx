@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AgeSlider from './AgeSlider';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import AlertModal from './AlertModal';
 
 export default function FosteringApplication3() {
   const axiosPrivate = useAxiosPrivate();
   
   const location = useLocation();
   const navigate = useNavigate();
-  const fosteringDetails2 = location.state || {}; // Initialize to an empty object if state is undefined
+  const fosteringDetails2 = location.state || {}; 
   
- 
+ const [showModal,setShowModal] = useState(false);
   const [ageRange, setAgeRange] = useState([0, 18]); 
   const [fosteringDetails3, setFosteringDetails3] = useState({
     ...fosteringDetails2,
@@ -60,14 +61,19 @@ export default function FosteringApplication3() {
           additionalcomments: "",
         });
         console.log("Application added successfully");
-        alert("application send succesfully you will recieve notification soon")
-        navigate('/userdash'); // Navigate to a confirmation page or any other page
+        setShowModal(true);
+      
       } else {
         console.error("Failed to add application");
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    navigate('/fosteringmain')
   };
 
   return (
@@ -162,6 +168,14 @@ export default function FosteringApplication3() {
           </button>
         </div>
       </form>
+
+
+<AlertModal
+showModal={showModal}
+onClose={closeModal}
+message="Your application has been submitted for review"
+/>
+
     </div>
   );
 }

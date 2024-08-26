@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useAuth from '../hooks/useAuth'
-import ApplicationModal from './ApplicationModal' // Make sure to import the ApplicationModal component
+
 import { UserApplicationModal } from './UserApplicationModal'
 
 const UserApplicationList = () => {
@@ -22,7 +22,7 @@ const UserApplicationList = () => {
             }
         }
         getAllApplications()
-    }, [ auth.userId])
+    }, [ auth.userId,axiosPrivate])
 
     const handleOpenModal = (application) => {
         setSelectedApplication(application)

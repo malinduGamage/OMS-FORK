@@ -33,11 +33,13 @@ const ApplicationModal = ({ application, closeModal, socialWorkerList = [] }) =>
 
             if (response.data.status) {
                 console.log("Case created successfully");
-                closeModal(); // Close modal after successful assignment
+                
             }
         } catch (error) {
             console.log(error);
         }
+
+        closeModal();
     }
 
     return (

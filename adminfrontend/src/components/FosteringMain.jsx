@@ -38,8 +38,8 @@ export default function FosteringMain() {
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50">
           <ul className="space-y-2 font-medium">
             <li><a href="/fostering" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Fostering Application</a></li>
-            <li><a href="/myapplications" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Applications</a></li>
-            <li><a href="/mycases" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Ongoing Cases</a></li>
+            <li><a href="/myapplications" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Pending Applications</a></li>
+            <li><a href="/mycases" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">My Cases</a></li>
           </ul>
         </div>
       </aside>
