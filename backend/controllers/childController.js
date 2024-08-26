@@ -23,7 +23,6 @@ const getChild = async (req, res) => {
         })
 
     } catch (error) {
-        console.error('Database query failed:', error);
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching child.'
