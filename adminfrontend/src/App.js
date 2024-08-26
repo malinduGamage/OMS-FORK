@@ -78,7 +78,7 @@ function App() {
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
-            <Route path='/userdash' element={<UserDash />} />
+            <Route path='/userdash' element={<FosteringMain />} />
           </Route>
 
 
@@ -100,7 +100,7 @@ function App() {
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
-            <Route path='/userdash' element={<UserDash />} />
+            <Route path='/userdash' element={<FosteringMain />} />
             <Route path='/inbox' element={<Inbox />} />
             <Route path='fosteringmain' element={<FosteringMain />} />
             <Route path='fostering' element={<FosteringApplication />} />
