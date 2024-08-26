@@ -27,6 +27,7 @@ import UserCaseList from "./components/UserCaseList";
 import CaseSW from "./components/CaseSW";
 
 import Notification from "./components/Notification";
+import LandingPage from "./components/LandingPage";
 
 
 
@@ -47,7 +48,8 @@ function App() {
       <Routes>
 
         {/* Public Routes */}
-        <Route path='/' element={<Login />} />
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/login' element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
 
@@ -78,7 +80,7 @@ function App() {
           <Route path='/myapplications' element={<Myapplications />} />
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
-            <Route path='/userdash' element={<UserDash />} />
+            <Route path='/userdash' element={<FosteringMain />} />
           </Route>
 
 
@@ -100,7 +102,7 @@ function App() {
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
-            <Route path='/userdash' element={<UserDash />} />
+            <Route path='/userdash' element={<FosteringMain />} />
             <Route path='/inbox' element={<Inbox />} />
             <Route path='fosteringmain' element={<FosteringMain />} />
             <Route path='fostering' element={<FosteringApplication />} />
