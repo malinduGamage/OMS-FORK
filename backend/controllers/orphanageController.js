@@ -45,8 +45,6 @@ const getOverview = async (req, res) => {
       pendingApplicationCount
     } = await databaseCall();
 
-    console.log(orphanageCount);
-
     res.json({
       success: true,
       data: {
