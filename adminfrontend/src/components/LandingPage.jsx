@@ -56,10 +56,14 @@ const LandingPage = () => {
                                 They will make the world in a different way
                             </div>
                             <div className="flex justify-center">
-                                <Link to="/login" > <button className="drop-shadow-xl text-4xl border-orange-600 bg-transparent hover:text-orange-600 text-white font-extrabold hover:bg-white py-2 px-4 border hover:border-transparent rounded">
+                                <Link to="/login" > <button className=" m-5 drop-shadow-xl text-4xl border-orange-600 bg-transparent hover:text-orange-600 text-white font-extrabold hover:bg-white py-2 px-4 border hover:border-transparent rounded">
                                     Adopt Now
                                 </button></Link>
+                                <Link to="/donate" > <button className="m-5 drop-shadow-xl text-4xl border-orange-600 bg-transparent hover:text-orange-600 text-white font-extrabold hover:bg-white py-2 px-4 border hover:border-transparent rounded">
+                                    Donate
+                                </button></Link>
                             </div>
+
                         </div>
                     </div>
 
