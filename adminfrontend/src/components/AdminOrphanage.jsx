@@ -58,11 +58,16 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     return (
         <div >
 
-            <div className='grid mb-3 md:grid-cols-2'>
-                <div className='w-full '>
+            <div className='grid mb-3 md:grid-cols-3 mx-20 '>
+                <Link to={'/addOrphanage'}>
+                    <button className='m-2 flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
+                        <p className='ml-1'> Add Orphanage</p>
+                    </button>
+                </Link>
+                <div className='m-2'>
                     <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 </div>
-                <div className='w-full '>
+                <div className='m-2'>
                     <Dropdown
                         valueList={districts}
                         onSelect={(district) => setSelectedDistrict(district)}

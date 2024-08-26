@@ -4,6 +4,68 @@ const { PrismaClient } = require('@prisma/client');
 const { head } = require("../routes/api/orphanages");
 const prisma = new PrismaClient();
 
+const databaseCall = async () => {
+  const orphanageCount = await prisma.orphanage.count();
+  const childCount = await prisma.child.count();
+  const socialWorkerCount = await prisma.users.count();
+  const staffCount = await prisma.staff.count();
+  const ongoingCaseCount = await prisma.cases.count({
+    where: {
+      OR: [
+        { phase1: 'Ongoing' },
+        { phase2: 'Ongoing' },
+        { phase3: 'Ongoing' }
+      ]
+    }
+  });
+  const pendingApplicationCount = await prisma.application.count({
+    where: {
+      status: 'Pending'
+    }
+  });
+
+  return {
+    orphanageCount,
+    childCount,
+    socialWorkerCount,
+    staffCount,
+    ongoingCaseCount,
+    pendingApplicationCount
+  };
+};
+
+const getOverview = async (req, res) => {
+  try {
+    const {
+      orphanageCount,
+      childCount,
+      socialWorkerCount,
+      staffCount,
+      ongoingCaseCount,
+      pendingApplicationCount
+    } = await databaseCall();
+
+    res.json({
+      success: true,
+      data: {
+        orphanageCount,
+        childCount,
+        socialWorkerCount,
+        staffCount,
+        ongoingCaseCount,
+        pendingApplicationCount
+      }
+    });
+  } catch (error) {
+    console.error('Database query failed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching the overview data.'
+    });
+  }
+};
+
+
 const getAllOrphanage = async (req, res) => {
 
   try {
@@ -24,11 +86,7 @@ const getAllOrphanage = async (req, res) => {
       message: 'An error occurred while fetching orphanages.'
     });
 
-
   }
-
-
-
 
 }
 
@@ -100,7 +158,7 @@ const getOrphanageHead = async (req, res) => {
   try {
     const { orphanageid } = req.query;
 
-   
+
     const orphanage = await prisma.orphanage.findUnique({
       where: { orphanageid: orphanageid },
       select: { headid: true }
@@ -110,7 +168,7 @@ const getOrphanageHead = async (req, res) => {
       return res.status(404).json({ error: 'Orphanage not found' });
     }
 
-    
+
     const headDetails = await prisma.users.findUnique({
       where: { userid: orphanage.headid },
       select: {
@@ -125,7 +183,7 @@ const getOrphanageHead = async (req, res) => {
     }
 
     res.json({ headDetails });
-    
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -138,6 +196,6 @@ module.exports = {
   addOrphanage
   , getOrphanageByHead,
   getAllOrphanage,
-  getOrphanageHead
-  
+  getOrphanageHead,
+  getOverview
 }

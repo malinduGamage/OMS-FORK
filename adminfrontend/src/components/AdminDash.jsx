@@ -29,16 +29,14 @@ const AdminDash = () => {
 
   const [selectedTab, setSelectedTab] = useState(baseTabs[0].label); // Default selected tab
 
-  const overview = [
+  const [overview, setOverview] = useState([
     { parameter: 'Orphanages', value: '-' },
     { parameter: 'Children', value: '-' },
     { parameter: 'Staff Members', value: '-' },
     { parameter: 'Social Workers', value: '-' },
     { parameter: 'Active Cases', value: '-' },
-    { parameter: 'Pending Adoption Requests', value: '-' },
-    { parameter: 'Completed Adoptions', value: '-' },
-    { parameter: 'Scheduled Interviews', value: '-' }
-  ];
+    { parameter: 'Pending Adoption Applications', value: '-' }
+  ]);
 
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -73,6 +71,22 @@ const AdminDash = () => {
         console.error('Failed to fetch orphanages:', error);
       }
     }
+    const getOverview = async () => {
+      try {
+        const response = await axiosPrivate.get('/orphanage/overview')
+        setOverview([
+          { parameter: 'Orphanages', value: response.data.data.orphanageCount },
+          { parameter: 'Children', value: response.data.data.childCount },
+          { parameter: 'Staff Members', value: response.data.data.staffCount },
+          { parameter: 'Social Workers', value: response.data.data.socialWorkerCount },
+          { parameter: 'Active Cases', value: response.data.data.ongoingCaseCount },
+          { parameter: 'Pending Adoption Applications', value: response.data.data.pendingApplicationCount }
+        ])
+      } catch (error) {
+        console.error('Failed to fetch overview:', error);
+      }
+    }
+    getOverview()
     getAllOrphanages()
   }, [])
 
