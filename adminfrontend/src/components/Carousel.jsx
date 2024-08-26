@@ -11,13 +11,13 @@ import 'swiper/css/pagination';
 
 const Carousel = ({ images }) => {
   return (
-    <div className="flex items-center justify-center w-full h-full mt-24">
+    <div className="flex items-center  justify-center w-full h-full mt-10">
       <Swiper
         effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
         loop={true}
-        slidesPerView={'2'}
+        slidesPerView={'3'}
         coverflowEffect={{
           rotate: 0,
           stretch: 0,
