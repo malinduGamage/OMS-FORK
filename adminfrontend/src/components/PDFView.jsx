@@ -9,7 +9,7 @@ export const PDFView = ({ documentUrl }) => {
     return (
         <div className="h-5/6  border border-gray-300">
             {documentUrl ? (
-                <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+                <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.0.279/build/pdf.worker.min.js`}>
                     <Viewer fileUrl={documentUrl} />
                 </Worker>
 
