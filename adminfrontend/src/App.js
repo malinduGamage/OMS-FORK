@@ -27,6 +27,7 @@ import UserCaseList from "./components/UserCaseList";
 import CaseSW from "./components/CaseSW";
 
 import Notification from "./components/Notification";
+import LandingPage from "./components/LandingPage";
 
 
 
@@ -47,7 +48,8 @@ function App() {
       <Routes>
 
         {/* Public Routes */}
-        <Route path='/' element={<Login />} />
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/login' element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
 
