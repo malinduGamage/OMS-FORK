@@ -33,13 +33,14 @@ const LandingPage = () => {
                 <div className='flex items-center justify-between rounded h-full'>
                     <div className='flex items-center ml-6'>
                         <a href="./admin">
-                            <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-28' />
+                            <img src={logo} alt="logo" className='w-12 h-12' />
                         </a>
+                        <p className='text-xl text-primary font-bold'>OrphanCare</p>
                     </div>
                     <div className='flex flex-row'>
-                        <p className={`ml-1 hover:text-orange-600 hover:text-xl ${visibility == 0 && 'text-xl text-orange-600'}`} onClick={() => setVisibility(0)} > Home</p>
+                        <p className={`ml-1 hover:text-orange-600 hover:text-xl font-bold ${visibility == 0 && 'text-xl text-orange-600 font-bold'}`} onClick={() => setVisibility(0)} > Home</p>
                         <p className='ml-1' > | </p>
-                        <p className={`ml-1 hover:text-orange-600 hover:text-xl ${visibility == 1 && 'text-xl text-orange-600'}`} onClick={() => setVisibility(1)} > Fostering</p>
+                        <p className={`ml-1 hover:text-orange-600 hover:text-xl font-bold ${visibility == 1 && 'text-xl text-orange-600 font-bold '}`} onClick={() => setVisibility(1)} > Fostering</p>
                     </div>
                     <div className='p-4'>
                         <ul className='flex space-x-6'>

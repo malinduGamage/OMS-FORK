@@ -56,7 +56,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
 
     return (
-        <div >
+        <div className='mt-10' >
 
             <div className='grid mb-3 md:grid-cols-2'>
                 <div className='w-full '>
