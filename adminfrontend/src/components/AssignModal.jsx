@@ -17,7 +17,7 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
     if (!showModal) return null
 
     return (
-        <div className='fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center'>
+        <div className='fixed inset-0 backdrop-blur-md flex justify-center items-center'>
             <div className='bg-white rounded p-5 shadow-lg w-1/3'>
                 <h2 className='text-xl font-bold mb-4'>Assign {type}</h2>
                 <label className='block mb-2'>{type} Email:</label>

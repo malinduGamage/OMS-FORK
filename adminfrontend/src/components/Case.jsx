@@ -4,6 +4,7 @@ import Phase1 from "./Phase1";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import Loading from "./Loading";
 
 const Case = () => {
   const { caseId } = useParams();
@@ -28,7 +29,7 @@ const Case = () => {
     setIsPhase1Open((prevState) => !prevState);
   };
 
-  if (!caseDetails) return <div>Loading...</div>;
+  if (!caseDetails) return <Loading/>;
 
   return (
     <div>
@@ -72,7 +73,7 @@ const Case = () => {
             />
           </button>
           {isPhase1Open && (
-            <div className="p-4 bg-white">
+            <div className="px-10 py-5 bg-white">
               <Phase1 caseId={caseId} caseDetails={caseDetails} />
             </div>
           )}

@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import ApplicationModalAdmin from './ApplicationModalAdmin';
+import Loading from './Loading';
 
 const ApplicationListAdmin = () => {
     const axiosPrivate = useAxiosPrivate();
     const [applicationList, setApplicationList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState(null);
+    const [isLoading,setIsLoading] = useState(true)
 
     useEffect(() => {
         const getAllApplications = async () => {
             try {
                 const response = await axiosPrivate.get(`/application`);
-                setApplicationList(response.data.applicationList);
+                const reverseApplicationList = response.data.applicationList 
+                setApplicationList(reverseApplicationList.reverse())
             } catch (error) {
                 console.error('Failed to fetch applications:', error);
             }
+
+            setIsLoading(false);
         };
         getAllApplications();
     }, [axiosPrivate]);
@@ -38,7 +43,7 @@ const ApplicationListAdmin = () => {
 
     return (
         <div>
-            <div className="overflow-x-auto px-10">
+            {isLoading ? (<Loading/>):<div className="overflow-x-auto px-10">
                 <table className="min-w-full bg-white border-b text-center">
                     <thead className='text-primary'>
                         <tr>
@@ -69,7 +74,8 @@ const ApplicationListAdmin = () => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </div>}
+            
 
             {showModal && selectedApplication && (
                 <ApplicationModalAdmin

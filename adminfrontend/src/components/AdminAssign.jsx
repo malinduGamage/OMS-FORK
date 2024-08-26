@@ -36,16 +36,16 @@ export const AdminAssign = ({ orphanageList }) => {
         }
     }
     return (
-        <div className='flex m-5'>
+        <div className='flex  justify-center items-center'>
 
-            <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-                <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Sunset in the mountains" />
+            <div class=" max-w-sm rounded overflow-hidden shadow-lg">
+                <img src="https://www.allprodad.com/wp-content/uploads/2020/04/What-your-Foster-Childs-Social-Worker-Wishes-You-Knew.jpg" alt="Sunset in the mountains" />
                 <div class="px-6 py-4">
                     <div class="font-bold text-xl mb-2">Assign Social Worker</div>
                     <p class="text-gray-700 text-base">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+                        Assign a social worker to one of registered orphanages
                     </p>
-                    <button className='mx-20 my-3 py-3 text-white bg-primary px-2'
+                    <button className='mx-20 my-3 py-3 text-primary border-2 border-primary hover:text-white hover:bg-primary transition-colors duration-200  px-2'
                         onClick={() => {
                             setShowModal(true)
                             setSelectedAssign('socialworker')
@@ -56,13 +56,13 @@ export const AdminAssign = ({ orphanageList }) => {
             </div>
 
             <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-                <img src="https://www.africacalling.org/wp-content/uploads/ghana-orphanage-volunteer-sarah-vigs-ghana-africa-sarah-from-uk.jpg" alt="Sunset in the mountains" />
+                <img src="https://vivahr.com/wp-content/uploads/2024/02/front-desk-clerk-job-description-template-office-setting.jpg" alt="Sunset in the mountains" />
                 <div class="px-6 py-4">
                     <div class="font-bold text-xl mb-2">Assign Staff Member</div>
                     <p class="text-gray-700 text-base">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+                    Assign a staff member to one of registered orphanages
                     </p>
-                    <button className='mx-20 my-3 py-3 text-white bg-primary px-2' onClick={() => {
+                    <button className='mx-20 my-3 py-3 text-primary border-2 border-primary hover:text-white hover:bg-primary transition-colors duration-200  px-2' onClick={() => {
                         setShowModal(true)
                         setSelectedAssign('staff')
                     }}>

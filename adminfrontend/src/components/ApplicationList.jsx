@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import ApplicationModal from './ApplicationModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Loading from './Loading'
 
 const ApplicationList = () => {
     const { id } = useParams()
@@ -10,6 +11,7 @@ const ApplicationList = () => {
     const [applicationList, setApplicationList] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [selectedApplication, setSelectedApplication] = useState(null)
+    const [isLoading, setIsLoading] = useState(true);
     const [socialWorkersList, setSocialWorkersList] = useState([])
 
     useEffect(() => {
@@ -29,6 +31,8 @@ const ApplicationList = () => {
             } catch (error) {
                 console.error('Failed to fetch socialworkers:', error)
             }
+
+            setIsLoading(false)
         }
 
         getApprovedApplications()
@@ -42,7 +46,7 @@ const ApplicationList = () => {
 
     return (
         <div>
-            <div className="overflow-x-auto px-10">
+            {isLoading ? (<Loading/>):<div className="overflow-x-auto px-10">
                 <table className="min-w-full bg-white border-b text-center">
                     <thead className='text-primary'>
                         <tr>
@@ -75,7 +79,8 @@ const ApplicationList = () => {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </div>}
+            
 
             {showModal && selectedApplication && (
                 <ApplicationModal
