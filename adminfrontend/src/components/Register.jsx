@@ -93,6 +93,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setMatchPassword("");
       setTelNo("");
       setEmail("");
+      
     } catch (error) {
       if (!error?.response) {
         setFormError("No Server Response");

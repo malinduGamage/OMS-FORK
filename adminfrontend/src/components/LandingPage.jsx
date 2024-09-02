@@ -73,7 +73,7 @@ const LandingPage = () => {
                          
 
                         </div>
-                        <p>{auth.userId}</p>
+                        
                     </div>
                     <div className="h-screen w-full flex ">
         <div className="w-1/2 h-full flex items-center justify-center">
