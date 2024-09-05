@@ -60,9 +60,9 @@ function App() {
         
         <Route path='/notification' element={<Notification />} />
 
-        <Route path='/mycases' element={<UserCaseList />} />
+       
 
-       <Route path="/chatroom/:roomId" element={<VideoChat/>}/>
+       
 
 
         {/* Protected Routes */}
@@ -84,6 +84,8 @@ function App() {
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<FosteringMain />} />
+            <Route path="/chatroom/:roomId" element={<VideoChat/>}/>
+            <Route path='/mycases' element={<UserCaseList />} />
           </Route>
 
 
