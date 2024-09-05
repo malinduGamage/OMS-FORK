@@ -16,7 +16,7 @@ const Lobby = () => {
     e.preventDefault();
     const inviteCode = e.target.invite_link.value;
 
-    // Navigate to the chatroom with the invite code
+   
     navigate(`/chatroom/${inviteCode}`, { replace: true });
   };
 
@@ -31,7 +31,7 @@ const Lobby = () => {
             name="invite_link"
             placeholder="Enter invite link"
             required
-            ref={linkRef} // Assign the ref to the input field
+            ref={linkRef} 
             className="w-full p-4 mt-8 rounded-md focus:outline-none"
           />
           <input

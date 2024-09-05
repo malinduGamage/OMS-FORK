@@ -18,8 +18,8 @@ const VideoChat = () => {
   const [users, setUsers] = useState([]);
   const [localTracks, setLocalTracks] = useState([]);
   const [joined, setJoined] = useState(false);
-  const [videoEnabled, setVideoEnabled] = useState(true); // Track video state
-  const [audioEnabled, setAudioEnabled] = useState(true); // Track audio state
+  const [videoEnabled, setVideoEnabled] = useState(true); 
+  const [audioEnabled, setAudioEnabled] = useState(true); 
   const user0Ref = useRef(null);
   const user1Ref = useRef(null);
 
@@ -81,26 +81,39 @@ const VideoChat = () => {
     }
   }, [users]);
 
-  const toggleVideo = () => {
+  const toggleVideo = async () => {
     if (videoEnabled) {
+      
       users[0]?.videoTrack?.stop();
       setVideoEnabled(false);
+
+      
+      await client.unpublish(users[0]?.videoTrack);
     } else {
+      
+      await client.publish(users[0]?.videoTrack);
+
+     
       users[0]?.videoTrack?.play(user0Ref.current);
       setVideoEnabled(true);
     }
   };
 
-  // Toggle audio for user[0]
-  const toggleAudio = () => {
+  const toggleAudio = async () => {
     if (audioEnabled) {
+     
       users[0]?.audioTrack?.stop();
       setAudioEnabled(false);
+
+      
+      await client.unpublish(users[0]?.audioTrack);
     } else {
-      users[0]?.audioTrack?.play();
+      
+      await client.publish(users[0]?.audioTrack);
       setAudioEnabled(true);
     }
   };
+
   const disconnectCall = () => {
     if (joined) {
       localTracks.forEach(track => {
@@ -134,11 +147,11 @@ const VideoChat = () => {
       <div className="absolute bottom-5 left-5 flex space-x-4">
         <button onClick={toggleVideo} className="px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-700 flex items-center space-x-2">
           <FontAwesomeIcon icon={videoEnabled ? faVideo : faVideoSlash} />
-       
+          <span>{videoEnabled ? 'Turn Off Video' : 'Turn On Video'}</span>
         </button>
         <button onClick={toggleAudio} className="px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-700 flex items-center space-x-2">
           <FontAwesomeIcon icon={audioEnabled ? faMicrophone : faMicrophoneSlash} />
-          
+          <span>{audioEnabled ? 'Mute Audio' : 'Unmute Audio'}</span>
         </button>
         <button onClick={disconnectCall} className="px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-700 flex items-center space-x-2">
           <FontAwesomeIcon icon={faVideoSlash} />
