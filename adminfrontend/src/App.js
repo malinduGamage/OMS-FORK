@@ -28,6 +28,7 @@ import CaseSW from "./components/CaseSW";
 
 import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
+import VideoChat from "./components/VideoChat";
 
 
 
@@ -60,6 +61,8 @@ function App() {
         <Route path='/notification' element={<Notification />} />
 
         <Route path='/mycases' element={<UserCaseList />} />
+
+       <Route path="/chatroom/:roomId" element={<VideoChat/>}/>
 
 
         {/* Protected Routes */}

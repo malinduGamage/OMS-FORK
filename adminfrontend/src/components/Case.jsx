@@ -5,6 +5,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import Loading from "./Loading";
+import Lobby from "./Lobby";
 
 const Case = () => {
   const { caseId } = useParams();
@@ -77,6 +78,14 @@ const Case = () => {
               <Phase1 caseId={caseId} caseDetails={caseDetails} />
             </div>
           )}
+        </div>
+
+
+        <div className=" w-full ">
+
+          <Lobby/>
+
+         
         </div>
       </div>
     </div>
