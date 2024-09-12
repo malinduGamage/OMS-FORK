@@ -61,54 +61,53 @@ const getAllCases = async (req, res) => {
 
 
 
-const createCase = async (req,res)=>{
+const createCase = async (req, res) => {
 
-    const{socialworkerid,parentid,childid} = req.body
+    const { socialworkerid, parentid, childid } = req.body
 
     try {
 
         const newCase = await prisma.cases.create({
-            data:{
-                childid:childid,
-                parentid:parentid,
-                socialworkerid:socialworkerid
+            data: {
+                childid: childid,
+                parentid: parentid,
+                socialworkerid: socialworkerid
             }
         })
 
-        
 
-        res.json({success:true})
-        
+
+        res.json({ success: true })
+
     } catch (error) {
 
         console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "An error occurred while creating the case."
-    });
-        
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while creating the case."
+        });
+
     }
 }
 
 const getCaseById = async (req, res) => {
     try {
-        const { caseid } = req.query;
-
+        const { caseid } = req.query
         const rawCaseDetails = await prisma.cases.findUnique({
             where: {
                 caseid: caseid
             },
             include: {
-                child: true, 
-                users: true, 
+                child: true,
+                users: true,
                 socialworker: {
                     include: {
-                        users: true 
+                        users: true
                     }
                 }
             }
         });
-        
+
         if (!rawCaseDetails) {
             return res.status(404).json({ message: "Case not found" });
         }
@@ -118,8 +117,8 @@ const getCaseById = async (req, res) => {
             phase1: rawCaseDetails.phase1,
             phase2: rawCaseDetails.phase2,
             child: rawCaseDetails.child,
-            parent: rawCaseDetails.users, 
-            socialworker: rawCaseDetails.socialworker.users 
+            parent: rawCaseDetails.users,
+            socialworker: rawCaseDetails.socialworker.users
         };
 
         res.status(200).json(caseItem);
@@ -159,7 +158,7 @@ const getUserCases = async (req, res) => {
                         }
                     }
                 },
-           
+
             }
         });
 
@@ -186,8 +185,8 @@ const phase1Completed = async (req, res) => {
 
     try {
 
-        const {caseId}= req.query;
-        
+        const { caseId } = req.query;
+
         const updatedCase = await prisma.cases.update({
 
             where: {
@@ -198,10 +197,10 @@ const phase1Completed = async (req, res) => {
             }
         })
 
-        res.status(200).json({message:"Phase 1 completed"})
+        res.status(200).json({ message: "Phase 1 completed" })
     } catch (error) {
         console.log("Error updating case:", error);
-    res.status(500).json({ error: "Failed to update case." });
+        res.status(500).json({ error: "Failed to update case." });
     }
 
 }
@@ -210,4 +209,4 @@ const phase1Completed = async (req, res) => {
 
 
 
-module.exports = {createCase , getAllCases,getCaseById,getUserCases,phase1Completed}
+module.exports = { createCase, getAllCases, getCaseById, getUserCases, phase1Completed }

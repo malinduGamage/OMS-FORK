@@ -77,7 +77,7 @@ const Login = () => {
       // Check roles to navigate
       if (roles.includes(ROLES.Admin)) navigate("/admin", { replace: true });
       else if (roles.includes(ROLES.Head) || roles.includes(ROLES.SocialWorker) || roles.includes(ROLES.Staff)) navigate(`/orphanage/${orphanageId}`, { replace: true });
-      else navigate(`/userdash`, { replace: true });
+      else navigate(`/user/dashboard`, { replace: true });
 
 
     } catch (err) {

@@ -2,7 +2,7 @@ import AdminDash from "./components/AdminDash";
 
 import OrphanageForm from "./components/OrphanageForm";
 import Orphanage from "./components/Orphanage";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Outlet } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
@@ -10,9 +10,9 @@ import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
 import UpdateAdminDash from "./components/UpdateAdminDash";
-import FosteringApplication from "./components/FosteringApplication";
-import FosteringApplication2 from "./components/FosteringApplication2";
-import FosteringApplication3 from "./components/FosteringApplication3";
+import FosteringApplication from "./components/User Dashboard/FosteringApplication";
+import FosteringApplication2 from "./components/User Dashboard/FosteringApplication2";
+import FosteringApplication3 from "./components/User Dashboard/FosteringApplication3";
 import FosteringMain from "./components/FosteringMain";
 import Payment from "./components/Payment";
 
@@ -30,7 +30,10 @@ import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
 
 
-
+import UserDashboard from "./components/User Dashboard/Main";
+import UserNavBar from "./components/User Dashboard/NavBar";
+import Application from "./components/User Dashboard/Application";
+import UserInbox from "./components/User Dashboard/Inbox";
 
 const ROLES = {
   'User': 1010,
@@ -56,7 +59,7 @@ function App() {
 
         <Route path='/donateNow' element={<Payment />} />
 
-        
+
         <Route path='/notification' element={<Notification />} />
 
         <Route path='/mycases' element={<UserCaseList />} />
@@ -77,7 +80,6 @@ function App() {
 
           </Route>
 
-          <Route path='/myapplications' element={<Myapplications />} />
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<FosteringMain />} />
@@ -101,26 +103,32 @@ function App() {
             <Route path='/case/:caseId' element={<Case />} />
           </Route>
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
-            <Route path='/userdash' element={<FosteringMain />} />
-            <Route path='/inbox' element={<Inbox />} />
-            <Route path='fosteringmain' element={<FosteringMain />} />
-            <Route path='fostering' element={<FosteringApplication />} />
-            <Route path='fostering2' element={<FosteringApplication2 />} />
-            <Route path='fostering3' element={<FosteringApplication3 />} />
+          {/*user routes*/}
+          <Route path="/user" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
+            <Route
+              element={(
+                <>
+                  <UserNavBar /> {/* Navbar will always be present here */}
+                  <Outlet /> {/* Outlet is used to render child routes */}
+                </>
+              )}
+            >
+              {/*old routes : not needed*/}
+              <Route path='userdash' element={<FosteringMain />} />
+              <Route path='fosteringmain' element={<FosteringMain />} />
+              <Route path='applications' element={<FosteringApplication />} />
+              <Route path='fostering2' element={<FosteringApplication2 />} />
+              <Route path='fostering3' element={<FosteringApplication3 />} />
+              <Route path='myapplications' element={<Myapplications />} />
+              {/*new routes*/}
+              <Route path='dashboard' element={<UserDashboard />} />
+              <Route path='application' element={<Application />} />
+              <Route path='inbox' element={<UserInbox />} />
+            </Route>
           </Route>
 
 
         </Route>
-
-
-
-
-
-
-
-
-
 
 
         {/* <Route path="/" element={<Authorization />} />

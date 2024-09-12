@@ -1,50 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AgeSlider from './AgeSlider';
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import AlertModal from './AlertModal';
+import AgeSlider from '../AgeSlider';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import AlertModal from '../AlertModal';
+import toast from 'react-hot-toast';
 
-export default function FosteringApplication3() {
+export default function FosteringApplication3({ setStep2, setStep3, fosteringDetails, setFosteringDetails }) {
+
   const axiosPrivate = useAxiosPrivate();
-  
-  const location = useLocation();
-  const navigate = useNavigate();
-  const fosteringDetails2 = location.state || {}; 
-  
- const [showModal,setShowModal] = useState(false);
-  const [ageRange, setAgeRange] = useState([0, 18]); 
-  const [fosteringDetails3, setFosteringDetails3] = useState({
-    ...fosteringDetails2,
-    genderofchild: "",
-    ageRange: [0, 18],
-    reasonforfostering: "",
-    specificneeds: "",
-    additionalcomments: "",
-  });
+  const navigate = useNavigate()
+  const [showModal, setShowModal] = useState(false);
+
 
   useEffect(() => {
-    console.log(fosteringDetails3);
-  }, [fosteringDetails3]);
+    console.log(fosteringDetails);
+  }, [fosteringDetails]);
 
   const handleChange = (e) => {
-    setFosteringDetails3({
-      ...fosteringDetails3,
+    setFosteringDetails({
+      ...fosteringDetails,
       [e.target.name]: e.target.value,
     });
   };
 
   const updateAgeRange = (value) => {
-    setFosteringDetails3({
-      ...fosteringDetails3,
+    setFosteringDetails({
+      ...fosteringDetails,
       ageRange: value,
     });
-    setAgeRange(value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosPrivate.post("/application", fosteringDetails3, {
+      const response = await axiosPrivate.post("/application", fosteringDetails, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -52,17 +41,12 @@ export default function FosteringApplication3() {
 
       if (response.status === 200) {
         // Reset form fields
-        setFosteringDetails3({
-          ...fosteringDetails3,
-          genderofchild: "",
-          ageRange: [0, 18],
-          reasonforfostering: "",
-          specificneeds: "",
-          additionalcomments: "",
+        setFosteringDetails({
+          ageRange: [0, 18]
         });
-        console.log("Application added successfully");
+        toast.success("Application added successfully");
         setShowModal(true);
-      
+
       } else {
         console.error("Failed to add application");
       }
@@ -73,18 +57,20 @@ export default function FosteringApplication3() {
 
   const closeModal = () => {
     setShowModal(false);
-    navigate('/fosteringmain')
+    navigate('/user/dashboard')
   };
 
+  const goBack = (e) => {
+    e.preventDefault();
+    setStep2(true)
+    setStep3(false)
+  }
+
   return (
-    <div className="mx-10">
-      <h1 className="relative my-10 text-2xl font-bold text-center">
-        About the Kids
-        <span className="block w-[100px] h-1 bg-primary mx-auto mt-3"></span>
-      </h1>
+    <div className="mx-2 sm:mx-5 md:mx-10">
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-        <div className="flex flex-row gap-8">
-          <div className="flex flex-col w-1/2">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col w-full lg:w-1/2">
             <label className="mb-3 font-semibold text-md" htmlFor="genderofchild">
               Gender of Child you prefer:
             </label>
@@ -94,6 +80,7 @@ export default function FosteringApplication3() {
               name="genderofchild"
               id="genderofchild"
               required
+              value={fosteringDetails.genderofchild}
             >
               <option value="" disabled selected>Select gender</option>
               <option value="Male">Male</option>
@@ -101,12 +88,12 @@ export default function FosteringApplication3() {
               <option value="any">Any</option>
             </select>
           </div>
-          <div className="flex flex-col w-1/2" name='ageRange'>
-            <AgeSlider ageRange={ageRange} setAgeRange={updateAgeRange} />
+          <div className="flex flex-col w-full lg:w-1/2 my-auto">
+            <AgeSlider ageRange={fosteringDetails.ageRange} setAgeRange={updateAgeRange} />
           </div>
         </div>
 
-        <div className="flex flex-row gap-8">
+        <div className="flex flex-col gap-8">
           <div className="flex flex-col w-full">
             <label className="mb-3 font-semibold text-md" htmlFor="reasonforfostering">
               Reason for fostering:
@@ -118,10 +105,12 @@ export default function FosteringApplication3() {
               id="reasonforfostering"
               name="reasonforfostering"
               required
+              value={fosteringDetails.reasonforfostering}
             />
           </div>
         </div>
-        <div className="flex flex-row gap-8">
+
+        <div className="flex flex-col gap-8">
           <div className="flex flex-col w-full">
             <label className="mb-3 font-semibold text-md" htmlFor="specificneeds">
               Any specific needs or disabilities you are willing to consider:
@@ -133,11 +122,12 @@ export default function FosteringApplication3() {
               id="specificneeds"
               name="specificneeds"
               required
+              value={fosteringDetails.specificneeds}
             />
           </div>
         </div>
 
-        <div className="flex flex-row gap-8">
+        <div className="flex flex-col gap-8">
           <div className="flex flex-col w-full">
             <label className="mb-3 font-semibold text-md" htmlFor="additionalcomments">
               Additional Comments we should be aware of:
@@ -149,33 +139,35 @@ export default function FosteringApplication3() {
               id="additionalcomments"
               name="additionalcomments"
               required
+              value={fosteringDetails.additionalcomments}
             />
           </div>
         </div>
-        <div className="flex flex-row gap-8">
-          <button 
-            type="submit"
-            className="w-[200px] h-[40px] bg-primary text-white rounded-md mt-5 mx-auto"
-          >
-            Submit
-          </button>
-          <button 
+
+        <div className="flex flex-row justify-between mt-5">
+          <button
             type="button"
-            className="w-[200px] h-[40px] bg-primary text-white rounded-md mt-5 mx-auto"
-            onClick={() => window.history.back()}
+            className="my-2 items-center justify-center w-40 text-primary border-2 border-primary px-4 py-2 text-xl flex gap-3 hover:gap-5  hover:text-white hover:bg-primary transition-all duration-300 group text-center"
+            onClick={goBack}
           >
             Back
           </button>
+          <button
+            type="submit"
+            className="my-2 items-center justify-center w-40 text-primary border-2 border-primary px-4 py-2 text-xl flex gap-3 hover:gap-5  hover:text-white hover:bg-primary transition-all duration-300 group text-center"
+          >
+            Submit
+          </button>
+
         </div>
       </form>
 
-
-<AlertModal
-showModal={showModal}
-onClose={closeModal}
-message="Your application has been submitted for review"
-/>
-
+      <AlertModal
+        showModal={showModal}
+        onClose={closeModal}
+        message="Your application has been submitted for review"
+      />
     </div>
+
   );
 }

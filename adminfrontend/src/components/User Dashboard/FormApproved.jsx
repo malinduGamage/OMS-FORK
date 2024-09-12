@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { MdOutlineDone } from "react-icons/md";
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import toast from 'react-hot-toast';
+import ProgressBar from './ProgressBar';
 
-export const UserApplicationModal = ({ application, closeModal }) => {
+const FormApproved = ({ application, setCurrentState }) => {
     const axiosPrivate = useAxiosPrivate()
     const [children, setChildren] = useState([])
     const [selectedChild, setSelectedChild] = useState(null)
@@ -21,18 +24,6 @@ export const UserApplicationModal = ({ application, closeModal }) => {
         fetchChildren()
     }, [axiosPrivate, application.agerange, application.genderofchild])
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-            closeModal()
-        }
-    }
-
-    useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown)
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown)
-        }
-    }, [])
 
     const handleSelectChild = (child) => {
         setSelectedChild(child)
@@ -50,7 +41,8 @@ export const UserApplicationModal = ({ application, closeModal }) => {
 
                 if (response.status === 201) {
                     console.log('Proceeding with adoption for child:', selectedChild);
-                    closeModal();
+                    toast.success('Successful')
+                    setCurrentState(4)
                 } else {
                     console.error('Failed to proceed with adoption:', response.data.message);
                 }
@@ -60,15 +52,30 @@ export const UserApplicationModal = ({ application, closeModal }) => {
             } catch (error) {
                 console.error('Error proceeding with adoption:', error);
             }
-            closeModal()
         }
     }
 
     return (
-        <div >
-            <div id="scrollview" className="bg-white rounded-lg shadow-xl w-[95%] h-[95vh]">
-                <div className="w-full  h-[80vh] overflow-y-auto p-6">
-                    <h1 className="text-2xl font-bold text-center text-primary mb-4">Your application has been accepted!</h1>
+        <div>
+            <div className="flex flex-col items-center w-3/5 text-center mx-auto">
+                <ProgressBar step={3} />
+                <h1 className='font-bold text-4xl sm:text-5xl mt-10'>
+                    <p className='text-orange-500 mb-1'>
+                        Congratulations!</p>
+                    Your Fostering Application
+                    Has Been Approved
+                    <MdOutlineDone className='text-white bg-green-500 rounded-full mx-auto mt-5' /></h1>
+            </div>
+            <div className="flex flex-col text-center mt-10 text-lg">
+                <h1 className='font-bold text-4xl'>Whats next?</h1>
+                <p >Based on your preferences and the best interests of the children in our care,
+                    we have selected suitable children for your family</p>
+                <p className='font-bold text-orange-600'>Now you have to select a child from given choices. you can contact relevant orphanages for further information</p>
+            </div>
+
+
+            <div id="scrollview" className="my-5">
+                <div className="w-full border h-[80vh] overflow-y-auto p-6">
                     <div>
                         <h3 className="text-xl font-semibold text-gray-800 mb-4">Matching Children per your criteria:</h3>
                         {children.length > 0 ? (
@@ -95,11 +102,10 @@ export const UserApplicationModal = ({ application, closeModal }) => {
                         )}
                     </div>
                 </div>
-                <div className="flex justify-between p-6">
-                    <button onClick={closeModal} className="bg-gray-300 text-gray-700 p-3 rounded-lg transition-all duration-300 hover:bg-gray-400">Close</button>
+                <div className="flex justify-end p-6">
                     <button
                         onClick={handleProceedWithAdoption}
-                        className={`p-3 rounded-lg transition-all duration-300 ${selectedChild ? 'bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                        className={`my-10 items-center justify-center w-72 border-2 px-4 py-3 text-xl flex gap-3 transition-all duration-300 group text-center ${selectedChild ? 'text-primary border-primary bg-white hover:gap-5 hover:text-white hover:bg-primary' : 'text-gray-300 border-gray-300  cursor-not-allowed'}`}
                         disabled={!selectedChild}
                     >
                         Proceed with Adoption
@@ -108,5 +114,8 @@ export const UserApplicationModal = ({ application, closeModal }) => {
             </div>
 
         </div>
+
     )
 }
+
+export default FormApproved
