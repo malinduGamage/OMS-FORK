@@ -54,7 +54,7 @@ const getAllCases = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: "An error occurred while fetching cases." });
     }
 };
@@ -81,7 +81,7 @@ const createCase = async (req,res)=>{
         
     } catch (error) {
 
-        console.error(error);
+        console.log(error);
     res.status(500).json({
       success: false,
       message: "An error occurred while creating the case."
@@ -125,7 +125,7 @@ const getCaseById = async (req, res) => {
         res.status(200).json(caseItem);
 
     } catch (error) {
-        console.error("Error fetching case details:", error);
+        console.log("Error fetching case details:");
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -223,7 +223,7 @@ const setMeeting = async (req,res)=>{
         res.status(200).json({message:"Meeting set"})
         
     } catch (error) {
-        console.error('Error updating case with meeting', error);
+        console.log('Error updating case with meeting');
     res.status(500).json({ message: 'Failed to set meeting', error });
         
     }

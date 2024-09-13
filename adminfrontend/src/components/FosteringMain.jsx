@@ -45,7 +45,7 @@ export default function FosteringMain() {
       </aside>
 
       <div className="flex h-screen">
-        <div className="pt-32 bg-red-200 pl-96 w-3/4 pr-16">
+        <div className="pt-32 pl-96 w-3/4 pr-16">
           <h2 className="font-heading mb-8 text-3xl font-bold lg:text-4xl">Steps to Foster a Child</h2>
           {steps.map((step, index) => (
             <div className="flex" key={index}>
@@ -72,9 +72,9 @@ export default function FosteringMain() {
             </div>
           ))}
         </div>
-        <div className="w-1/2">
+        {/* <div className="w-1/2">
           <Carousel images={slideImages} />
-        </div>
+        </div> */}
       </div>
 
       

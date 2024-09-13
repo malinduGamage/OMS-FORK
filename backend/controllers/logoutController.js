@@ -35,7 +35,7 @@ const handleLogout = async (req, res) => {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
         res.sendStatus(204);
     } catch (error) {
-        console.error('Database query failed:', error);
+        console.log('Database query failed:');
         res.status(500).json({
             success: false,
             message: 'An error occurred while logging out.'
