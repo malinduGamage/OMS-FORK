@@ -34,7 +34,7 @@ export default function FosteringMain() {
   return (
     <div>
       <Navbar />
-      <aside id="cta-button-sidebar" className="fixed top-20 left-0 z-40 w-80 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+      <aside id="cta-button-sidebar" className="fixed left-0 z-40 h-screen transition-transform -translate-x-full top-20 w-80 sm:translate-x-0" aria-label="Sidebar">
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50">
           <ul className="space-y-2 font-medium">
             <li><a href="/fostering" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Fostering Application</a></li>
@@ -45,11 +45,11 @@ export default function FosteringMain() {
       </aside>
 
       <div className="flex h-screen">
-        <div className="pt-32 bg-red-200 pl-96 w-3/4 pr-16">
-          <h2 className="font-heading mb-8 text-3xl font-bold lg:text-4xl">Steps to Foster a Child</h2>
+        <div className="w-3/4 pt-32 pr-16 bg-red-200 pl-96">
+          <h2 className="mb-8 text-3xl font-bold font-heading lg:text-4xl">Steps to Foster a Child</h2>
           {steps.map((step, index) => (
             <div className="flex" key={index}>
-              <div className="mr-4 flex flex-col items-center">
+              <div className="flex flex-col items-center mr-4">
                 <div className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${index === steps.length - 1 ? 'border-primary bg-primary' : 'border-primary'}`}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${index === steps.length - 1 ? 'text-white' : 'text-primary'}`}>
                     {index === steps.length - 1 ? (
@@ -63,7 +63,7 @@ export default function FosteringMain() {
                     )}
                   </svg>
                 </div>
-                {index < steps.length - 1 && <div className="h-full w-px bg-gray-300"></div>}
+                {index < steps.length - 1 && <div className="w-px h-full bg-gray-300"></div>}
               </div>
               <div className="pt-1 pb-8">
                 <p className="mb-2 text-xl font-bold text-gray-900">{step.title}</p>
@@ -73,7 +73,7 @@ export default function FosteringMain() {
           ))}
         </div>
         <div className="w-1/2">
-          <Carousel images={slideImages} />
+          {/* <Carousel images={slideImages} /> */}
         </div>
       </div>
 
