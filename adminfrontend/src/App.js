@@ -28,6 +28,7 @@ import CaseSW from "./components/CaseSW";
 
 import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
+import VideoChat from "./components/VideoChat";
 
 //user components
 import UserDashboard from "./components/User Dashboard/Main";
@@ -64,6 +65,7 @@ function App() {
         <Route path='/notification' element={<Notification />} />
         <Route path='/mycases' element={<UserCaseList />} />
 
+
         {/* Protected Routes */}
         <Route element={<PersistLogin />}>
 
@@ -72,9 +74,9 @@ function App() {
             <Route path="/addOrphanage" element={<OrphanageForm />} />
           </Route>
 
-          {/* Admin Routes */}
-          <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head, ROLES.User]} />}>
-            <Route path='/case/:caseId' element={<Case />} />
+          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
+            <Route path="/chatroom/:roomId" element={<VideoChat />} />
+            <Route path='/mycases' element={<UserCaseList />} />
           </Route>
 
           {/*orphanage routes*/}
@@ -91,6 +93,7 @@ function App() {
               <Route path=':id/edit' element={<UpdateAdminDash />} />
               <Route path=':id/child/:childid' element={<Child />} />
               <Route path=':id/case/:caseId' element={<Case />} />
+              <Route path=':id/edit' element={<UpdateAdminDash />} />
             </Route>
           </Route>
 

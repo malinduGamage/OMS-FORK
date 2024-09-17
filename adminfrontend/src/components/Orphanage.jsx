@@ -119,7 +119,7 @@ const Orphanage = () => {
             </div>
 
             {/* Scrollable side */}
-            <div className="lg:ml-[20%] bg-gray-50 w-full h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="lg:ml-[20%] pt-5 bg-gray-50 w-full h-[calc(100vh-80px)] overflow-y-auto">
               {renderTabContent()}
             </div>
           </div>

@@ -84,7 +84,7 @@ const Login = () => {
         toast.error("No Server Response");
         //setFormError("No Server Response");
       } else if (err.response?.status === 400) {
-        toast.error("Missing Username or Password");
+        toast.error("Missing Email or Password");
         //setFormError("Missing Username or Password");
       } else if (err.response?.status === 401) {
         toast.error("Unauthorized");

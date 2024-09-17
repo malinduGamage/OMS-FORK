@@ -21,6 +21,12 @@ router.route('/byUser')
 router.route('/phase1')
 .put(verifyRoles(ROLES_LIST.Head,ROLES_LIST.SocialWorker),caseController.phase1Completed)
 
+router.route('/meetings')
+.get(verifyRoles(ROLES_LIST.Head,ROLES_LIST.SocialWorker,ROLES_LIST.User),caseController.getMeetings)
+.post(verifyRoles(ROLES_LIST.Head,ROLES_LIST.SocialWorker),caseController.setMeeting)
+.put(verifyRoles(ROLES_LIST.Head,ROLES_LIST.SocialWorker),caseController.updateMeeting)
+
+
 module.exports = router
 
 

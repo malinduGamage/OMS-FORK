@@ -19,18 +19,18 @@ const handleNewUser = async (req, res) => {
             }
         });
 
-        // Hash the password
+      
         const hashedPassword = await bcrypt.hash(password, 10);
 
         let result;
         if (!user) {
-            // Insert new user
+           
             result = await prisma.users.create({
                 data: {
                     username: username,
                     password: hashedPassword,
                     email: email,
-                    telno: +telno, // Convert to integer otherwise query will fail
+                    telno: +telno, 
                     roles: { 'User': 1010 }
                 }
             });
