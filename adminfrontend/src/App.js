@@ -29,11 +29,16 @@ import CaseSW from "./components/CaseSW";
 import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
 
-
+//user components
 import UserDashboard from "./components/User Dashboard/Main";
 import UserNavBar from "./components/User Dashboard/NavBar";
 import Application from "./components/User Dashboard/Application";
 import UserInbox from "./components/User Dashboard/Inbox";
+
+//orphanage components
+import OrphanageNavBar from "./components/Orphanage Dashboard/NavBar";
+import OrphanageDashboard from "./components/Orphanage Dashboard/Main";
+import SideBar from "./components/Orphanage Dashboard/SideBar";
 
 const ROLES = {
   'User': 1010,
@@ -55,52 +60,38 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
-
-
         <Route path='/donateNow' element={<Payment />} />
-
-
         <Route path='/notification' element={<Notification />} />
-
         <Route path='/mycases' element={<UserCaseList />} />
 
-
         {/* Protected Routes */}
-
         <Route element={<PersistLogin />}>
+
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
             <Route path='/admin' element={<AdminDash />} />
             <Route path="/addOrphanage" element={<OrphanageForm />} />
           </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
-            <Route path='/orphanage/:id' element={<Orphanage />} />
-            <Route path='/orphanage/:id/child/:childid' element={<Child />} />
 
-            <Route path='/orphanage/:id/case/:caseId' element={<Case />} />
-
-          </Route>
-
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
-            <Route path='/userdash' element={<FosteringMain />} />
-          </Route>
-
-
-
-
-
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Head]} />}>
-
-            <Route path='/orphanage/:id' element={<Orphanage />} />
-            <Route path='/orphanage/:id/edit' element={<UpdateAdminDash />} />
-
-          </Route>
-
-
+          {/* Admin Routes */}
           <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head, ROLES.User]} />}>
-
             <Route path='/case/:caseId' element={<Case />} />
+          </Route>
+
+          {/*orphanage routes*/}
+          <Route path="/orphanage" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
+            <Route
+              element={(
+                <>
+                  <OrphanageNavBar />
+                  <Outlet />
+                </>
+              )}
+            >
+              <Route path=':id' element={<Orphanage />} />
+              <Route path=':id/edit' element={<UpdateAdminDash />} />
+              <Route path=':id/child/:childid' element={<Child />} />
+              <Route path=':id/case/:caseId' element={<Case />} />
+            </Route>
           </Route>
 
           {/*user routes*/}
@@ -108,8 +99,8 @@ function App() {
             <Route
               element={(
                 <>
-                  <UserNavBar /> {/* Navbar will always be present here */}
-                  <Outlet /> {/* Outlet is used to render child routes */}
+                  <UserNavBar />
+                  <Outlet />
                 </>
               )}
             >
@@ -126,7 +117,6 @@ function App() {
               <Route path='inbox' element={<UserInbox />} />
             </Route>
           </Route>
-
 
         </Route>
 

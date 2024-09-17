@@ -70,7 +70,6 @@ const Login = () => {
 
       setAuth({ accessToken, roles, orphanageId, userId, username });
 
-
       setEmail("");
       setPassword("");
       toast.success("Login Successful");
