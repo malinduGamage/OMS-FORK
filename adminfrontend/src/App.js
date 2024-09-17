@@ -28,6 +28,7 @@ import CaseSW from "./components/CaseSW";
 
 import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
+import VideoChat from "./components/VideoChat";
 
 
 
@@ -59,7 +60,9 @@ function App() {
         
         <Route path='/notification' element={<Notification />} />
 
-        <Route path='/mycases' element={<UserCaseList />} />
+       
+
+       
 
 
         {/* Protected Routes */}
@@ -81,6 +84,8 @@ function App() {
 
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
             <Route path='/userdash' element={<FosteringMain />} />
+            <Route path="/chatroom/:roomId" element={<VideoChat/>}/>
+            <Route path='/mycases' element={<UserCaseList />} />
           </Route>
 
 

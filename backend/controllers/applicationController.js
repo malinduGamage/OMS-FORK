@@ -77,7 +77,7 @@ const createApplication = async (req, res) => {
       application: newApplication,
     });
   } catch (error) {
-    console.error("Database query failed:", error);
+    console.log("Database query failed:");
     res.status(500).json({
       success: false,
       message: "An error occurred while adding the application.",
@@ -96,7 +96,7 @@ const getApplications = async (req, res) => {
       applicationList:applications,
     });
   } catch (error) {
-    console.error("Database query failed:", error);
+    console.log("Database query failed:");
     res.status(500).json({
       success: false,
       message: "An error occurred while retrieving the pending applications.",
@@ -163,7 +163,7 @@ const acceptApplication = async(req,res)=>{
     res.json({success:true})
     
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({
       success: false,
       message: "An error occurred while accepting application"

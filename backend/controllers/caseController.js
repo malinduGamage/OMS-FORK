@@ -54,7 +54,7 @@ const getAllCases = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({ error: "An error occurred while fetching cases." });
     }
 };
@@ -81,7 +81,7 @@ const createCase = async (req,res)=>{
         
     } catch (error) {
 
-        console.error(error);
+        console.log(error);
     res.status(500).json({
       success: false,
       message: "An error occurred while creating the case."
@@ -125,7 +125,7 @@ const getCaseById = async (req, res) => {
         res.status(200).json(caseItem);
 
     } catch (error) {
-        console.error("Error fetching case details:", error);
+        console.log("Error fetching case details:");
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -206,8 +206,94 @@ const phase1Completed = async (req, res) => {
 
 }
 
+const setMeeting = async (req,res)=>{
+
+    try {
+
+        const {caseId,meeting} = req.body;
+
+
+
+        const setMeeting = await prisma.cases.update({
+            where: { caseid:caseId },
+            data: { meetings: { push: meeting } }  
+          });
+          
+
+        res.status(200).json({message:"Meeting set"})
+        
+    } catch (error) {
+        console.log('Error updating case with meeting');
+    res.status(500).json({ message: 'Failed to set meeting', error });
+        
+    }
+
+}
+
+const getMeetings = async(req, res) => {
+
+    try {
+
+        const { caseid } = req.query;
+
+        const caseWithMeetings = await prisma.cases.findUnique({
+            where: { caseid: caseid },
+            select: { meetings: true }
+        });
+
+        res.json({meetings:caseWithMeetings.meetings})
+
+
+        
+    } catch (error) {
+        console.error('Error fetching meetings', error);
+    res.status(500).json({ message: 'Failed to fetch meetings', error });
+        
+    }
+}
+
+const updateMeeting = async (req, res) => {
+    try {
+      const { caseid } = req.query;
+      const { meeting } = req.body;
+  
+      
+      const { date, report } = meeting;
+
+// Step 1: Retrieve the current case object
+const currentCase = await prisma.cases.findUnique({
+  where: { caseid },
+});
+
+// Step 2: Find the index of the meeting object with the matching date
+const updatedMeetings = currentCase.meetings.map(meeting => {
+  if (meeting.date === date) {
+    return { ...meeting, report: report }; // Update the report
+  }
+  return meeting; // Leave other meetings unchanged
+});
+
+// Step 3: Update the case with the new meetings array
+const updatedCase = await prisma.cases.update({
+  where: { caseid },
+  data: {
+    meetings: updatedMeetings,
+  },
+});
+
+
+
+      res.status(200).json({ message: 'Meeting updated successfully', updatedCase });
+    } catch (error) {
+      console.error('Error updating meeting', error);
+      res.status(500).json({ message: 'Failed to update meeting', error });
+    }
+  };
+  
+  
 
 
 
 
-module.exports = {createCase , getAllCases,getCaseById,getUserCases,phase1Completed}
+
+module.exports = {createCase , getAllCases,getCaseById,getUserCases,phase1Completed,setMeeting,getMeetings,updateMeeting}
