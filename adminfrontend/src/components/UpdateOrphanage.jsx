@@ -1,29 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useParams } from "react-router-dom";
 
-const UpdateAdminDash = () => {
+const UpdateOrphanage = () => {
   const axiosPrivate = useAxiosPrivate();
   const { id } = useParams();
 
-  // List of districts in Sri Lanka
-  const districts = [
-    "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
-    "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
-    "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
-    "Matale", "Matara", "Monaragala", "Mullaitivu", "Nuwara Eliya",
-    "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"
-  ];
-
-  // State with required fields including district
   const [orphanageDetails, setOrphanageDetails] = useState({
     orphanagename: "",
     address: "",
     capacity: 0,
     telno: "",
     head_email: "",
-    district: "" // New state field for district
+    // New state field for district
   });
+
+  useEffect(() => {
+    // Define an async function inside the useEffect
+    console.log(id); // Use the destructured variable directly
+    console.log("useEffect works");
+
+    const fetchOrphanageDetails = async () => {
+      try {
+        const response = await axiosPrivate.get(`/orphanage/${id}`);
+        console.log(response);
+        setOrphanageDetails({
+          orphanagename: response.data.data.orphanagename,
+          address: response.data.data.address,
+          capacity: response.data.data.capacity,
+          telno: response.data.data.telno,
+          head_email: response.data.data.head_email,
+        });
+        console.log(orphanageDetails);
+      } catch (error) {
+        console.error("Failed to fetch orphanage details:", error);
+      }
+    };
+
+    fetchOrphanageDetails();
+  }, [id]);
 
   // Handler to update the state when input changes
   const detailHandler = (e) => {
@@ -34,16 +49,20 @@ const UpdateAdminDash = () => {
   };
 
   // Function to handle form submission using axios
-  const updateOrphanage = async (e) => {
+  const updatingOrphanage = async (e) => {
     e.preventDefault();
     try {
-        console.log("Request ID:", id); // Debug line   
-        console.log("Request Body:", orphanageDetails); // Debug line
-      const response = await axiosPrivate.put(`/orphanage/:id`, orphanageDetails, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      console.log("Request ID:", id); // Debug line
+      console.log("Request Body:", orphanageDetails); // Debug line
+      const response = await axiosPrivate.put(
+        `/orphanage/${id}`,
+        orphanageDetails,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.status === 200) {
         console.log("Orphanage Updated successfully");
@@ -54,8 +73,7 @@ const UpdateAdminDash = () => {
           address: "",
           capacity: 0,
           telno: "",
-          head_email: "",
-          district: "" // Reset district as well
+          head_email: "", // Reset district as well
         });
       } else {
         console.error("Failed to Update orphanage");
@@ -72,10 +90,13 @@ const UpdateAdminDash = () => {
         <span className="block w-[100px] h-1 bg-primary mx-auto mt-3"></span>
       </h1>
 
-      <form className="flex flex-col gap-5" onSubmit={updateOrphanage}>
+      <form className="flex flex-col gap-5" onSubmit={updatingOrphanage}>
         <div className="flex flex-col gap-5 md:flex-row">
           <div className="flex flex-col w-full">
-            <label className="mb-3 font-semibold text-md" htmlFor="orphanagename">
+            <label
+              className="mb-3 font-semibold text-md"
+              htmlFor="orphanagename"
+            >
               Orphanage Name:
             </label>
             <input
@@ -155,7 +176,7 @@ const UpdateAdminDash = () => {
           </div>
         </div>
 
-        <div className="flex flex-col w-full">
+        {/* <div className="flex flex-col w-full">
           <label className="mb-3 font-semibold text-md" htmlFor="district">
             District:
           </label>
@@ -174,7 +195,7 @@ const UpdateAdminDash = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         <button
           type="submit"
@@ -187,4 +208,4 @@ const UpdateAdminDash = () => {
   );
 };
 
-export default UpdateAdminDash;
+export default UpdateOrphanage;

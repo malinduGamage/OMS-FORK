@@ -34,12 +34,6 @@ app.use(cookieParser())
 
 const verifyJWT = require('./middleware/verifyJWT');
 
-
-
-
-
-
-
 app.use('/login', require('./routes/login'))
 
 app.use('/register', require('./routes/register'))

@@ -34,8 +34,14 @@ const getChild = async (req, res) => {
 const getOrphanageChildren = async (req, res) => {
     try {
         const orphanageid = req.params.orphanageid;
-        //check if user is authorized to view child
-        if (!req.roles.includes(ROLES_LIST.Admin) && (!req.orphanageid) || (req.orphanageid !== orphanageid)) return res.sendStatus(401);
+        console.log(orphanageid)
+        // req.orphanageId = req.headers['orphanageid']; // Get orphanageId from headers
+        // const orphanageId = req.orphanageId; // Now use req.orphanageId as needed
+        // console.log(orphanageId);
+        // // console.log(req.roles)
+        // //check if user is authorized to view child
+        if (!req.roles.includes(ROLES_LIST.Admin) && ((!req.orphanageid) || (req.orphanageid !== orphanageid))) return res.sendStatus(401);
+
 
         const childrenList = await prisma.child.findMany({
             where: {
