@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
-const ROLES_LIST = require('../config/roles_list');
-const { getChild } = require('../controllers/childController');
+const ROLES_LIST = require('../../config/roles_list');
+const { getChild } = require('../../controllers/childController');
 
 // Mock the Prisma Client
 jest.mock('@prisma/client', () => {

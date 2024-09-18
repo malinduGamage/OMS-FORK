@@ -100,7 +100,7 @@ const createAddChildRequest = async (req, res) => {
     const { orphanageid } = req.body;
     //check if orphanageid is present and user is authorized to create request
     if ((!req?.orphanageid) || (orphanageid !== req.orphanageid)) {
-        return res.status(401).status({ success: false, message: 'Unauthorized' });
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
 
     try {

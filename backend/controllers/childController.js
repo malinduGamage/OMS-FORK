@@ -4,7 +4,6 @@ const ROLES_LIST = require('../config/roles_list')
 
 const getChild = async (req, res) => {
     const childid = req.params.childid
-    console.log(childid)
 
     try {
         const child = await prisma.child.findUnique({
@@ -55,7 +54,7 @@ const getOrphanageChildren = async (req, res) => {
 
     } catch (error) {
 
-        console.error('Database query failed:', error);
+        console.log('Database query failed:', error);
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching children.'
@@ -65,9 +64,9 @@ const getOrphanageChildren = async (req, res) => {
 
 const addChild = async (req) => {
     //extracting data from request
-    const { orphanageid, name, date_of_birth, gender, nationality, religion, medicaldetails, educationaldetails } = req.body;
+    const { orphanageid } = req.body;
     //check if user is authorized to add child
-    if ((!req.orphanageid) && (orphanageid !== req.orphanageid)) return 401
+    if ((!req.orphanageid) || (orphanageid !== req.orphanageid)) return 401
 
     try {//database call
         const newChild = await prisma.child.create({
@@ -82,7 +81,7 @@ const addChild = async (req) => {
         }
 
     } catch (error) {
-        console.error('Database query failed:', error);
+        console.log('Database query failed:', error);
         return 500
     }
 }
