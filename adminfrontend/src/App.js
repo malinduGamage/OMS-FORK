@@ -9,7 +9,7 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
-import UpdateAdminDash from "./components/UpdateAdminDash";
+import UpdateOrphanage from "./components/UpdateOrphanage";
 import FosteringApplication from "./components/FosteringApplication";
 import FosteringApplication2 from "./components/FosteringApplication2";
 import FosteringApplication3 from "./components/FosteringApplication3";
@@ -91,7 +91,7 @@ function App() {
           <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Head]} />}>
 
             <Route path='/orphanage/:id' element={<Orphanage />} />
-            <Route path='/orphanage/:id/edit' element={<UpdateAdminDash />} />
+            <Route path='/orphanage/:id/edit' element={<UpdateOrphanage />} />
 
           </Route>
 

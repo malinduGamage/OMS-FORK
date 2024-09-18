@@ -113,9 +113,27 @@ const getOrphanage = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching the orphanage.' });
 
   }
-
 }
 
+
+const deleteSocialWorkersByOrphanage = async (req,res) => {
+  try {
+    console.log("inside the deleteScocil worker",req.params.orphanageid)
+      const deletedSocialWorkers = await prisma.socialworker.deleteMany({
+          where: {
+            orphanageid: req.params.orphanageid
+          }
+      });
+      return res.json({ status: 200, deletedCount: deletedSocialWorkers.count });
+
+  } catch (error) {
+      console.error('Database query failed:', error);
+      return { status: 500, error: 'Internal server error' };
+  }
+}
+
+
+
 module.exports = {
-  addSocialWorker, getOrphanage,getAllSocialWorkers
+  addSocialWorker, getOrphanage,getAllSocialWorkers,deleteSocialWorkersByOrphanage
 }

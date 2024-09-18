@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const orphanageController = require('../../controllers/orphanageController')
-const updateOrphanageController = require('../../controllers/updateOrphanageController')
 
 // const deleteOrphanageController = require('../../controllers/deleteOrphanageController')
 const ROLES_LIST = require('../../config/roles_list')
@@ -10,11 +9,8 @@ const ROLES_LIST = require('../../config/roles_list')
 const verifyRoles = require('../../middleware/verifyRoles')
 
 router.route('/')
-    .post(verifyRoles(ROLES_LIST.Admin), orphanageController.addOrphanage)
     .get(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Head, ROLES_LIST.SocialWorker, ROLES_LIST.Staff), orphanageController.getAllOrphanage)
-
-router.route('/:id')
-    .put(verifyRoles(ROLES_LIST.Admin), updateOrphanageController.updateOrphanage)
+    .post(verifyRoles(ROLES_LIST.Admin), orphanageController.addOrphanage)
 
 router.route('/byHead')
     .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getOrphanageByHead)
@@ -26,7 +22,9 @@ router.route('/head')
 router.route('/overview')
     .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getOverview)
 
-// router.route('/:id')
-// .delete(verifyRoles(ROLES_LIST.Admin),deleteOrphanageController.deleteOrphanage)
+router.route('/:id')
+    .delete(verifyRoles(ROLES_LIST.Admin),orphanageController.deleteOrphanage)
+    .put(verifyRoles(ROLES_LIST.Admin), orphanageController.updateOrphanage)
+    .get(verifyRoles(ROLES_LIST.Admin), orphanageController.getOrphanageDetailsById)
 
 module.exports = router
