@@ -50,7 +50,7 @@ const createApplication = async (req, res) => {
         agerange: ageRange,
         firstname: firstname,
         lastname: lastname,
-        dob: dobISO, 
+        dob: dobISO,
         nic: nic,
         occupation: occupation,
         nationality: nationality,
@@ -93,7 +93,7 @@ const getApplications = async (req, res) => {
 
     res.json({
       success: true,
-      applicationList:applications,
+      applicationList: applications,
     });
   } catch (error) {
     console.log("Database query failed:");
@@ -109,125 +109,149 @@ const getChildren = async (req, res) => {
   const { agerange, gender } = req.body
 
   try {
-      // Calculate the date ranges based on the agerange
-      const currentDate = new Date()
-      const maxDate = new Date(currentDate.setFullYear(currentDate.getFullYear() - agerange[0]))
-      const minDate = new Date(currentDate.setFullYear(currentDate.getFullYear() - agerange[1]))
+    // Calculate the date ranges based on the agerange
+    const currentDate = new Date()
+    const maxDate = new Date(currentDate.setFullYear(currentDate.getFullYear() - agerange[0]))
+    const minDate = new Date(currentDate.setFullYear(currentDate.getFullYear() - agerange[1]))
 
-      // Fetch the children from the database
-      const childrenList = await prisma.child.findMany({
-          where: {
-              gender: gender,
-              date_of_birth: {
-                  lte: maxDate,
-                  gte: minDate,
-              }
-          },
-          select: {
-              childid: true,
-              orphanageid: true,
-              name: true,
-              orphanage: {
-                  select: {
-                      orphanagename: true
-                  }
-              }
-          }
-      })
-
-      res.json({
-          success: true,
-          children: childrenList
-      })
-
-  } catch (error) {
-      console.error('Error fetching children:', error)
-      res.status(500).json({ error: 'An error occurred while fetching children.' })
-  }
-}
-
-const acceptApplication = async(req,res)=>{
-  try {
-
-    const {applicationid} = req.query
-
-    const accepted = await prisma.application.update({
-      where:{
-        applicationid:applicationid
+    // Fetch the children from the database
+    const childrenList = await prisma.child.findMany({
+      where: {
+        gender: gender,
+        date_of_birth: {
+          lte: maxDate,
+          gte: minDate,
+        }
       },
-      data:{
-        status:'Accepted'
+      select: {
+        childid: true,
+        orphanageid: true,
+        name: true,
+        orphanage: {
+          select: {
+            orphanagename: true
+          }
+        }
       }
     })
 
-    res.json({success:true})
-    
+    res.json({
+      success: true,
+      children: childrenList
+    })
+
+  } catch (error) {
+    console.error('Error fetching children:', error)
+    res.status(500).json({ error: 'An error occurred while fetching children.' })
+  }
+}
+
+const acceptApplication = async (req, res) => {
+  try {
+
+    const { applicationid } = req.query
+
+    const accepted = await prisma.application.update({
+      where: {
+        applicationid: applicationid
+      },
+      data: {
+        status: 'Accepted'
+      }
+    })
+
+    res.json({ success: true })
+
   } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
       message: "An error occurred while accepting application"
     });
-    
+
   }
 }
 
 
-const addToApprovedList = async (req,res)=>{
+const addToApprovedList = async (req, res) => {
   try {
 
-    const {applicationId,childId,parentId} = req.body;
+    const { applicationId, childId, parentId } = req.body;
 
 
     const approvedApplication = await prisma.approvedapplications.create({
       data: {
-          applicationid: applicationId,
-          childid: childId,
-          parentid: parentId,
+        applicationid: applicationId,
+        childid: childId,
+        parentid: parentId,
       },
-  });
+    });
 
-  res.status(201).json({ message: "Application added to approved list"});
-
-
+    res.status(201).json({ message: "Application added to approved list" });
 
 
-    
+
+
+
   } catch (error) {
 
     console.error('Error adding to approved list:', error);
     res.status(500).json({ message: 'Internal server error' });
-    
+
   }
 }
 
-const getApprovedApplications = async (req,res)=>{
+const getApprovedApplications = async (req, res) => {
   try {
 
-    const {orphanageid} = req.query
+    const { orphanageid } = req.query
 
     const approvedApplications = await prisma.approvedapplications.findMany({
-      where:{
-        child:{
-          orphanageid:orphanageid
+      where: {
+        child: {
+          orphanageid: orphanageid
         }
       },
-      include:{
-        application:true,
-        child:true
+      include: {
+        application: true,
+        child: true
       }
     })
 
 
-    return res.status(200).json({approvedList:approvedApplications})
+    return res.status(200).json({ approvedList: approvedApplications })
 
 
-    
+
   } catch (error) {
     console.error('Error fetching approved applications:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
 
+const getApprovedApplicationsByUser = async (req, res) => {
 
-module.exports = {createApplication,getApplications,getChildren,acceptApplication,addToApprovedList,getApprovedApplications};
+  try {
+    const { parentId } = req.params
+    const approvedApplications = await prisma.approvedapplications.findMany({
+      where: {
+        parentid: parentId
+      }
+    })
+
+    return res.status(200).json({ approvedList: approvedApplications })
+
+  } catch (error) {
+    console.error('Error fetching approved applications:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+module.exports = {
+  createApplication,
+  getApplications,
+  getChildren, acceptApplication,
+  addToApprovedList,
+  getApprovedApplications,
+  getApprovedApplicationsByUser
+};

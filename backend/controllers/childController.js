@@ -4,7 +4,6 @@ const ROLES_LIST = require('../config/roles_list')
 
 const getChild = async (req, res) => {
     const childid = req.params.childid
-    console.log(childid)
 
     try {
         const child = await prisma.child.findUnique({
@@ -34,14 +33,8 @@ const getChild = async (req, res) => {
 const getOrphanageChildren = async (req, res) => {
     try {
         const orphanageid = req.params.orphanageid;
-        console.log(orphanageid)
-        // req.orphanageId = req.headers['orphanageid']; // Get orphanageId from headers
-        // const orphanageId = req.orphanageId; // Now use req.orphanageId as needed
-        // console.log(orphanageId);
-        // // console.log(req.roles)
-        // //check if user is authorized to view child
+        //check if user is authorized to view child
         if (!req.roles.includes(ROLES_LIST.Admin) && ((!req.orphanageid) || (req.orphanageid !== orphanageid))) return res.sendStatus(401);
-
 
         const childrenList = await prisma.child.findMany({
             where: {
@@ -61,7 +54,7 @@ const getOrphanageChildren = async (req, res) => {
 
     } catch (error) {
 
-        console.error('Database query failed:', error);
+        console.log('Database query failed:', error);
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching children.'
@@ -71,9 +64,9 @@ const getOrphanageChildren = async (req, res) => {
 
 const addChild = async (req) => {
     //extracting data from request
-    const { orphanageid, name, date_of_birth, gender, nationality, religion, medicaldetails, educationaldetails } = req.body;
+    const { orphanageid } = req.body;
     //check if user is authorized to add child
-    if ((!req.orphanageid) && (orphanageid !== req.orphanageid)) return 401
+    if ((!req.orphanageid) || (orphanageid !== req.orphanageid)) return 401
 
     try {//database call
         const newChild = await prisma.child.create({
@@ -88,7 +81,7 @@ const addChild = async (req) => {
         }
 
     } catch (error) {
-        console.error('Database query failed:', error);
+        console.log('Database query failed:', error);
         return 500
     }
 }

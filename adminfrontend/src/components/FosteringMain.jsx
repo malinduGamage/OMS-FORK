@@ -40,6 +40,7 @@ export default function FosteringMain() {
             <li><a href="/fostering" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Fostering Application</a></li>
             <li><a href="/myapplications" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">Pending Applications</a></li>
             <li><a href="/mycases" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">My Cases</a></li>
+            <li><a href="/newnav" className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">new nav</a></li>
           </ul>
         </div>
       </aside>
@@ -81,7 +82,7 @@ export default function FosteringMain() {
 
       </div>
 
-      
+
 
       <div className="mt-8">
         <ChatBot />

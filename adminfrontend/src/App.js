@@ -2,7 +2,7 @@ import AdminDash from "./components/AdminDash";
 
 import OrphanageForm from "./components/OrphanageForm";
 import Orphanage from "./components/Orphanage";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Outlet } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import RequireAuth from "./components/RequireAuth";
@@ -10,9 +10,6 @@ import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
 import UpdateOrphanage from "./components/UpdateOrphanage";
-import FosteringApplication from "./components/FosteringApplication";
-import FosteringApplication2 from "./components/FosteringApplication2";
-import FosteringApplication3 from "./components/FosteringApplication3";
 import FosteringMain from "./components/FosteringMain";
 import Payment from "./components/Payment";
 
@@ -30,8 +27,16 @@ import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
 import VideoChat from "./components/VideoChat";
 
+import NavBar from "./components/Navbar";
 
+//user components
+import UserDashboard from "./components/User Dashboard/Main";
+import Application from "./components/User Dashboard/Application";
+import UserInbox from "./components/User Dashboard/Inbox";
 
+//orphanage components
+import OrphanageDashboard from "./components/Orphanage Dashboard/Main";
+import SideBar from "./components/Orphanage Dashboard/SideBar";
 
 const ROLES = {
   'User': 1010,
@@ -53,79 +58,47 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
-
-
         <Route path='/donateNow' element={<Payment />} />
-
-        
-        <Route path='/notification' element={<Notification />} />
-
-       
-
-       
 
 
         {/* Protected Routes */}
-
         <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-            <Route path='/admin' element={<AdminDash />} />
-            <Route path="/addOrphanage" element={<OrphanageForm />} />
+          {/*common navbar*/}
+          <Route
+            element={(
+              <>
+                <NavBar />
+                <Outlet />
+              </>)}>
+
+            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+              <Route path='/admin' element={<AdminDash />} />
+              <Route path="/admin/addOrphanage" element={<OrphanageForm />} />
+              <Route path="/admin/inbox" element={<Inbox />} />
+            </Route>
+
+            <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
+              <Route path="/chatroom/:roomId" element={<VideoChat />} />
+              <Route path='/mycases' element={<UserCaseList />} />
+            </Route>
+
+            {/*orphanage routes*/}
+            <Route path="/orphanage" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
+              <Route path=':id' element={<Orphanage />} />
+              <Route path=':id/edit' element={<UpdateOrphanage />} />
+              <Route path=':id/child/:childid' element={<Child />} />
+              <Route path=':id/case/:caseId' element={<Case />} />
+            </Route>
+
+            {/*user routes*/}
+            <Route path="/user" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
+              <Route path='dashboard' element={<UserDashboard />} />
+              <Route path='application' element={<Application />} />
+              <Route path='inbox' element={<UserInbox />} />
+            </Route>
           </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
-            <Route path='/orphanage/:id' element={<Orphanage />} />
-            <Route path='/orphanage/:id/child/:childid' element={<Child />} />
-
-            <Route path='/orphanage/:id/case/:caseId' element={<Case />} />
-
-          </Route>
-
-          <Route path='/myapplications' element={<Myapplications />} />
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
-            <Route path='/userdash' element={<FosteringMain />} />
-            <Route path="/chatroom/:roomId" element={<VideoChat/>}/>
-            <Route path='/mycases' element={<UserCaseList />} />
-          </Route>
-
-
-
-
-
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Head]} />}>
-
-            <Route path='/orphanage/:id' element={<Orphanage />} />
-            <Route path='/orphanage/:id/edit' element={<UpdateOrphanage />} />
-
-          </Route>
-
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.SocialWorker, ROLES.Head, ROLES.User]} />}>
-
-            <Route path='/case/:caseId' element={<Case />} />
-          </Route>
-
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
-            <Route path='/userdash' element={<FosteringMain />} />
-            <Route path='/inbox' element={<Inbox />} />
-            <Route path='fosteringmain' element={<FosteringMain />} />
-            <Route path='fostering' element={<FosteringApplication />} />
-            <Route path='fostering2' element={<FosteringApplication2 />} />
-            <Route path='fostering3' element={<FosteringApplication3 />} />
-          </Route>
-
 
         </Route>
-
-
-
-
-
-
-
-
-
 
 
         {/* <Route path="/" element={<Authorization />} />
@@ -137,12 +110,12 @@ function App() {
         <Route path="/orphanage" element={<Orphanage />}>
           <Route path=":orphanageId" element={<Orphanage />} />
         </Route> */}
-      </Routes>
+      </Routes >
       <Toaster
         position="top-center"
         reverseOrder={false}
       />
-    </main>
+    </main >
   );
 }
 

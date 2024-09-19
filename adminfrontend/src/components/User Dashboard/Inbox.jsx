@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useAuth from "../hooks/useAuth";
-import BroadcastMsg from "./BroadcastMsg";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
+import BroadcastMsg from "../BroadcastMsg";
 
-const Inbox = () => {
+const UserInbox = () => {
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const [activeView, setActiveView] = useState("inbox");
@@ -93,11 +93,11 @@ const Inbox = () => {
     }
   };
   return (
-    <div className="flex h-screen mt-20">
+    <div className="flex mt-20">
       {/* Sidebar */}
 
       <div
-        className={`w-1/4 p-4 bg-gray-200`}
+        className={`w-1/4 p-4 `}
       >
         <button
           className={`w-full text-left p-3 text-xl  mb-2 ${activeView === "inbox"
@@ -134,18 +134,6 @@ const Inbox = () => {
           }}
         >
           Compose
-        </button>
-        <button
-          className={`w-full text-left p-3 text-xl ${activeView === "broadcast"
-            ? "bg-primary text-white"
-            : "bg-white text-primary"
-            } rounded`}
-          onClick={() => {
-            setActiveView("broadcast");
-            setSelectedMessage(null);
-          }}
-        >
-          Broadcast Message
         </button>
       </div>
 
@@ -268,11 +256,8 @@ const Inbox = () => {
             </form>
           </div>
         )}
-        {activeView === "broadcast" && (
-          <BroadcastMsg />
-        )}
       </div>
     </div>
   );
 };
-export default Inbox;
+export default UserInbox;

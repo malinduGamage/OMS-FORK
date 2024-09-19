@@ -61,54 +61,53 @@ const getAllCases = async (req, res) => {
 
 
 
-const createCase = async (req,res)=>{
+const createCase = async (req, res) => {
 
-    const{socialworkerid,parentid,childid} = req.body
+    const { socialworkerid, parentid, childid } = req.body
 
     try {
 
         const newCase = await prisma.cases.create({
-            data:{
-                childid:childid,
-                parentid:parentid,
-                socialworkerid:socialworkerid
+            data: {
+                childid: childid,
+                parentid: parentid,
+                socialworkerid: socialworkerid
             }
         })
 
-        
 
-        res.json({success:true})
-        
+
+        res.json({ success: true })
+
     } catch (error) {
 
         console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "An error occurred while creating the case."
-    });
-        
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while creating the case."
+        });
+
     }
 }
 
 const getCaseById = async (req, res) => {
     try {
-        const { caseid } = req.query;
-
+        const { caseid } = req.query
         const rawCaseDetails = await prisma.cases.findUnique({
             where: {
                 caseid: caseid
             },
             include: {
-                child: true, 
-                users: true, 
+                child: true,
+                users: true,
                 socialworker: {
                     include: {
-                        users: true 
+                        users: true
                     }
                 }
             }
         });
-        
+
         if (!rawCaseDetails) {
             return res.status(404).json({ message: "Case not found" });
         }
@@ -118,8 +117,8 @@ const getCaseById = async (req, res) => {
             phase1: rawCaseDetails.phase1,
             phase2: rawCaseDetails.phase2,
             child: rawCaseDetails.child,
-            parent: rawCaseDetails.users, 
-            socialworker: rawCaseDetails.socialworker.users 
+            parent: rawCaseDetails.users,
+            socialworker: rawCaseDetails.socialworker.users
         };
 
         res.status(200).json(caseItem);
@@ -159,7 +158,7 @@ const getUserCases = async (req, res) => {
                         }
                     }
                 },
-           
+
             }
         });
 
@@ -186,8 +185,8 @@ const phase1Completed = async (req, res) => {
 
     try {
 
-        const {caseId}= req.query;
-        
+        const { caseId } = req.query;
+
         const updatedCase = await prisma.cases.update({
 
             where: {
@@ -198,39 +197,39 @@ const phase1Completed = async (req, res) => {
             }
         })
 
-        res.status(200).json({message:"Phase 1 completed"})
+        res.status(200).json({ message: "Phase 1 completed" })
     } catch (error) {
         console.log("Error updating case:", error);
-    res.status(500).json({ error: "Failed to update case." });
+        res.status(500).json({ error: "Failed to update case." });
     }
 
 }
 
-const setMeeting = async (req,res)=>{
+const setMeeting = async (req, res) => {
 
     try {
 
-        const {caseId,meeting} = req.body;
+        const { caseId, meeting } = req.body;
 
 
 
         const setMeeting = await prisma.cases.update({
-            where: { caseid:caseId },
-            data: { meetings: { push: meeting } }  
-          });
-          
+            where: { caseid: caseId },
+            data: { meetings: { push: meeting } }
+        });
 
-        res.status(200).json({message:"Meeting set"})
-        
+
+        res.status(200).json({ message: "Meeting set" })
+
     } catch (error) {
         console.log('Error updating case with meeting');
-    res.status(500).json({ message: 'Failed to set meeting', error });
-        
+        res.status(500).json({ message: 'Failed to set meeting', error });
+
     }
 
 }
 
-const getMeetings = async(req, res) => {
+const getMeetings = async (req, res) => {
 
     try {
 
@@ -241,59 +240,59 @@ const getMeetings = async(req, res) => {
             select: { meetings: true }
         });
 
-        res.json({meetings:caseWithMeetings.meetings})
+        res.json({ meetings: caseWithMeetings.meetings })
 
 
-        
+
     } catch (error) {
         console.error('Error fetching meetings', error);
-    res.status(500).json({ message: 'Failed to fetch meetings', error });
-        
+        res.status(500).json({ message: 'Failed to fetch meetings', error });
+
     }
 }
 
 const updateMeeting = async (req, res) => {
     try {
-      const { caseid } = req.query;
-      const { meeting } = req.body;
-  
-      
-      const { date, report } = meeting;
-
-// Step 1: Retrieve the current case object
-const currentCase = await prisma.cases.findUnique({
-  where: { caseid },
-});
-
-// Step 2: Find the index of the meeting object with the matching date
-const updatedMeetings = currentCase.meetings.map(meeting => {
-  if (meeting.date === date) {
-    return { ...meeting, report: report }; // Update the report
-  }
-  return meeting; // Leave other meetings unchanged
-});
-
-// Step 3: Update the case with the new meetings array
-const updatedCase = await prisma.cases.update({
-  where: { caseid },
-  data: {
-    meetings: updatedMeetings,
-  },
-});
+        const { caseid } = req.query;
+        const { meeting } = req.body;
 
 
+        const { date, report } = meeting;
 
-      res.status(200).json({ message: 'Meeting updated successfully', updatedCase });
+        // Step 1: Retrieve the current case object
+        const currentCase = await prisma.cases.findUnique({
+            where: { caseid },
+        });
+
+        // Step 2: Find the index of the meeting object with the matching date
+        const updatedMeetings = currentCase.meetings.map(meeting => {
+            if (meeting.date === date) {
+                return { ...meeting, report: report }; // Update the report
+            }
+            return meeting; // Leave other meetings unchanged
+        });
+
+        // Step 3: Update the case with the new meetings array
+        const updatedCase = await prisma.cases.update({
+            where: { caseid },
+            data: {
+                meetings: updatedMeetings,
+            },
+        });
+
+
+
+        res.status(200).json({ message: 'Meeting updated successfully', updatedCase });
     } catch (error) {
-      console.error('Error updating meeting', error);
-      res.status(500).json({ message: 'Failed to update meeting', error });
+        console.error('Error updating meeting', error);
+        res.status(500).json({ message: 'Failed to update meeting', error });
     }
-  };
-  
-  
+};
 
 
 
 
 
-module.exports = {createCase , getAllCases,getCaseById,getUserCases,phase1Completed,setMeeting,getMeetings,updateMeeting}
+
+
+module.exports = { createCase, getAllCases, getCaseById, getUserCases, phase1Completed, setMeeting, getMeetings, updateMeeting }
