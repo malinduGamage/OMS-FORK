@@ -13,5 +13,8 @@ router.route('/')
 router.route('/all')
 .get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Head,ROLES_LIST.Staff,ROLES_LIST.SocialWorker),socialworkerController.getAllSocialWorkers)
 
+router.route(`/:orphanageid`)
+.delete(verifyRoles(ROLES_LIST.Admin),socialworkerController.deleteSocialWorkersByOrphanage)
+
 
 module.exports = router

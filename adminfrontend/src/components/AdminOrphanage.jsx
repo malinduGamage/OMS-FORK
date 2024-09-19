@@ -36,10 +36,40 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     const handleDeleteOrphanage = async (orphanageId) => {
         try {
             console.log('Inside the handle Delete orphanage...');
-            setOrphanageList(orphanageList.filter((orphanage) => orphanage.orphanageid !== orphanageId));
-            console.log('filtere orphanage list...')
-            await axiosPrivate.delete(`/orphanage/${orphanageId}`);
-            console.log('Deleted orphanage');
+            const children = await axiosPrivate.get(`/child/orphanage/${orphanageId}`, {
+                headers: {
+                    orphanageId: orphanageId
+                }
+            });
+            console.log(orphanageId)
+            console.log(children.data)
+            if (children.data.childrenList.length === 0) {
+                console.log("inside the tables delete");
+
+                try {
+                    // Deleting social workers related to orphanage
+                    const deletedSocialWorkers = await axiosPrivate.delete(`/socialworker/${orphanageId}`);
+                    console.log("frontend social workers", deletedSocialWorkers.data.deletedCount);  // Proper logging for status
+
+                    // Deleting staff related to orphanage
+                    const deletedStaff = await axiosPrivate.delete(`/staff/${orphanageId}`);
+                    console.log("frontend staffs", deletedStaff.data.deletedCount);   // Optional logging
+
+                    // Deleting orphanage itself
+                    const deletedOrphanage = await axiosPrivate.delete(`/orphanage/${orphanageId}`);
+                    console.log(deletedOrphanage.status);  // Optional logging
+
+                    // Update orphanage list state
+                    setOrphanageList(orphanageList.filter((orphanage) => orphanage.orphanageid !== orphanageId));
+                    console.log('Deleted orphanage');
+
+                } catch (error) {
+                    console.error('Error during delete operations:', error);
+                }
+            }
+            else {
+                console.log(children.data.childrenList.length)
+            }
 
         } catch (error) {
             console.error('Failed to delete orphanage:', error);
@@ -47,10 +77,10 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
         }
     };
 
-    const handleUpdateOrphanage = (orphanageId) => {
-        const path = `/orphanage/${orphanageId}/edit`;
+    const handleUpdateOrphanage = (id) => {
+        const path = `/orphanage/${id}/edit`;
         navigate(path);
-        console.log('Updating orphanage...');
+        console.log('Navigating to Updating orphanage...');
     }
 
 

@@ -9,10 +9,7 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
-import UpdateAdminDash from "./components/UpdateAdminDash";
-import FosteringApplication from "./components/User Dashboard/FosteringApplication";
-import FosteringApplication2 from "./components/User Dashboard/FosteringApplication2";
-import FosteringApplication3 from "./components/User Dashboard/FosteringApplication3";
+import UpdateOrphanage from "./components/UpdateOrphanage";
 import FosteringMain from "./components/FosteringMain";
 import Payment from "./components/Payment";
 
@@ -88,10 +85,9 @@ function App() {
             {/*orphanage routes*/}
             <Route path="/orphanage" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
               <Route path=':id' element={<Orphanage />} />
-              <Route path=':id/edit' element={<UpdateAdminDash />} />
+              <Route path=':id/edit' element={<UpdateOrphanage />} />
               <Route path=':id/child/:childid' element={<Child />} />
               <Route path=':id/case/:caseId' element={<Case />} />
-              <Route path=':id/edit' element={<UpdateAdminDash />} />
             </Route>
 
             {/*user routes*/}
@@ -114,12 +110,12 @@ function App() {
         <Route path="/orphanage" element={<Orphanage />}>
           <Route path=":orphanageId" element={<Orphanage />} />
         </Route> */}
-      </Routes>
+      </Routes >
       <Toaster
         position="top-center"
         reverseOrder={false}
       />
-    </main>
+    </main >
   );
 }
 
