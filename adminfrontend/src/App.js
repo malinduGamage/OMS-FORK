@@ -30,14 +30,14 @@ import Notification from "./components/Notification";
 import LandingPage from "./components/LandingPage";
 import VideoChat from "./components/VideoChat";
 
+import NavBar from "./components/Navbar";
+
 //user components
 import UserDashboard from "./components/User Dashboard/Main";
-import UserNavBar from "./components/User Dashboard/NavBar";
 import Application from "./components/User Dashboard/Application";
 import UserInbox from "./components/User Dashboard/Inbox";
 
 //orphanage components
-import OrphanageNavBar from "./components/Orphanage Dashboard/NavBar";
 import OrphanageDashboard from "./components/Orphanage Dashboard/Main";
 import SideBar from "./components/Orphanage Dashboard/SideBar";
 
@@ -62,59 +62,40 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
         <Route path='/donateNow' element={<Payment />} />
-        <Route path='/notification' element={<Notification />} />
-        <Route path='/mycases' element={<UserCaseList />} />
 
 
         {/* Protected Routes */}
         <Route element={<PersistLogin />}>
+          {/*common navbar*/}
+          <Route
+            element={(
+              <>
+                <NavBar />
+                <Outlet />
+              </>)}>
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-            <Route path='/admin' element={<AdminDash />} />
-            <Route path="/addOrphanage" element={<OrphanageForm />} />
-          </Route>
+            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+              <Route path='/admin' element={<AdminDash />} />
+              <Route path="/admin/addOrphanage" element={<OrphanageForm />} />
+              <Route path="/admin/inbox" element={<Inbox />} />
+            </Route>
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
-            <Route path="/chatroom/:roomId" element={<VideoChat />} />
-            <Route path='/mycases' element={<UserCaseList />} />
-          </Route>
+            <Route element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff, ROLES.User]} />} >
+              <Route path="/chatroom/:roomId" element={<VideoChat />} />
+              <Route path='/mycases' element={<UserCaseList />} />
+            </Route>
 
-          {/*orphanage routes*/}
-          <Route path="/orphanage" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
-            <Route
-              element={(
-                <>
-                  <OrphanageNavBar />
-                  <Outlet />
-                </>
-              )}
-            >
+            {/*orphanage routes*/}
+            <Route path="/orphanage" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
               <Route path=':id' element={<Orphanage />} />
               <Route path=':id/edit' element={<UpdateAdminDash />} />
               <Route path=':id/child/:childid' element={<Child />} />
               <Route path=':id/case/:caseId' element={<Case />} />
               <Route path=':id/edit' element={<UpdateAdminDash />} />
             </Route>
-          </Route>
 
-          {/*user routes*/}
-          <Route path="/user" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
-            <Route
-              element={(
-                <>
-                  <UserNavBar />
-                  <Outlet />
-                </>
-              )}
-            >
-              {/*old routes : not needed*/}
-              <Route path='userdash' element={<FosteringMain />} />
-              <Route path='fosteringmain' element={<FosteringMain />} />
-              <Route path='applications' element={<FosteringApplication />} />
-              <Route path='fostering2' element={<FosteringApplication2 />} />
-              <Route path='fostering3' element={<FosteringApplication3 />} />
-              <Route path='myapplications' element={<Myapplications />} />
-              {/*new routes*/}
+            {/*user routes*/}
+            <Route path="/user" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.Head, ROLES.SocialWorker, ROLES.User]} />} >
               <Route path='dashboard' element={<UserDashboard />} />
               <Route path='application' element={<Application />} />
               <Route path='inbox' element={<UserInbox />} />

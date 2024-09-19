@@ -135,18 +135,6 @@ const UserInbox = () => {
         >
           Compose
         </button>
-        <button
-          className={`w-full text-left p-3 text-xl ${activeView === "broadcast"
-            ? "bg-primary text-white"
-            : "bg-white text-primary"
-            } rounded`}
-          onClick={() => {
-            setActiveView("broadcast");
-            setSelectedMessage(null);
-          }}
-        >
-          Broadcast Message
-        </button>
       </div>
 
       {/* Main Content */}
@@ -267,9 +255,6 @@ const UserInbox = () => {
               </button>
             </form>
           </div>
-        )}
-        {activeView === "broadcast" && (
-          <BroadcastMsg />
         )}
       </div>
     </div>

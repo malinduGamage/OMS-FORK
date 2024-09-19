@@ -59,7 +59,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
         <div className='mt-10' >
 
             <div className='grid mb-3 md:grid-cols-3 mx-20 '>
-                <Link to={'/addOrphanage'}>
+                <Link to={'/admin/addOrphanage'}>
                     <button className='m-2 flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
                         <p className='ml-1'> Add Orphanage</p>
                     </button>

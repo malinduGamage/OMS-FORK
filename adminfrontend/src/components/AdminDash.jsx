@@ -97,36 +97,7 @@ const AdminDash = () => {
 
   return (
     <div >
-      {/*nav bar*/}
-      <div className='fixed top-0 left-0 h-[8vh] w-full bg-white drop-shadow-lg'>
-        <nav className='flex items-center justify-between rounded h-full'>
-          <div className='flex items-center ml-6'>
-            <a href="./admin">
-              <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-28' />
-            </a>
-          </div>
-          <div className='p-4'>
-            <ul className='flex space-x-6'>
-              <li>
-                <Link to={'/inbox'}>
-                  <button className='flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
-                    <RiInboxArchiveFill />
-                    <p className='ml-1'> Inbox</p>
-                  </button>
-                </Link>
-              </li>
-              <li>
-                <button
-                  onClick={signout}
-                  className='flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
-                  <FaSignOutAlt />
-                  <p className='ml-1'> Sign Out</p>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
+
       {/*side bar*/}
       <div className='fixed  w-[15vw] h-[92vh] top-[8vh] bg-orange-50'>
         <div className="flex items-center justify-center h-14 border-b">

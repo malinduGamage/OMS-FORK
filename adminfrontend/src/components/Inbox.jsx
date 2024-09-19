@@ -93,7 +93,7 @@ const Inbox = () => {
     }
   };
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen mt-20">
       {/* Sidebar */}
 
       <div
