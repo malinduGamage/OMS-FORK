@@ -492,6 +492,33 @@ const uploadDocuments = async (req, res) => {
         }
 
 
+        const sw = await prisma.cases.findUnique({
+            where: { caseid: caseId },
+            select: {
+                socialworkerid: true
+            }
+        }) 
+
+
+        const notification = `Documents of case: ${caseId} uploaded `
+
+        await prisma.users.update({
+            where: {
+              userid:sw.socialworkerid
+            },
+            data: {
+              notifications: {
+                push: notification
+              }
+            }
+          })
+
+
+
+
+
+
+
 
 
 
@@ -525,6 +552,9 @@ const uploadDocuments = async (req, res) => {
                 }
             }
         });
+
+
+
 
         res.status(200).json({
             success: true,

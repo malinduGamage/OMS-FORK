@@ -61,7 +61,7 @@ const CaseOngoing = ({ caseId }) => {
 
 
                         <span className="flex items-center">
-                            Phase 1 : Examine Documents
+                            Phase 1 : Documentation
 
                             {caseDetails.phase1 === 'Completed' && <span className="ml-2 px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-full">
                                 Approved

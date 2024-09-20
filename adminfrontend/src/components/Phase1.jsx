@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useAuth from "../hooks/useAuth";
 
@@ -24,12 +24,14 @@ const Phase1 = ({ caseId, caseDetails }) => {
     birthCertificate: null,
   });
   const [uploadStatus, setUploadStatus] = useState("");
-  const [isUploading,setIsUploading] =useState(false);
- 
+  const [isUploading, setIsUploading] = useState(false);
+
   useEffect(() => {
     const fetchDocumentUrls = async () => {
       try {
-        const response = await axiosPrivate.get(`/file/caseDocuments?caseId=${caseId}`);
+        const response = await axiosPrivate.get(
+          `/file/caseDocuments?caseId=${caseId}`
+        );
         setDocumentUrls(response.data.documents);
       } catch (error) {
         console.error("Failed to fetch document URLs:", error);
@@ -40,22 +42,16 @@ const Phase1 = ({ caseId, caseDetails }) => {
   }, [caseId, axiosPrivate]);
 
   const phase1Complete = async () => {
-
     try {
+      const response = await axiosPrivate.put(`case/phase1?caseId=${caseId}`);
 
-        const response= await axiosPrivate.put(`case/phase1?caseId=${caseId}`)
-
-        if (response.status === 200) {
-            console.log("succcessfully completed");
-            
-        }
-        
+      if (response.status === 200) {
+        console.log("succcessfully completed");
+      }
     } catch (error) {
-        console.log(error);
-        
+      console.log(error);
     }
-
-  }
+  };
 
   const handleFileChange = (event, docType) => {
     const file = event.target.files[0];
@@ -77,8 +73,7 @@ const Phase1 = ({ caseId, caseDetails }) => {
   };
 
   const handleUpload = async () => {
-
-    setIsUploading(true)
+    setIsUploading(true);
     if (
       !files.marriageCertificate ||
       !files.incomeCertificate ||
@@ -95,30 +90,30 @@ const Phase1 = ({ caseId, caseDetails }) => {
     formData.append("birthCertificate", files.birthCertificate);
 
     try {
-      const response = await axiosPrivate.post("/file/caseDocuments", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosPrivate.post(
+        "/file/caseDocuments",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       console.log(response.status);
-      
+
       setUploadStatus("Files uploaded successfully!");
     } catch (error) {
       console.error("Failed to upload files:", error);
       setUploadStatus("Files upload failed. Please try again.");
     }
 
-    setIsUploading(false)
+    setIsUploading(false);
   };
 
-  if (!caseDetails) return <div>Loading...</div>; 
+  if (!caseDetails) return <div>Loading...</div>;
   return (
     <div>
-
-       
-
-        
       {auth.roles == 1010 && (
         <div>
           {/* Document upload section */}
@@ -126,125 +121,139 @@ const Phase1 = ({ caseId, caseDetails }) => {
             Upload Documents
           </h1>
 
-          {caseDetails.phase1 === 'Ongoing' ? (
-  <div>  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  {/* Marriage Certificate */}
-  <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
-    <label className="block text-lg font-semibold mb-2">
-      Marriage Certificate:
-    </label>
-    <input
-      type="file"
-      onChange={(e) => handleFileChange(e, "marriageCertificate")}
-      className="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded"
-    />
-    <div className="border border-gray-300 p-2 rounded-lg bg-gray-100">
-      <p className="text-lg font-semibold mb-2">Preview:</p>
-      {filePreviews.marriageCertificate ? (
-        filePreviews.marriageCertificate.startsWith("data:image/") ? (
-          <img
-            src={filePreviews.marriageCertificate}
-            alt="Marriage Certificate Preview"
-            className="max-w-full max-h-48 rounded"
-          />
-        ) : (
-          <p className="text-gray-700">
-            {filePreviews.marriageCertificate}
-          </p>
-        )
-      ) : (
-        <p className="text-gray-700">No file selected</p>
-      )}
-    </div>
-  </div>
+          {caseDetails.phase1 === "Ongoing" ? (
+            <div>
+              {" "}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Marriage Certificate */}
+                <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                  <label className="block text-lg font-semibold mb-2">
+                    Marriage Certificate:
+                  </label>
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(e, "marriageCertificate")}
+                    className="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded"
+                  />
+                  <div className="border border-gray-300 p-2 rounded-lg bg-gray-100">
+                    <p className="text-lg font-semibold mb-2">Preview:</p>
+                    {filePreviews.marriageCertificate ? (
+                      filePreviews.marriageCertificate.startsWith(
+                        "data:image/"
+                      ) ? (
+                        <img
+                          src={filePreviews.marriageCertificate}
+                          alt="Marriage Certificate Preview"
+                          className="max-w-full max-h-48 rounded"
+                        />
+                      ) : (
+                        <p className="text-gray-700">
+                          {filePreviews.marriageCertificate}
+                        </p>
+                      )
+                    ) : (
+                      <p className="text-gray-700">No file selected</p>
+                    )}
+                  </div>
+                </div>
 
-  {/* Income Certificate */}
-  <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
-    <label className="block text-lg font-semibold mb-2">
-      Income Certificate:
-    </label>
-    <input
-      type="file"
-      onChange={(e) => handleFileChange(e, "incomeCertificate")}
-      className="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded"
-    />
-    <div className="border border-gray-300 p-2 rounded-lg bg-gray-100">
-      <p className="text-lg font-semibold mb-2">Preview:</p>
-      {filePreviews.incomeCertificate ? (
-        filePreviews.incomeCertificate.startsWith("data:image/") ? (
-          <img
-            src={filePreviews.incomeCertificate}
-            alt="Income Certificate Preview"
-            className="max-w-full max-h-48 rounded"
-          />
-        ) : (
-          <p className="text-gray-700">
-            {filePreviews.incomeCertificate}
-          </p>
-        )
-      ) : (
-        <p className="text-gray-700">No file selected</p>
-      )}
-    </div>
-  </div>
+                {/* Income Certificate */}
+                <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                  <label className="block text-lg font-semibold mb-2">
+                    Income Certificate:
+                  </label>
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(e, "incomeCertificate")}
+                    className="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded"
+                  />
+                  <div className="border border-gray-300 p-2 rounded-lg bg-gray-100">
+                    <p className="text-lg font-semibold mb-2">Preview:</p>
+                    {filePreviews.incomeCertificate ? (
+                      filePreviews.incomeCertificate.startsWith(
+                        "data:image/"
+                      ) ? (
+                        <img
+                          src={filePreviews.incomeCertificate}
+                          alt="Income Certificate Preview"
+                          className="max-w-full max-h-48 rounded"
+                        />
+                      ) : (
+                        <p className="text-gray-700">
+                          {filePreviews.incomeCertificate}
+                        </p>
+                      )
+                    ) : (
+                      <p className="text-gray-700">No file selected</p>
+                    )}
+                  </div>
+                </div>
 
-  {/* Birth Certificate */}
-  <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
-    <label className="block text-lg font-semibold mb-2">
-      Birth Certificate:
-    </label>
-    <input
-      type="file"
-      onChange={(e) => handleFileChange(e, "birthCertificate")}
-      className="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded"
-    />
-    <div className="border border-gray-300 p-2 rounded-lg bg-gray-100">
-      <p className="text-lg font-semibold mb-2">Preview:</p>
-      {filePreviews.birthCertificate ? (
-        filePreviews.birthCertificate.startsWith("data:image/") ? (
-          <img
-            src={filePreviews.birthCertificate}
-            alt="Birth Certificate Preview"
-            className="max-w-full max-h-48 rounded"
-          />
-        ) : (
-          <p className="text-gray-700">{filePreviews.birthCertificate}</p>
-        )
-      ) : (
-        <p className="text-gray-700">No file selected</p>
-      )}
-    </div>
-  </div>
-</div>
-
-<button
-  onClick={handleUpload}
-  className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark mt-6"
-  disabled={isUploading}
->
-  {isUploading ? "Uploading" : "Upload Documents"}
-</button>
-{uploadStatus && (
-  <p className="mt-4 text-ld text-green-500">{uploadStatus}</p>
-)}</div>
-) : (
-  <div><span className='text-green-500 font-semibold text-xl'>Documents has been verified</span></div>
-)}
-
-
-
-
-        
+                {/* Birth Certificate */}
+                <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
+                  <label className="block text-lg font-semibold mb-2">
+                    Birth Certificate:
+                  </label>
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(e, "birthCertificate")}
+                    className="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded"
+                  />
+                  <div className="border border-gray-300 p-2 rounded-lg bg-gray-100">
+                    <p className="text-lg font-semibold mb-2">Preview:</p>
+                    {filePreviews.birthCertificate ? (
+                      filePreviews.birthCertificate.startsWith(
+                        "data:image/"
+                      ) ? (
+                        <img
+                          src={filePreviews.birthCertificate}
+                          alt="Birth Certificate Preview"
+                          className="max-w-full max-h-48 rounded"
+                        />
+                      ) : (
+                        <p className="text-gray-700">
+                          {filePreviews.birthCertificate}
+                        </p>
+                      )
+                    ) : (
+                      <p className="text-gray-700">No file selected</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleUpload}
+                className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark mt-6"
+                disabled={isUploading}
+              >
+                {isUploading ? "Uploading" : "Upload Documents"}
+              </button>
+              {uploadStatus && (
+                <p className="mt-4 text-ld text-green-500">{uploadStatus}</p>
+              )}
+            </div>
+          ) : (
+            <div>
+              <span className="text-green-500 font-semibold text-xl">
+                Documents has been verified
+              </span>
+            </div>
+          )}
         </div>
       )}
 
-      {(auth.roles.includes(ROLES.Head) || auth.roles.includes(ROLES.SocialWorker)) && (
+      {(auth.roles.includes(ROLES.Head) ||
+        auth.roles.includes(ROLES.SocialWorker)) && (
         <div id="display-documents" className="p-6">
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {documentUrls.map((doc) => (
-              <div key={doc.name} className="bg-white shadow-lg rounded-lg p-6 border border-gray-300">
-                <p className="text-xl font-bold mb-4 capitalize">{doc.name.replace('Certificate', ' Certificate')}</p>
+              <div
+                key={doc.name}
+                className="bg-white shadow-lg rounded-lg p-6 border border-gray-300"
+              >
+                <p className="text-xl font-bold mb-4 capitalize">
+                  {doc.name.replace("Certificate", " Certificate")}
+                </p>
                 <div className="mb-4">
                   <img
                     src={doc.url}
@@ -259,17 +268,20 @@ const Phase1 = ({ caseId, caseDetails }) => {
                   rel="noopener noreferrer"
                   className="text-primary hover:text-primary font-semibold underline"
                 >
-                  Download {doc.name.replace('Certificate', ' Certificate')}
+                  Download {doc.name.replace("Certificate", " Certificate")}
                 </a>
-
-              
               </div>
             ))}
           </div>
 
-          {caseDetails.phase1 ==='Ongoing'&& <button onClick={phase1Complete} className='text-xl border-2 border-primary my-5 py-3 px-4 rounded-lg text-primary hover:bg-primary hover:text-white font-semibold transition-colors duration-300'>Approve</button> }
-
-          
+          {caseDetails.phase1 === "Ongoing" && (
+            <button
+              onClick={phase1Complete}
+              className="text-xl border-2 border-primary my-5 py-3 px-4 rounded-lg text-primary hover:bg-primary hover:text-white font-semibold transition-colors duration-300"
+            >
+              Approve
+            </button>
+          )}
         </div>
       )}
     </div>
