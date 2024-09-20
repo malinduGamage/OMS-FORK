@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Phase1 from "./Phase1";
+import Phase1 from "./User Dashboard/Phase1";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Loading from "./Loading";
 import Lobby from "./Lobby";

@@ -11,6 +11,7 @@ import CasePending from './CasePending';
 import CaseOngoing from './CaseOngoing';
 import Loading from '../Loading';
 import ChatBot from '../ChatBot';
+import CaseClosed from './CaseClosed';
 
 const UserDashboard = () => {
     const { auth } = useAuth()
@@ -26,6 +27,7 @@ const UserDashboard = () => {
     3 - application rejected
     4 - child is selected
     5 - case is created(social worker assigned)
+    6 - case is closed
      */
 
     const [currentState, setCurrentState] = useState(-1)
@@ -35,6 +37,8 @@ const UserDashboard = () => {
     const [caseDetails, setCaseDetails] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    //phase of the case
+    const [currentPhase, setCurrentPhase] = useState(1)
 
 
     const renderPage = () => {
@@ -50,7 +54,9 @@ const UserDashboard = () => {
             case 4:
                 return <CasePending />
             case 5:
-                return <CaseOngoing caseId={caseDetails.caseid} />
+                return <CaseOngoing caseDetails={caseDetails} currentPhase={currentPhase} />
+            case 6:
+                return <CaseClosed />
             default:
                 return null;
         }
@@ -60,7 +66,12 @@ const UserDashboard = () => {
         try {
             const response = await axiosPrivate.get(`/case/byId?caseid=${caseId}`);
             setCaseDetails(response.data);
-            console.log("casedetails", response.data)
+            if (response.data.phase3 === 'Completed') setCurrentState(6);
+            else {
+                if (response.data.phase2 === 'Completed') setCurrentPhase(3)
+                else if (response.data.phase1 === 'Completed') setCurrentPhase(2)
+                setCurrentState(5)
+            }
             setLoading(false)
         } catch (error) {
             console.error("Failed to fetch case:", error);
@@ -75,7 +86,6 @@ const UserDashboard = () => {
         if (casesResponse.data.userCases != 0) {
             //get case details
             await getCase(casesResponse.data.userCases[casesResponse.data.userCases.length - 1].caseid)
-            setCurrentState(5);
         }
         else {
             //get approved applications
