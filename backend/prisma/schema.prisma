@@ -193,6 +193,7 @@ model users {
   roles                              Json
   refreshtoken                       String?                @unique
   notifications                      String[]               @default([])
+  verified                           Boolean?               @default(false)
   application                        application[]
   approvedapplications               approvedapplications[]
   cases                              cases[]

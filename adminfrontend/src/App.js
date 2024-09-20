@@ -37,6 +37,7 @@ import UserInbox from "./components/User Dashboard/Inbox";
 //orphanage components
 import OrphanageDashboard from "./components/Orphanage Dashboard/Main";
 import SideBar from "./components/Orphanage Dashboard/SideBar";
+import VerifyEmail from "./components/VerifyEmail";
 
 const ROLES = {
   'User': 1010,
@@ -59,6 +60,8 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path='/register' element={<Register />} />
         <Route path='/donateNow' element={<Payment />} />
+        <Route path="/verify" element={<VerifyEmail />} />
+
 
 
         {/* Protected Routes */}

@@ -42,6 +42,8 @@ app.use('/refresh', require('./routes/refresh'))
 
 app.use('/logout', require('./routes/logout'));
 
+app.use('/verify', require('./routes/verify'));
+
 
 
 app.use(verifyJWT)
