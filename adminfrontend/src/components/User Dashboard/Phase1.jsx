@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
 
 const ROLES = {
   User: 1010,
@@ -244,46 +244,46 @@ const Phase1 = ({ caseId, caseDetails }) => {
 
       {(auth.roles.includes(ROLES.Head) ||
         auth.roles.includes(ROLES.SocialWorker)) && (
-        <div id="display-documents" className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {documentUrls.map((doc) => (
-              <div
-                key={doc.name}
-                className="bg-white shadow-lg rounded-lg p-6 border border-gray-300"
-              >
-                <p className="text-xl font-bold mb-4 capitalize">
-                  {doc.name.replace("Certificate", " Certificate")}
-                </p>
-                <div className="mb-4">
-                  <img
-                    src={doc.url}
-                    alt={doc.name}
-                    className="w-full h-auto max-h-80 object-contain rounded-md shadow-md"
-                  />
-                </div>
-                <a
-                  href={doc.url}
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:text-primary font-semibold underline"
+          <div id="display-documents" className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {documentUrls.map((doc) => (
+                <div
+                  key={doc.name}
+                  className="bg-white shadow-lg rounded-lg p-6 border border-gray-300"
                 >
-                  Download {doc.name.replace("Certificate", " Certificate")}
-                </a>
-              </div>
-            ))}
-          </div>
+                  <p className="text-xl font-bold mb-4 capitalize">
+                    {doc.name.replace("Certificate", " Certificate")}
+                  </p>
+                  <div className="mb-4">
+                    <img
+                      src={doc.url}
+                      alt={doc.name}
+                      className="w-full h-auto max-h-80 object-contain rounded-md shadow-md"
+                    />
+                  </div>
+                  <a
+                    href={doc.url}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:text-primary font-semibold underline"
+                  >
+                    Download {doc.name.replace("Certificate", " Certificate")}
+                  </a>
+                </div>
+              ))}
+            </div>
 
-          {caseDetails.phase1 === "Ongoing" && (
-            <button
-              onClick={phase1Complete}
-              className="text-xl border-2 border-primary my-5 py-3 px-4 rounded-lg text-primary hover:bg-primary hover:text-white font-semibold transition-colors duration-300"
-            >
-              Approve
-            </button>
-          )}
-        </div>
-      )}
+            {caseDetails.phase1 === "Ongoing" && (
+              <button
+                onClick={phase1Complete}
+                className="text-xl border-2 border-primary my-5 py-3 px-4 rounded-lg text-primary hover:bg-primary hover:text-white font-semibold transition-colors duration-300"
+              >
+                Approve
+              </button>
+            )}
+          </div>
+        )}
     </div>
   );
 };
