@@ -1,8 +1,3 @@
-const bcrypt = require('bcrypt');
-const db = require('../config/dbConn');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-
 const handleNewUser = async (req, res) => {
     const { username, password, telno, email } = req.body;
 
@@ -19,19 +14,37 @@ const handleNewUser = async (req, res) => {
             }
         });
 
-      
         const hashedPassword = await bcrypt.hash(password, 10);
 
         let result;
         if (!user) {
-           
+            // Check if the email is a Gmail address
+            const isGmail = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email);
+
+            if (isGmail) {
+                const token = jwt.sign({ email }, process.env.VERIFY_TOKEN_SECRET, { expiresIn: '1hr' });
+
+                const verificationUrl = `${process.env.BASE_URL}/verify?token=${token}`;
+
+                // Send verification email
+                await transporter.sendMail({
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: 'Email Verification',
+                    html: `<h1>Email Confirmation</h1>
+                           <p>Click the link below to verify your email:</p>
+                           <a href="${verificationUrl}">Verify Email</a>`,
+                });
+            }
+
             result = await prisma.users.create({
                 data: {
                     username: username,
                     password: hashedPassword,
                     email: email,
-                    telno: +telno, 
-                    roles: { 'User': 1010 }
+                    telno: +telno,
+                    roles: { 'User': 1010 },
+                    verified: !isGmail // Set verified to false if Gmail, true otherwise
                 }
             });
             res.status(201).json({ 'success': `New user ${username} created!` });
@@ -44,7 +57,8 @@ const handleNewUser = async (req, res) => {
                 data: {
                     username: username,
                     password: hashedPassword,
-                    telno: +telno // Convert to integer otherwise query will fail
+                    telno: +telno,
+                    verified: true
                 }
             });
             res.status(200).json({ 'success': `User ${username} updated!` });
