@@ -1,8 +1,11 @@
 import React from 'react'
+import Lobby from '../Lobby'
 
-const Phase2 = () => {
+const Phase2 = ({caseId}) => {
     return (
-        <div>Phase2</div>
+        <div>
+            <Lobby caseId={caseId}/>
+        </div>
     )
 }
 

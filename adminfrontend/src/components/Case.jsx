@@ -28,7 +28,7 @@ const Case = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Case Details Section */}
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-6 mt-20">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           CaseID: <span className="text-primary">{caseDetails.caseid}</span>
         </h1>
@@ -64,7 +64,7 @@ const Case = () => {
       <div className="bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Video Conference</h2>
         <div className="px-4 py-5 bg-gray-100 rounded-lg">
-          <Lobby />
+          <Lobby caseId={caseId} />
         </div>
       </div>
     </div>

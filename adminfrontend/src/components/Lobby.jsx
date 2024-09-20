@@ -10,10 +10,10 @@ const ROLES = {
   Admin: 7788,
 };
 
-const Lobby = () => {
+const Lobby = ({caseId}) => {
   const {auth} =useAuth();
   const navigate = useNavigate();
-  const { caseId } = useParams(); 
+  
   const linkRef = useRef();
   const [dateTime, setDateTime] = useState('');
   const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -48,7 +48,14 @@ const Lobby = () => {
 
   const setMeeting = async () => {
     const meeting = { date: dateTime, report: null };
+
+
+
     try {
+
+
+
+
       const response = await axiosPrivate.post('/case/meetings', { caseId, meeting });
       console.log('Meeting set successfully', response.data);
       alert('Meeting scheduled successfully!');

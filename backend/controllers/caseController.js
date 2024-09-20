@@ -262,6 +262,38 @@ const setMeeting = async (req, res) => {
   try {
     const { caseId, meeting } = req.body;
 
+    const parent = await prisma.cases.findUnique({
+      where: {
+        caseid: caseId,
+      },
+      select: {
+        parentid: true,
+      },
+    })
+
+
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    };
+    
+    const notification = `Meeting scheduled at ${meeting.date.toLocaleString(undefined, options)}`;
+
+    await prisma.users.update({
+      where: {
+        userid: parent.parentid
+      },
+      data: {
+        notifications: {
+          push: notification
+        }
+      }
+    })
+    
+
     const setMeeting = await prisma.cases.update({
       where: { caseid: caseId },
       data: { meetings: { push: meeting } },
