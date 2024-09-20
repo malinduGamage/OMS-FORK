@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FaSignOutAlt } from "react-icons/fa";
 import useLogout from '../hooks/useLogout';
 import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 const ROLES = {
     User: 1010,
@@ -14,72 +15,76 @@ const ROLES = {
 };
 
 const NavBar = () => {
-
     const { auth } = useAuth();
     const logout = useLogout();
+    const axiosPrivate = useAxiosPrivate();
 
-    //routes for specific roles
+    const [showNotificationModal, setShowNotificationModal] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [homeRoute, setHomeRoute] = useState('/');
+    const [inboxRoute, setInboxRoute] = useState('/');
+    const [inbox, setInbox] = useState(false);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await axiosPrivate.get(`/notifications?userId=${auth.userId}`);
+                if (response.data.success) {
+                    setNotifications(response.data.notifications);
+                }
+            } catch (error) {
+                console.error('Failed to fetch notifications:', error);
+            }
+        };
+
+        if (auth && auth.userId) {
+            fetchNotifications();
+        }
+    }, [axiosPrivate, auth]);
+
     const routes = {
         admin: {
             home: '/admin',
-            inbox: '/admin/inbox'
+            inbox: '/admin/inbox',
         },
         head: {
-            home: `/orphanage/${auth.orphanageId}`
+            home: `/orphanage/${auth?.orphanageId}`,
         },
         staff: {
-            home: `/orphanage/${auth.orphanageId}`
+            home: `/orphanage/${auth?.orphanageId}`,
         },
         socialWorker: {
-            home: `/orphanage/${auth.orphanageId}`
+            home: `/orphanage/${auth?.orphanageId}`,
         },
         user: {
             home: '/user/dashboard',
             inbox: '/user/inbox',
-            notification: '/user/notification'
         }
-    }
+    };
 
-    const [homeRoute, setHomeRoute] = useState('/')
-    const [notificationRoute, setNotificationRoute] = useState('/')
-    const [inboxRoute, setInboxRoute] = useState('/')
-
-    //visibility of the button in the navbar
-    const [notification, setNotification] = useState(false)
-    const [inbox, setInbox] = useState(false)
+    useEffect(() => {
+        if (auth && auth.roles) {
+            if (auth.roles.includes(ROLES.Admin)) {
+                setHomeRoute(routes.admin.home);
+                setInboxRoute(routes.admin.inbox);
+                setInbox(true);
+            } else if (auth.roles.includes(ROLES.Head) || auth.roles.includes(ROLES.Staff) || auth.roles.includes(ROLES.SocialWorker)) {
+                setHomeRoute(routes.head.home);
+            } else if (auth.roles.includes(ROLES.User)) {
+                setHomeRoute(routes.user.home);
+                setInboxRoute(routes.user.inbox);
+                setInbox(true);
+            }
+        }
+    }, [auth]);
 
     const signOut = async () => {
         await logout();
     };
 
-    useEffect(() => {
-        //initiating buttons & routes for roles
-        if (auth.roles.includes(ROLES.Admin)) {
-
-            setHomeRoute(routes.admin.home)
-            setInboxRoute(routes.admin.inbox)
-
-            setInbox(true)
-        }
-        else if (auth.roles.includes(ROLES.Head)) {
-            setHomeRoute(routes.head.home)
-        }
-        else if (auth.roles.includes(ROLES.Staff)) {
-            setHomeRoute(routes.staff.home)
-        }
-        else if (auth.roles.includes(ROLES.SocialWorker)) {
-            setHomeRoute(routes.socialWorker.home)
-        }
-        else if (auth.roles.includes(ROLES.User)) {
-
-            setHomeRoute(routes.user.home)
-            setInboxRoute(routes.user.inbox)
-            setNotificationRoute(routes.user.notification)
-
-            setNotification(true)
-            setInbox(true)
-        }
-    }, [])
+    const clearNotifications = () => {
+        setNotifications([]);
+    };
 
     return (
         <div className="navbar bg-base-100 fixed top-0 left-0 w-full z-10 shadow-md">
@@ -88,46 +93,76 @@ const NavBar = () => {
                     <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className="w-36" />
                 </a>
             </div>
+
             <div className="flex-none">
+                {inbox && (
+                    <Link to={inboxRoute}>
+                        <button className="btn btn-ghost btn-circle">
+                            <div className="indicator">
+                                <LuMail className="h-5 w-5" />
+                                {/* Removed the badge from the inbox icon */}
+                            </div>
+                        </button>
+                    </Link>
+                )}
 
-                {inbox && <Link to={inboxRoute}>
-                    <button className="btn btn-ghost btn-circle">
+                {/* Notification Icon */}
+                <button
+                    className="btn btn-ghost btn-circle mx-2 relative"
+                    onClick={() => setShowNotificationModal(!showNotificationModal)}>
+                    <div className="indicator">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span className="badge badge-xs badge-error indicator-item">
+                            {notifications.length > 0 ? notifications.length : 0}
+                        </span>
+                    </div>
+                </button>
 
-                        <div className="indicator">
-                            <LuMail className="h-5 w-5" />
-                            {/* indicator icon */}
-                            <span className="badge badge-xs badge-error indicator-item"></span>
+                {/* Notification Modal */}
+                {showNotificationModal && (
+                    <div className="absolute right-0 mt-16 mr-20 bg-white shadow-lg rounded-lg w-64 z-20">
+                        <div className="p-4">
+                            <h4 className="font-bold text-lg">Notifications</h4>
+                            {notifications.length > 0 ? (
+                                <ul className="my-2">
+                                    {notifications.map((notification, index) => (
+                                        <li key={index} className="py-1 text-sm text-gray-700">
+                                            {notification} {/* Display notification text */}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-sm text-gray-600">No notifications available.</p>
+                            )}
+                            {notifications.length > 0 && (
+                                <button
+                                    className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                    onClick={clearNotifications}>
+                                    Clear All
+                                </button>
+                            )}
                         </div>
-                    </button>
-                </Link>}
+                    </div>
+                )}
 
-                {notification && <Link to={notificationRoute}>
-                    <button className="btn btn-ghost btn-circle mx-2">
-                        <div className="indicator">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            {/* indicator icon */}
-                            <span className="badge badge-xs badge-error indicator-item"></span>
-                        </div>
-                    </button>
-                </Link>}
                 <Link to={"/login"}>
-                    <button onClick={signOut} className="btn btn-ghost btn-circle">
-
+                    <button aria-label="Logout" onClick={signOut} className="btn btn-ghost btn-circle">
                         <div className="indicator">
                             <FaSignOutAlt className="h-5 w-5" />
                         </div>
-                    </button></Link>
+                    </button>
+                </Link>
             </div>
         </div>
     );

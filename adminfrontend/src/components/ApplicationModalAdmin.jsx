@@ -6,6 +6,11 @@ const ApplicationModalAdmin = ({ application, closeModal }) => {
 
   const handleAccept = async () => {
     try {
+
+
+      
+
+
       const response = await axiosPrivate.put(
         `/application?applicationid=${application.applicationid}`
       );

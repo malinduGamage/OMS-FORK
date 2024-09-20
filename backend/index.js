@@ -69,6 +69,9 @@ app.use('/application', require('./routes/api/application'))
 
 app.use('/case', require('./routes/api/case'))
 
+app.use('/notifications', require('./routes/api/notifications'))
+
+
 
 
 

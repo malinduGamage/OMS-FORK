@@ -22,8 +22,11 @@ const ApplicationModal = ({ application, closeModal, socialWorkerList = [] }) =>
         try {
             const response = await axiosPrivate.post('/case', {
                 childid: application.child.childid,
+                childname: application.child.name,
                 parentid: application.application.userid,
+                parentname: application.application.username,
                 socialworkerid: socialworkerid,
+                applicationid:application.applicationid
                
             }, {
                 headers: {

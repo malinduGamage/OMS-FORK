@@ -63,9 +63,50 @@ const getAllCases = async (req, res) => {
 
 const createCase = async (req, res) => {
 
-    const { socialworkerid, parentid, childid } = req.body
+    const { socialworkerid, parentid, childid,applicationid,childname,parentname } = req.body
 
     try {
+
+
+        const updateStatus = await prisma.approvedapplications.update({
+
+            where: {
+                applicationid:applicationid }
+
+
+            , data: {
+                status: "Accepted"
+            }
+        })
+
+
+        const notificationsw = `You have been assigned to case of child:${childname} and parent:${parentname} `
+        const notificationUser=`Social worker has been assigend to your case. proceed with phase 01 `
+
+        
+    await prisma.users.update({
+        where: {
+          userid: socialworkerid
+        },
+        data: {
+          notifications: {
+            push: notificationsw
+          }
+        }
+      })
+
+           
+    await prisma.users.update({
+        where: {
+          userid: parentid
+        },
+        data: {
+          notifications: {
+            push: notificationUser
+          }
+        }
+      })
+
 
         const newCase = await prisma.cases.create({
             data: {

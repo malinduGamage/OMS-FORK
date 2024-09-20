@@ -37,6 +37,29 @@ const createApplication = async (req, res) => {
     // Ensure `dob` is in the correct ISO-8601 format
     const dobISO = new Date(dob).toISOString();
 
+    const notification = `Pending application from ${username}`;
+
+    // Find all admin users
+    const adminUsers = await prisma.users.findMany({
+      where: {
+        roles: {
+          path: ['Admin'], // Check if the key 'Admin' exists
+          not: null, // Ensure it is not null
+        },
+      },
+    });
+
+    // Update notifications for each admin user
+    await Promise.all(adminUsers.map(async (admin) => {
+      await prisma.users.update({
+        where: { userid: admin.userid },
+        data: {
+          notifications: {
+            push: notification,
+          },
+        },
+      });
+    }));
     // Database call to create a new application
     const newApplication = await prisma.application.create({
       data: {
@@ -151,6 +174,30 @@ const acceptApplication = async (req, res) => {
 
     const { applicationid } = req.query
 
+
+    const application = await prisma.application.findUnique({
+      where: {
+        applicationid: applicationid
+      }
+    })
+
+
+    const userId = application.userid
+
+    const notification = "Your adoption application has been accepted. Now choose a child from given options"
+
+
+    await prisma.users.update({
+      where: {
+        userid: userId
+      },
+      data: {
+        notifications: {
+          push: notification
+        }
+      }
+    })
+
     const accepted = await prisma.application.update({
       where: {
         applicationid: applicationid
@@ -177,6 +224,40 @@ const addToApprovedList = async (req, res) => {
   try {
 
     const { applicationId, childId, parentId } = req.body;
+
+
+    const child = await prisma.child.findUnique({
+      where: {
+        childid: childId,
+      },
+      select: {
+        orphanageid: true,
+        name: true
+      }
+    });
+
+    const orphanage = await prisma.orphanage.findUnique({
+      where: {
+        orphanageid: child.orphanageid
+      },
+      select: {
+        headid: true
+      }
+    });
+
+
+    const notification = `Assign a social worker to case of ${child.name} `
+
+    await prisma.users.update({
+      where: {
+        userid: orphanage.headid
+      },
+      data: {
+        notifications: {
+          push: notification
+        }
+      }
+    })
 
 
     const approvedApplication = await prisma.approvedapplications.create({
