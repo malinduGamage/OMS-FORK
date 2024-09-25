@@ -61,6 +61,106 @@ const getChildPhotoUploadURL = async (req, res) => {
     }
 }
 
+const getChildPhotoUpdateURL = async (req, res) => {
+    const childId = req.params.path.split('.')[0];
+    const type = req.params.path.split('.')[1];
+    const userId = req.userId;
+
+    if (!childId || !type) return res.status(400).json({
+        success: false,
+        message: 'Invalid request'
+    });
+
+    try {
+        const child = await prisma.child.findUnique({
+            where: {
+                childid: childId
+            },
+            select: {
+                childid: true
+            }
+        })
+
+        if (!child) return res.status(404).json({
+            success: false,
+            message: 'Child not found'
+        });
+
+        const params = {
+            Bucket: process.env.S3_BUCKET,
+            Prefix: `child/photo/${childId}`, // Search for objects with this prefix
+        };
+
+        const data = await s3.listObjectsV2(params).promise();
+
+        if (data.Contents.length != 0) {
+            for (let i = 0; i < data.Contents.length; i++) {
+                console.log(i)
+                if (data.Contents[i] != `child/photo/${childId}.${type}`) {
+                    deleteFileInS3(data.Contents[i].Key);
+                }
+            }
+        }
+
+        const URL = await getSignedUrl(
+            client,
+            new PutObjectCommand({
+                Bucket: process.env.S3_BUCKET,
+                Key: `child/photo/${childId}.${type}`,
+            }),
+            { expiresIn: 1000 * 60 });
+
+        if (URL) {
+            res.status(200).json({
+                success: true,
+                URL
+            });
+        } else throw new Error('Failed to get upload URL');
+
+    } catch (error) {
+        console.error('Error getting upload URL:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get upload URL'
+        });
+    }
+}
+
+const deleteChildPhoto = async (req, res) => {
+    const childId = req.params.path
+    if (!childId) return res.status(400).json({
+        success: false,
+        message: 'Invalid request'
+    });
+
+    try {
+
+        const params = {
+            Bucket: process.env.S3_BUCKET,
+            Prefix: `child/photo/${childId}`, // Search for objects with this prefix
+        };
+
+        const data = await s3.listObjectsV2(params).promise();
+
+        if (data.Contents.length != 0) {
+            for (let i = 0; i < data.Contents.length; i++) {
+                console.log(i)
+                deleteFileInS3(data.Contents[i].Key);
+            }
+        }
+
+        res.sendStatus(200)
+
+    } catch (error) {
+        console.error('Error deleting img:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting img'
+        });
+    }
+}
+
+
 const getChildDocUploadURL = async (req, res) => {
 
     const childId = req.params.childId;
@@ -497,21 +597,21 @@ const uploadDocuments = async (req, res) => {
             select: {
                 socialworkerid: true
             }
-        }) 
+        })
 
 
         const notification = `Documents of case: ${caseId} uploaded `
 
         await prisma.users.update({
             where: {
-              userid:sw.socialworkerid
+                userid: sw.socialworkerid
             },
             data: {
-              notifications: {
-                push: notification
-              }
+                notifications: {
+                    push: notification
+                }
             }
-          })
+        })
 
 
 
@@ -638,5 +738,7 @@ module.exports = {
     deleteFileInS3,
     uploadDocuments,
     renameFileInS3,
-    getDocumentUrls
+    getDocumentUrls,
+    getChildPhotoUpdateURL,
+    deleteChildPhoto
 };

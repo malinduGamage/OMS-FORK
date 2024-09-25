@@ -17,8 +17,8 @@ router
     ),
     applicationController.createApplication
   )
-  .get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User,ROLES_LIST.SocialWorker),applicationController.getApplications)
-  .put(verifyRoles(ROLES_LIST.Admin),applicationController.updateApplicationStatus)
+  .get(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User, ROLES_LIST.SocialWorker), applicationController.getApplications)
+  .put(verifyRoles(ROLES_LIST.Admin), applicationController.updateApplicationStatus)
 
 
 router.route('/getchildren')
@@ -30,6 +30,9 @@ router.route('/approve')
 
 router.route('/approve/:parentId')
   .get(verifyRoles(ROLES_LIST.User), applicationController.getApprovedApplicationsByUser)
+
+router.route('/countByChild/:childId')
+  .get(verifyRoles(ROLES_LIST.Head, ROLES_LIST.Staff, ROLES_LIST.Admin), applicationController.checkChildInvolvement)
 
 module.exports = router;
 

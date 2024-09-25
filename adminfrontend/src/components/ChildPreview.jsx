@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import AvatarPlaceHolder from '../assets/images/avatar_placeholder.jpg'
+import AvatarPlaceHolder from '../assets/images/avatar_placeholder.png'
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 export const ChildPreview = ({ child, setPreviewVisibility, setFileVisibility }) => {

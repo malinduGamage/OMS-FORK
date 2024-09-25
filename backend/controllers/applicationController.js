@@ -173,7 +173,7 @@ const getChildren = async (req, res) => {
 const updateApplicationStatus = async (req, res) => {
   try {
 
-    const {applicationid,status} = req.query;
+    const { applicationid, status } = req.query;
 
 
     const application = await prisma.application.findUnique({
@@ -200,11 +200,11 @@ const updateApplicationStatus = async (req, res) => {
     })
 
     const applicationStatus = await prisma.application.update({
-      where:{
-        applicationid:applicationid
+      where: {
+        applicationid: applicationid
       },
-      data:{
-        status:status
+      data: {
+        status: status
       }
     })
 
@@ -329,11 +329,34 @@ const getApprovedApplicationsByUser = async (req, res) => {
   }
 }
 
+const checkChildInvolvement = async (req, res) => {
+
+  const { childId } = req.params
+
+  if (!childId) return res.status(400).json({ 'success': false, message: 'Bad request' });
+  try {
+    const applicationCount = await prisma.approvedapplications.count({
+      where: {
+        childid: childId
+      }
+    })
+    console.log(applicationCount)
+    res.status(200).json({ 'success': true, count: applicationCount });
+  }
+  catch (error) {
+    console.error('Error fetching approved applications:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+
+}
+
 module.exports = {
   createApplication,
   getApplications,
-  getChildren, updateApplicationStatus,
+  getChildren,
+  updateApplicationStatus,
   addToApprovedList,
   getApprovedApplications,
-  getApprovedApplicationsByUser
+  getApprovedApplicationsByUser,
+  checkChildInvolvement
 };

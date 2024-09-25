@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const ROLES_LIST = require('../config/roles_list')
+const { moveFileInS3, copyFileInS3, deleteFileInS3, renameFileInS3 } = require('./fileController');
+
 
 const getChild = async (req, res) => {
     const childid = req.params.childid
@@ -145,6 +147,22 @@ const deleteChild = async (req) => {
         for (let i = 0; i < documents.length; i++) {
             deleteFileInS3(`child/document/${documents[i].documentid}.pdf`);
         }
+
+        const temp_documents = await prisma.child_document_temp.findMany({
+            where: {
+                childid: childid
+            }
+        })
+
+        for (let i = 0; i < temp_documents.length; i++) {
+            deleteFileInS3(`request/document/${temp_documents[i].documentid}.pdf`);
+        }
+
+        await prisma.child_document.deleteMany({
+            where: {
+                childid: childid
+            }
+        })
 
         await prisma.child.delete({
             where: {
