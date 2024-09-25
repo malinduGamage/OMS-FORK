@@ -146,17 +146,19 @@ const getChildren = async (req, res) => {
   }
 }
 
-const acceptApplication = async(req,res)=>{
+const updateApplicationStatus = async(req,res)=>{
+  console.log('Inside the updateApplicationStatus')
   try {
-
-    const {applicationid} = req.query
-
-    const accepted = await prisma.application.update({
+    console.log('Inside try block the updateApplicationStatus')
+    const {applicationid,status} = req.query;
+    console.log(status)
+    console.log(applicationid)
+    const applicationStatus = await prisma.application.update({
       where:{
         applicationid:applicationid
       },
       data:{
-        status:'Accepted'
+        status:status
       }
     })
 
@@ -229,5 +231,4 @@ const getApprovedApplications = async (req,res)=>{
   }
 }
 
-
-module.exports = {createApplication,getApplications,getChildren,acceptApplication,addToApprovedList,getApprovedApplications};
+module.exports = {createApplication,getApplications,getChildren,updateApplicationStatus,addToApprovedList,getApprovedApplications};

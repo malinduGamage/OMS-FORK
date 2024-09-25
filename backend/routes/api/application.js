@@ -18,7 +18,7 @@ router
     applicationController.createApplication
   )
   .get(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User,ROLES_LIST.SocialWorker),applicationController.getApplications)
-  .put(verifyRoles(ROLES_LIST.Admin),applicationController.acceptApplication)
+  .put(verifyRoles(ROLES_LIST.Admin),applicationController.updateApplicationStatus)
 
   router.route('/getchildren')
   .post(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.User),applicationController.getChildren)
