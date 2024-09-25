@@ -36,41 +36,41 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     const handleDeleteOrphanage = async (orphanageId) => {
         try {
             console.log('Inside the handle Delete orphanage...');
-            const children = await axiosPrivate.get(`/child/orphanage/${orphanageId}`,{
+            const children = await axiosPrivate.get(`/child/orphanage/${orphanageId}`, {
                 headers: {
-                  orphanageId: orphanageId
+                    orphanageId: orphanageId
                 }
             });
             console.log(orphanageId)
             console.log(children.data)
             if (children.data.childrenList.length === 0) {
                 console.log("inside the tables delete");
-                
+
                 try {
                     // Deleting social workers related to orphanage
                     const deletedSocialWorkers = await axiosPrivate.delete(`/socialworker/${orphanageId}`);
-                    console.log("frontend social workers",deletedSocialWorkers.data.deletedCount);  // Proper logging for status
-                    
+                    console.log("frontend social workers", deletedSocialWorkers.data.deletedCount);  // Proper logging for status
+
                     // Deleting staff related to orphanage
                     const deletedStaff = await axiosPrivate.delete(`/staff/${orphanageId}`);
                     console.log("frontend staffs", deletedStaff.data.deletedCount);   // Optional logging
-                    
+
                     // Deleting orphanage itself
                     const deletedOrphanage = await axiosPrivate.delete(`/orphanage/${orphanageId}`);
                     console.log(deletedOrphanage.status);  // Optional logging
-            
+
                     // Update orphanage list state
                     setOrphanageList(orphanageList.filter((orphanage) => orphanage.orphanageid !== orphanageId));
                     console.log('Deleted orphanage');
-                
+
                 } catch (error) {
                     console.error('Error during delete operations:', error);
                 }
             }
-            else{
+            else {
                 console.log(children.data.childrenList.length)
             }
-    
+
         } catch (error) {
             console.error('Failed to delete orphanage:', error);
             setOrphanageList(orphanageList);
@@ -88,8 +88,8 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     return (
         <div className='mt-10' >
 
-            <div className='grid mx-20 mb-3 md:grid-cols-3 '>
-                <Link to={'/addOrphanage'}>
+            <div className='grid mb-3 md:grid-cols-3 mx-20 '>
+                <Link to={'/admin/addOrphanage'}>
                     <button className='m-2 flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
                         <p className='ml-1'> Add Orphanage</p>
                     </button>

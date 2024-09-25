@@ -128,6 +128,7 @@ const AdminDash = () => {
           </div>
         </nav>
       </div>
+
       {/*side bar*/}
       <div className='fixed  w-[15vw] h-[92vh] top-[8vh] bg-orange-50'>
         <div className="flex items-center justify-center border-b h-14">

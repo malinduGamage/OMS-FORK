@@ -310,7 +310,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         {/* Confirm Password Field */}
         <div className="flex flex-col w-full">
           <label className="text-lg font-semibold mb-2 text-primary" htmlFor="confirm_password">
-            Confirm Password:
+            Confirm:
             <FontAwesomeIcon
               icon={faCheck}
               className={validMatch &&matchPassword ? "text-green-600 ml-2" : "hidden"}

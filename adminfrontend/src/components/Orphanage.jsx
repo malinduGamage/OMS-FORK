@@ -76,22 +76,6 @@ const Orphanage = () => {
 
   return (
     <div className="container mx-auto">
-      {/* Fixed Navbar */}
-      <nav className='fixed top-0 left-0 right-0 h-[70px] bg-white border-b-2 border-gray-200 z-10'>
-        <div className='flex items-center justify-between p-4'>
-          <a href="#">
-            <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-36' />
-          </a>
-          <ul className='flex space-x-6'>
-            <li>
-              <button className='p-2 font-semibold transition-colors duration-300 border-2 rounded-md text-primary border-primary hover:bg-primary hover:text-white' onClick={signout}>
-                Sign Out
-              </button>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
 
       <div className="pt-[60px]">
         <div className="relative">

@@ -39,7 +39,7 @@ const getAllSocialWorkers = async(req,res)=>{
     
   } catch (error) {
 
-    console.error('Database query failed:', error);
+    console.log('Database query failed:');
     res.status(500).json({
       success: false,
       message: 'An error occurred while fetching social workers.'
@@ -82,7 +82,7 @@ const addSocialWorker = async (req, res) => {
 
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({
       success: false,
       message: "An error occurred while adding the orphanage."
@@ -109,7 +109,7 @@ const getOrphanage = async (req, res) => {
     res.json({ orphanageId })
 
   } catch (error) {
-    console.error('Database query failed:', error);
+    console.log('Database query failed:');
     res.status(500).json({ error: 'An error occurred while fetching the orphanage.' });
 
   }

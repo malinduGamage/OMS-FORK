@@ -70,14 +70,13 @@ const Login = () => {
 
       setAuth({ accessToken, roles, orphanageId, userId, username });
 
-
       setEmail("");
       setPassword("");
       toast.success("Login Successful");
       // Check roles to navigate
       if (roles.includes(ROLES.Admin)) navigate("/admin", { replace: true });
       else if (roles.includes(ROLES.Head) || roles.includes(ROLES.SocialWorker) || roles.includes(ROLES.Staff)) navigate(`/orphanage/${orphanageId}`, { replace: true });
-      else navigate(`/userdash`, { replace: true });
+      else navigate(`/user/dashboard`, { replace: true });
 
 
     } catch (err) {
@@ -85,7 +84,7 @@ const Login = () => {
         toast.error("No Server Response");
         //setFormError("No Server Response");
       } else if (err.response?.status === 400) {
-        toast.error("Missing Username or Password");
+        toast.error("Missing Email or Password");
         //setFormError("Missing Username or Password");
       } else if (err.response?.status === 401) {
         toast.error("Unauthorized");

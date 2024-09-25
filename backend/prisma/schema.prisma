@@ -44,6 +44,7 @@ model approvedapplications {
   applicationid String      @id @db.Uuid
   childid       String      @db.Uuid
   parentid      String      @db.Uuid
+  status        String?     @default("Pending") @db.VarChar(255)
   application   application @relation(fields: [applicationid], references: [applicationid], onDelete: NoAction, onUpdate: NoAction)
   child         child       @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
   users         users       @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
@@ -64,6 +65,7 @@ model cases {
   phase1         String?      @default("Ongoing") @db.VarChar(255)
   phase2         String?      @default("Ongoing") @db.VarChar(255)
   phase3         String?      @default("Ongoing") @db.VarChar(255)
+  meetings       Json[]
   child          child        @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
   users          users        @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker   socialworker @relation(fields: [socialworkerid], references: [socialworkerid], onDelete: NoAction, onUpdate: NoAction)
@@ -190,6 +192,8 @@ model users {
   telno                              Int?
   roles                              Json
   refreshtoken                       String?                @unique
+  notifications                      String[]               @default([])
+  verified                           Boolean?               @default(false)
   application                        application[]
   approvedapplications               approvedapplications[]
   cases                              cases[]

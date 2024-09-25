@@ -42,6 +42,8 @@ app.use('/refresh', require('./routes/refresh'))
 
 app.use('/logout', require('./routes/logout'));
 
+app.use('/verify', require('./routes/verify'));
+
 
 
 app.use(verifyJWT)
@@ -68,6 +70,9 @@ app.use('/broadcast', require('./routes/api/broadcast'))
 app.use('/application', require('./routes/api/application'))
 
 app.use('/case', require('./routes/api/case'))
+
+app.use('/notifications', require('./routes/api/notifications'))
+
 
 
 
