@@ -16,6 +16,7 @@ import { AdminOrphanage } from './AdminOrphanage';
 import { AdminAssign } from './AdminAssign';
 import ApplicationListAdmin from './ApplicationListAdmin';
 import { AdminOverView } from './AdminOverView';
+import Report from './Report'
 
 const AdminDash = () => {
 
@@ -49,7 +50,7 @@ const AdminDash = () => {
       case baseTabs[3].label:
         return <ApplicationListAdmin />;
       case baseTabs[4].label:
-        return;
+        return <Report/>;
       default:
         return null;
     }
@@ -64,7 +65,7 @@ const AdminDash = () => {
     const getAllOrphanages = async () => {
       try {
         const response = await axiosPrivate.get('/orphanage')
-        console.log(response.data.orphanageList)
+        console.log("inside the getallorphanages",response.data.orphanageList)
         setOrphanageList(response.data.orphanageList)
 
       } catch (error) {
@@ -97,13 +98,43 @@ const AdminDash = () => {
 
   return (
     <div >
+      {/*nav bar*/}
+      <div className='fixed top-0 left-0 h-[8vh] w-full bg-white drop-shadow-lg'>
+        <nav className='flex items-center justify-between h-full rounded'>
+          <div className='flex items-center ml-6'>
+            <a href="./admin">
+              <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className='w-28' />
+            </a>
+          </div>
+          <div className='p-4'>
+            <ul className='flex space-x-6'>
+              <li>
+                <Link to={'/inbox'}>
+                  <button className='flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
+                    <RiInboxArchiveFill />
+                    <p className='ml-1'> Inbox</p>
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={signout}
+                  className='flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
+                  <FaSignOutAlt />
+                  <p className='ml-1'> Sign Out</p>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
 
       {/*side bar*/}
       <div className='fixed  w-[15vw] h-[92vh] top-[8vh] bg-orange-50'>
-        <div className="flex items-center justify-center h-14 border-b">
+        <div className="flex items-center justify-center border-b h-14">
           <div>Admin Dashboard</div>
         </div>
-        <div className="overflow-y-auto overflow-x-hidden flex-grow">
+        <div className="flex-grow overflow-x-hidden overflow-y-auto">
           <ul className="flex flex-col py-4 space-y-1">
             <li className="px-5">
               <div className="flex flex-row items-center h-8">
@@ -116,7 +147,7 @@ const AdminDash = () => {
                   <div
                     className={`relative flex flex-row items-center h-11 focus:outline-none hover:bg-white text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-orange-600 pr-6 ${selectedTab === tab.label ? 'bg-white' : ''}`}
                     onClick={() => setSelectedTab(tab.label)}>
-                    <span className="inline-flex justify-center items-center ml-4">
+                    <span className="inline-flex items-center justify-center ml-4">
                       {tab.icon}
                     </span>
                     <span className="ml-2 tracking-wide truncate">{tab.label}</span>

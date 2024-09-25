@@ -169,10 +169,11 @@ const getChildren = async (req, res) => {
   }
 }
 
-const acceptApplication = async (req, res) => {
+
+const updateApplicationStatus = async (req, res) => {
   try {
 
-    const { applicationid } = req.query
+    const {applicationid,status} = req.query;
 
 
     const application = await prisma.application.findUnique({
@@ -198,12 +199,12 @@ const acceptApplication = async (req, res) => {
       }
     })
 
-    const accepted = await prisma.application.update({
-      where: {
-        applicationid: applicationid
+    const applicationStatus = await prisma.application.update({
+      where:{
+        applicationid:applicationid
       },
-      data: {
-        status: 'Accepted'
+      data:{
+        status:status
       }
     })
 
@@ -331,7 +332,7 @@ const getApprovedApplicationsByUser = async (req, res) => {
 module.exports = {
   createApplication,
   getApplications,
-  getChildren, acceptApplication,
+  getChildren, updateApplicationStatus,
   addToApprovedList,
   getApprovedApplications,
   getApprovedApplicationsByUser
