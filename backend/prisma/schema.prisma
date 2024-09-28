@@ -66,6 +66,8 @@ model cases {
   phase2         String?      @default("Ongoing") @db.VarChar(255)
   phase3         String?      @default("Ongoing") @db.VarChar(255)
   meetings       Json[]
+  home_visits    Json[]
+  approval_form  Json?
   child          child        @relation(fields: [childid], references: [childid], onDelete: NoAction, onUpdate: NoAction)
   users          users        @relation(fields: [parentid], references: [userid], onDelete: NoAction, onUpdate: NoAction)
   socialworker   socialworker @relation(fields: [socialworkerid], references: [socialworkerid], onDelete: NoAction, onUpdate: NoAction)

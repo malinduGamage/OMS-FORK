@@ -1,3 +1,21 @@
+// Import required modules
+const { PrismaClient } = require('@prisma/client'); // For interacting with the Prisma database
+const bcrypt = require('bcrypt'); // For hashing passwords
+const jwt = require('jsonwebtoken'); // For creating and verifying JSON Web Tokens
+const nodemailer = require('nodemailer'); // For sending emails
+const express = require('express'); // For creating the Express app (if needed)
+
+// Initialize Prisma Client
+const prisma = new PrismaClient();
+
+// Set up Nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // You can change this to your email provider
+    auth: {
+        user: process.env.EMAIL, // Your email address
+        pass: process.env.PASSWORD // Your email password or app password
+    }
+});
 const handleNewUser = async (req, res) => {
     const { username, password, telno, email } = req.body;
 

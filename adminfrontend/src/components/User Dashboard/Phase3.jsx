@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import HomeVisit from "../HomeVisit";
 
-const Phase3 = () => {
-    return (
-        <div>Phase3</div>
-    )
-}
+const Phase3 = ({ caseId }) => {
+  return (
+    <div>
+      <HomeVisit caseId={caseId} />
+    </div>
+  );
+};
 
-export default Phase3
+export default Phase3;
