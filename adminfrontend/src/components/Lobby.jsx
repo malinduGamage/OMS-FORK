@@ -31,11 +31,21 @@ const Lobby = ({caseId}) => {
     }
   }, [caseId]);
 
+
+
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const inviteCode = e.target.invite_link.value;
     navigate(`/chatroom/${inviteCode}`, { replace: true });
   };
+
+  const completePhase2 = async () => {
+    await axiosPrivate.put(`/case/phase2?caseid=${caseId}`);
+    alert('Phase 2 completed successfully!');
+    
+  }
+
 
   const getMeetings = async () => {
     try {
@@ -139,9 +149,25 @@ const Lobby = ({caseId}) => {
                       <p>Time: {new Date(meeting.date).toLocaleTimeString()}</p>
                     </div>
                   ))}
+
+<button
+             onClick={completePhase2}
+             className='bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition'
+           >
+             Conclude second phase
+           </button>
+
+                  
             </div>
+            
+
+            
                
-          )}
+          )
+          
+          }
+
+
 
 {auth.roles == 1010 && (
   <div >

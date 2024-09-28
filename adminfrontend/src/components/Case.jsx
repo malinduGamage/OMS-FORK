@@ -4,6 +4,7 @@ import Phase1 from "./User Dashboard/Phase1";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import Loading from "./Loading";
 import Lobby from "./Lobby";
+import HomeVisit from "./HomeVisit";
 
 const Case = () => {
   const { caseId } = useParams();
@@ -65,6 +66,13 @@ const Case = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Video Conference</h2>
         <div className="px-4 py-5 bg-gray-100 rounded-lg">
           <Lobby caseId={caseId} />
+        </div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Home Environment Assessment</h2>
+        <div className="px-4 py-5 bg-gray-100 rounded-lg">
+          <HomeVisit caseId={caseId} />
         </div>
       </div>
     </div>

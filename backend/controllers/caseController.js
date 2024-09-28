@@ -258,6 +258,57 @@ const phase1Completed = async (req, res) => {
   }
 };
 
+
+
+const pahse2Completed = async (req, res) => {
+ try {
+
+  const { caseid } = req.query;
+
+  const parent = await prisma.cases.findUnique({
+    where: {
+      caseid: caseid,
+    },
+    select: {
+      parentid: true,
+    }
+  });
+
+
+  const notification = "Meetings has been concluded. Proceed with phase 3"
+
+  await prisma.users.update({
+    where: {
+      userid: parent.parentid
+    },
+    data: {
+      notifications: {
+        push: notification
+      }
+    }
+  })
+
+
+
+  const updatedCase = await prisma.cases.update({
+    where: {
+      caseid: caseid,
+    },
+    data: {
+      phase2: "Completed",
+    },
+  });
+
+  res.status(200).json({ message: "Phase 2 completed" });
+  
+ } catch (error) {
+
+  console.log("Error updating case:", error);
+  res.status(500).json({ error: "Failed to update case." });
+  
+ }
+}
+
 const setMeeting = async (req, res) => {
   try {
     const { caseId, meeting } = req.body;
@@ -306,6 +357,67 @@ const setMeeting = async (req, res) => {
   }
 };
 
+const setVisits = async (req, res) => {
+  try {
+    const { caseId, visits } = req.body;
+
+
+    const parent = await prisma.cases.findUnique({
+      where: {
+        caseid: caseId,
+      },
+      select: {
+        parentid: true,
+      },
+    })
+
+
+   
+    const notification = `Choose one from proposed dates for home visit.`;
+
+    await prisma.users.update({
+      where: {
+        userid: parent.parentid
+      },
+      data: {
+        notifications: {
+          push: notification
+        }
+      }
+    })
+    
+    const setVisits = await prisma.cases.update({
+      where: { caseid: caseId },  
+      data: { home_visits: visits },
+    });
+    res.status(200).json({ message: "Visits set" });
+  } catch (error) {
+    console.log("Error updating case with visits");
+    res.status(500).json({ message: "Failed to set visit", error });
+  }
+};
+const updateVisits = async (req, res) => {
+  try {
+    const { caseid } = req.query;
+    const { updatedVisit } = req.body;
+
+    // Replace home_visits with updatedVisit
+    const updatedCase = await prisma.cases.update({
+      where: { caseid: caseid },
+      data: {
+        home_visits: [updatedVisit], // Replace home_visits with the new updatedVisit object
+      },
+    });
+
+    res.status(200).json({ message: "Visits updated", updatedCase });
+  } catch (error) {
+    console.log("Error updating case with visits", error);
+    res.status(500).json({ message: "Failed to set visit", error });
+  }
+};
+
+
+
 const getMeetings = async (req, res) => {
   try {
     const { caseid } = req.query;
@@ -319,6 +431,22 @@ const getMeetings = async (req, res) => {
   } catch (error) {
     console.error("Error fetching meetings", error);
     res.status(500).json({ message: "Failed to fetch meetings", error });
+  }
+};
+
+const getVisits = async (req, res) => {
+  try {
+    const { caseid } = req.query;
+
+    const caseWithVisits = await prisma.cases.findUnique({
+      where: { caseid: caseid },  
+      select: { home_visits: true },
+    });
+
+    res.json({ visits: caseWithVisits.home_visits });
+  } catch (error) {
+    console.error("Error fetching visits", error);
+    res.status(500).json({ message: "Failed to fetch visits", error });
   }
 };
 
@@ -359,6 +487,81 @@ const updateMeeting = async (req, res) => {
   }
 };
 
+
+
+
+const setApproval = async (req, res) => {
+
+  try {
+
+    const {caseId} = req.query
+
+    const {homeCondition} = req.body
+
+    const parent = await prisma.cases.findUnique({
+      where: {
+        caseid: caseId,
+      },
+      select: {
+        parentid: true,
+      },
+    })
+
+
+   
+    const notification = `Your Home conditions has been approved`;
+
+    await prisma.users.update({
+      where: {
+        userid: parent.parentid
+      },
+      data: {
+        notifications: {
+          push: notification
+        }
+      }
+    })
+    
+    const updatedCase = await prisma.cases.update({
+      where: {
+        caseid: caseId,
+      },
+      data: {
+        phase3: "Completed",
+        approval_form: homeCondition
+      },
+    });
+
+
+
+   
+   
+    
+  } catch (error) {
+
+    console.log("Error updating case with approval", error);
+    res.status(500).json({ message: "Failed to set approval", error });
+    
+  }
+}
+
+
+const getApproval = async (req, res) => {
+  try {
+    const { caseid } = req.query;
+
+    const caseWithApproval = await prisma.cases.findUnique({
+      where: { caseid: caseid },
+      select: { approval_form: true },
+    });
+
+    res.json({ approval: caseWithApproval.approval_form });
+  } catch (error) {
+    console.error("Error fetching approval", error);
+    res.status(500).json({ message: "Failed to fetch approval", error });
+  }
+};
+
 module.exports = {
   createCase,
   getAllCases,
@@ -368,4 +571,10 @@ module.exports = {
   setMeeting,
   getMeetings,
   updateMeeting,
+  pahse2Completed,
+  setVisits,
+  getVisits,
+  updateVisits,
+  setApproval,
+  getApproval
 };

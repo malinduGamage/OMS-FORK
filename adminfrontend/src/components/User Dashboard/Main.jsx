@@ -54,9 +54,9 @@ const UserDashboard = () => {
             case 4:
                 return <CasePending />
             case 5:
-                return <CaseOngoing caseDetails={caseDetails} currentPhase={currentPhase} />
+                return <CaseOngoing caseDetails={caseDetails} currentPhase={currentPhase} setCurrentState={setCurrentState} />
             case 6:
-                return <CaseClosed />
+                return <CaseClosed setCurrentState={setCurrentState} caseDetails={caseDetails} />
             default:
                 return null;
         }
