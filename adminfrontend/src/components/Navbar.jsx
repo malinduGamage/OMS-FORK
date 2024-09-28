@@ -62,6 +62,7 @@ const NavBar = () => {
         }
     };
 
+
     useEffect(() => {
         if (auth && auth.roles) {
             if (auth.roles.includes(ROLES.Admin)) {
@@ -87,7 +88,10 @@ const NavBar = () => {
     };
 
     return (
-        <div className="navbar bg-base-100 fixed top-0 left-0 w-full z-10 shadow-md">
+        <div className="navbar bg-base-100 fixed top-0 left-0 w-full z-10 shadow-md ">
+
+
+
             <div className="flex-1">
                 <a className="btn btn-ghost w-fit px-1" href={homeRoute}>
                     <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className="w-36" />
@@ -131,32 +135,32 @@ const NavBar = () => {
 
                 {/* Notification Modal */}
                 {showNotificationModal && (
-                <div className="absolute right-0 mt-96 mr-5 bg-white shadow-xl rounded-2xl w-72 z-20">
-                <div className="p-4">
-                    <h4 className="font-semibold text-xl text-gray-800">Notifications</h4>
-                    {notifications.length > 0 ? (
-                        <ul className="my-4 space-y-2 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
-                            {notifications.map((notification, index) => (
-                                <li
-                                    key={index}
-                                    className="flex items-start p-3 bg-gray-100 rounded-lg shadow-sm text-sm text-gray-800">
-                                    <span className="flex-1">{notification}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-sm text-gray-600 text-center mt-4">No notifications available.</p>
-                    )}
-                    {notifications.length > 0 && (
-                        <button
-                            className="w-full mt-4 bg-primary text-white px-4 py-2 rounded-full text-center  transition duration-300 ease-in-out"
-                            onClick={clearNotifications}>
-                            Clear All
-                        </button>
-                    )}
-                </div>
-            </div>
-            
+                    <div className="absolute right-0 mt-96 mr-5 bg-white shadow-xl rounded-2xl w-72 z-20">
+                        <div className="p-4">
+                            <h4 className="font-semibold text-xl text-gray-800">Notifications</h4>
+                            {notifications.length > 0 ? (
+                                <ul className="my-4 space-y-2 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
+                                    {notifications.map((notification, index) => (
+                                        <li
+                                            key={index}
+                                            className="flex items-start p-3 bg-gray-100 rounded-lg shadow-sm text-sm text-gray-800">
+                                            <span className="flex-1">{notification}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-sm text-gray-600 text-center mt-4">No notifications available.</p>
+                            )}
+                            {notifications.length > 0 && (
+                                <button
+                                    className="w-full mt-4 bg-primary text-white px-4 py-2 rounded-full text-center  transition duration-300 ease-in-out"
+                                    onClick={clearNotifications}>
+                                    Clear All
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
                 )}
 
                 <Link to={"/login"}>

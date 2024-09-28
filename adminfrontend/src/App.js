@@ -1,6 +1,6 @@
-import AdminDash from "./components/AdminDash";
+//import AdminDash from "./components/AdminDash";
 
-import OrphanageForm from "./components/OrphanageForm";
+//import OrphanageForm from "./components/Admin Dashboard/OrphanageForm";
 import Orphanage from "./components/Orphanage";
 import { Route, Routes, Outlet } from "react-router-dom";
 import Login from "./components/Login";
@@ -9,7 +9,7 @@ import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import PersistLogin from "./components/PersistLogin";
 import UserDash from "./components/UserDash";
-import UpdateOrphanage from "./components/UpdateOrphanage";
+//import UpdateOrphanage from "./components/UpdateOrphanage";
 import FosteringMain from "./components/FosteringMain";
 import Payment from "./components/Payment";
 
@@ -38,6 +38,9 @@ import UserInbox from "./components/User Dashboard/Inbox";
 import OrphanageDashboard from "./components/Orphanage Dashboard/Main";
 import SideBar from "./components/Orphanage Dashboard/SideBar";
 import VerifyEmail from "./components/VerifyEmail";
+
+//admin components
+import AdminDashboard from "./components/Admin Dashboard/Main";
 
 const ROLES = {
   'User': 1010,
@@ -75,8 +78,7 @@ function App() {
               </>)}>
 
             <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-              <Route path='/admin' element={<AdminDash />} />
-              <Route path="/admin/addOrphanage" element={<OrphanageForm />} />
+              <Route path='/admin' element={<AdminDashboard />} />
               <Route path="/admin/inbox" element={<Inbox />} />
             </Route>
 
@@ -88,7 +90,6 @@ function App() {
             {/*orphanage routes*/}
             <Route path="/orphanage" element={<RequireAuth allowedRoles={[ROLES.Head, ROLES.SocialWorker, ROLES.Staff]} />}>
               <Route path=':id' element={<Orphanage />} />
-              <Route path=':id/edit' element={<UpdateOrphanage />} />
               <Route path=':id/child/:childid' element={<Child />} />
               <Route path=':id/case/:caseId' element={<Case />} />
             </Route>
