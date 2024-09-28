@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import toast from 'react-hot-toast';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Search from './Search';
-import Dropdown from './Dropdown';
-import { districts } from '../constants';
+import Search from '../Search';
+import Dropdown from '../Dropdown';
+import { districts } from '../../constants';
 import { Link, useNavigate } from 'react-router-dom';
+import PrimaryButton from '../elements/PrimaryButton';
+import OrphanageForm from './OrphanageForm';
+import UpdateOrphanage from './UpdateOrphanage';
 
 export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
@@ -13,6 +16,10 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     const navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDistrict, setSelectedDistrict] = useState("");
+
+    const [orphanageForm, setOrphanageForm] = useState(false)
+    const [updateForm, setUpdateForm] = useState(false)
+    const [orphanageId, setOrphanageId] = useState(null)
 
     const filteredOrphanageList = orphanageList.filter((orphanage) => {
         const matchesSearch = orphanage.orphanagename.toLowerCase().startsWith(searchTerm.toLowerCase());
@@ -86,21 +93,19 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
 
     return (
-        <div className='mt-10' >
+        <div >
+            <h1 className='text-4xl font-bold text-center text-gray-800 mb-5'>Registered Orphanages</h1>
+            <div className='flex flex-col sm:flex-row justify-start'>
+                <PrimaryButton onClick={() => setOrphanageForm(true)} text={'Add Orphanage'} className={' my-auto ml-2 '} />
 
-            <div className='grid mb-3 md:grid-cols-3 mx-20 '>
-                <Link to={'/admin/addOrphanage'}>
-                    <button className='m-2 flex items-center px-6 py-2 min-w-[120px] text-center text-orange-600 border border-orange-600 rounded hover:bg-orange-600 hover:text-white active:bg-orange-500 focus:outline-none focus:ring'>
-                        <p className='ml-1'> Add Orphanage</p>
-                    </button>
-                </Link>
                 <div className='m-2'>
                     <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 </div>
-                <div className='m-2'>
+                <div className='my-auto ml-2' >
                     <Dropdown
                         valueList={districts}
                         onSelect={(district) => setSelectedDistrict(district)}
+                        className={'w-full m-0 p-0'}
                     />
                 </div>
             </div>
@@ -129,43 +134,49 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
             <InfiniteScroll
 
-                className='mx-20 infinite-scroll-container'
+                className='mx-2 infinite-scroll-container mb-5'
                 dataLength={sortedOrphanageList.length}
                 next={fetchMoreData}
                 hasMore={true}
-                height={300}
             >
                 {sortedOrphanageList.map((item, index) => (
-                    <div
-                        className='flex items-center justify-between px-10 py-2 border-gray-100 border-y-2 hover:bg-gray-100'
-                        key={index}
-                        onClick={() => handleClickOrphanage(item.orphanageid)}
-                    >
-                        {item.orphanagename}
-                        <div className='flex space-x-2'>
-                            <button
-                                className='px-3 py-1 text-xs text-white bg-blue-500 rounded hover:bg-blue-600'
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleUpdateOrphanage(item.orphanageid);
-                                }}
-                            >
-                                Update
-                            </button>
-                            <button
-                                className='px-3 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600'
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteOrphanage(item.orphanageid);
-                                }}
-                            >
-                                Delete
-                            </button>
+                    <div className='flex items-center justify-between py-2 '
+                        key={index}>
+                        <div className="card bg-transparent border border-orange-900 rounded-md text-black w-full">
+                            <div className="card-body">
+                                <h2 className="card-title">{item.orphanagename}</h2>
+                                <p>Reg. No : {item.orphanageid}<br />{item.head_email}</p>
+                                <div className="card-actions justify-end">
+                                    <PrimaryButton
+                                        text='view'
+                                        color='black'
+                                        onClick={() => handleClickOrphanage(item.orphanageid)} />
+                                    <PrimaryButton
+                                        color="blue"
+                                        text='Update'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setOrphanageId(item.orphanageid)
+                                            setUpdateForm(true)
+                                        }}
+                                    />
+                                    <PrimaryButton
+                                        color='red'
+                                        text='Delete'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteOrphanage(item.orphanageid);
+                                        }} />
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
                 ))}
             </InfiniteScroll>
+            {orphanageForm && <OrphanageForm setOrphanageForm={setOrphanageForm} />}
+            {updateForm && <UpdateOrphanage id={orphanageId} setUpdateForm={setUpdateForm} />}
         </div>
     )
 }

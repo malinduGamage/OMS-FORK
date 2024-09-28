@@ -2,7 +2,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { useEffect, useState } from 'react'
 import { ConfirmationModal } from './ConfirmationModal'
 import toast from 'react-hot-toast';
-import AvatarPlaceHolder from '../assets/images/avatar_placeholder.jpg'
+import AvatarPlaceHolder from '../assets/images/avatar_placeholder.png'
 
 export const ChildRequest = ({ requests, setRequests, setChildVisibility, requestId }) => {
     const [child, setChild] = useState({})

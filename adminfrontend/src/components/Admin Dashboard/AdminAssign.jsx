@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { AssignModal } from './AssignModal'
+import { AssignModal } from '../AssignModal'
 import toast from 'react-hot-toast'
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const AdminAssign = ({ orphanageList }) => {
 
@@ -60,7 +60,7 @@ export const AdminAssign = ({ orphanageList }) => {
                 <div class="px-6 py-4">
                     <div class="font-bold text-xl mb-2">Assign Staff Member</div>
                     <p class="text-gray-700 text-base">
-                    Assign a staff member to one of registered orphanages
+                        Assign a staff member to one of registered orphanages
                     </p>
                     <button className='mx-20 my-3 py-3 text-primary border-2 border-primary hover:text-white hover:bg-primary transition-colors duration-200  px-2' onClick={() => {
                         setShowModal(true)

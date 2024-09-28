@@ -129,7 +129,8 @@ const createAddChildRequest = async (req, res) => {
                     entity: 'child',
                     entity_key: temp_child.childid,
                     receiver_id: receiverOrphanage.headid,
-                    sender_id: req.userId
+                    sender_id: req.userId,
+                    target_key: temp_child.childid
                 },
                 select: {
                     requestid: true,
@@ -252,8 +253,8 @@ const createEditChildRequest = async (req, res) => {
 
         if ((!req.orphanageid) || (child.orphanageid !== req.orphanageid)) return res.status(401).json({ 'success': false, message: 'Unauthorized' });
 
-        let newRequest;
-        await prisma.$transaction(async (prisma) => {
+
+        const request = await prisma.$transaction(async (prisma) => {
 
             const newChild = await prisma.child_temp.create({
                 data: {
@@ -267,7 +268,7 @@ const createEditChildRequest = async (req, res) => {
                     educationaldetails: req.body.educationaldetails,
                 }
             })
-            newRequest = await prisma.request.create({
+            const newRequest = await prisma.request.create({
                 data: {
                     type: 'update',
                     entity: 'child',
@@ -284,14 +285,14 @@ const createEditChildRequest = async (req, res) => {
                     created_at: true
                 }
             })
-
+            return newRequest
 
         })
 
         res.status(200).json({
             success: true,
             message: 'Request created successfully.',
-            data: newRequest
+            data: request
         })
 
     } catch (error) {
@@ -406,9 +407,17 @@ const createDeleteChildRequest = async (req, res) => {
         let newRequest;
 
         await prisma.$transaction(async (prisma) => {
-
             const temp_child = await prisma.child_temp.create({
-                data: req.body,
+                data: {
+                    orphanageid: child.orphanageid,
+                    name: child.name,
+                    date_of_birth: new Date(child.date_of_birth),
+                    gender: child.gender,
+                    religion: child.religion,
+                    nationality: child.nationality,
+                    medicaldetails: child.medicaldetails,
+                    educationaldetails: child.educationaldetails,
+                },
                 select: {
                     childid: true
                 }
@@ -476,16 +485,15 @@ const handleDeleteChildRequest = async (req, res) => {
             if (result === 500) return res.status(result).json({ 'success': false, message: 'An error occurred' });
             else if (result === 404) return res.status(result).json({ 'success': false, message: 'Resource not found' });
 
-            //check if document exists in s3 bucket
+            //check if photos exists in s3 bucket
             const params = {
                 Bucket: process.env.S3_BUCKET,
                 Prefix: `child/photo/${req.body.childid}`, // Search for objects with this prefix
-                MaxKeys: 1 // Limit the number of keys returned
             };
 
             const data = await s3.listObjectsV2(params).promise();
-            if (data.Contents.length != 0) {
-                deleteFileInS3(data.Contents[0].Key);
+            for (let i = 0; i < data.Contents.length; i++) {
+                deleteFileInS3(data.Contents[i].Key);
             }
         }
         //update request with response

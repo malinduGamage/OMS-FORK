@@ -8,8 +8,10 @@ import DocumentUploadForm from './DocumentUploadForm';
 import toast from 'react-hot-toast';
 import { ConfirmationModal } from './ConfirmationModal';
 import LoadingAnimation from './LoadingAnimation';
-import AvatarPlaceHolder from '../assets/images/avatar_placeholder.jpg'
+import AvatarPlaceHolder from '../assets/images/avatar_placeholder.png'
 import { PDFView } from './PDFView';
+import ImagePreview from './ImagePreview';
+import PrimaryButton from './elements/PrimaryButton';
 
 const Child = () => {
 
@@ -68,6 +70,9 @@ const Child = () => {
   const [childDeleteVisibility, setChildDeleteVisibility] = useState(false)
   const [documentDeleteVisibility, setDocumentDeleteVisibility] = useState(false)
   const [selectedDoc, setSelectedDoc] = useState(null)
+
+  const [imagePreview, setImagePreview] = useState(false)
+  const [deleteEnable, setDeleteEnable] = useState(false)
 
   const getChild = async () => {
     try {
@@ -177,6 +182,15 @@ const Child = () => {
     }
   }
 
+  const checkDelete = async () => {
+    try {
+      const response = await axiosPrivate.get(`/application/countByChild/${childid}`);
+      if (response.data.count === 0) setDeleteEnable(true)
+    } catch (error) {
+
+    }
+  }
+
   useEffect(() => {
     console.log('setBasic')
     setBasicInfo(getBasicInfo(child))
@@ -189,20 +203,23 @@ const Child = () => {
       getPhoto()
     }
     gc()
+    checkDelete()
 
   }, []);
 
 
 
   return (
-    <div className='mx-auto my-5 w-2/3'>
+    <div className='mt-20 mx-2 my-5 '>
 
-      <div className="mx-auto  flex flex-col lg:flex-row mt-2 text-gray-700 bg-orange-100 shadow-md bg-clip-border rounded-xl">
+      <div className="mx-auto  flex flex-col lg:flex-row mt-2 text-gray-700 bg-gray-50 shadow-md bg-clip-border rounded-xl">
         <button onClick={() => navigate(-1)} className="m-3 relative justify-start h-fit w-fit bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
           Back
         </button>
         <div className='lg:w-1/3 flex justify-center'>
-          <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full" src={imageURL ? imageURL : AvatarPlaceHolder} alt="ERROR" />
+          <img
+            onClick={() => setImagePreview(true)}
+            className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full max-w-xs transition duration-300 ease-in-out hover:scale-110 drop-shadow" src={imageURL ? imageURL : AvatarPlaceHolder} alt="ERROR" />
         </div>
         <div className="p-6 my-auto text-center lg:text-left lg:w-2/3">
           <h5 className="block mb-2 font-sans text-4xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
@@ -218,9 +235,7 @@ const Child = () => {
             <button onClick={() => setEditVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Edit Profile
             </button>
-            <button onClick={() => setChildDeleteVisibility(true)} className="m-3 mt-4 ml-0 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
-              Delete Profile
-            </button>
+            <PrimaryButton onClick={() => setChildDeleteVisibility(true)} text={'Delete Profile'} disabled={!deleteEnable} className={'m-3 mt-4 ml-0'} />
             <button onClick={() => setUploadVisibility(true)} className="my-3 items-end bg-transparent hover:bg-orange-600 text-orange-600 font-normal hover:text-white py-2 px-4 border border-orange-600 hover:border-transparent rounded">
               Upload Documents
             </button>
@@ -355,7 +370,7 @@ const Child = () => {
       {loading && <LoadingAnimation />}
       {uploadFormVisibility ? <DocumentUploadForm setUploadVisibility={setUploadVisibility} category={category} setCategory={setCategory} type={type} setType={setType} document={document} setDocument={setDocument} uploadDocument={uploadDocument} /> : null}
       {editFormVisibility ? <ChildEditForm setEditVisibility={setEditVisibility} child={child} setChild={setChild} imageURL={imageURL} setImageURL={setImageURL} avatarPlaceHolder={AvatarPlaceHolder} /> : null}
-      {childDeleteVisibility ? <ConfirmationModal head='Delete Child' body='not implemented yet' handleConfirmation={() => setChildDeleteVisibility(false)} setVisibility={setChildDeleteVisibility} /> : null}
+      {childDeleteVisibility ? <ConfirmationModal head='Delete Child' body='Are you sure you want to create a delete child request?' handleConfirmation={deleteChild} setVisibility={setChildDeleteVisibility} /> : null}
       {documentDeleteVisibility ? <ConfirmationModal head='Delete Document' body='Are you sure you want to create a delete document request?' handleConfirmation={deleteDocument} setVisibility={setDocumentDeleteVisibility} /> : null}
       {docVisibility &&
         <div className="fixed inset-0 flex justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
@@ -368,6 +383,7 @@ const Child = () => {
           </section>
         </div>
       }
+      {imagePreview && <ImagePreview imageURL={imageURL} setImagePreview={setImagePreview} child={child} setImageURL={setImageURL} />}
     </div>
 
 
