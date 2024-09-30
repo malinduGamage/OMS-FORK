@@ -109,10 +109,11 @@ const ImagePreview = ({ imageURL, setImagePreview, child, setImageURL }) => {
     }, [loading])
 
     return (
-        <div className="fixed inset-0 flex  justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
-            <section className=" px-8 py-4 m-auto bg-white rounded-md shadow-md w-fit h-fit overflow-auto">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md  py-20 ">
+            <section className=" px-8 py-4 m-auto bg-white rounded-md shadow-lg w-fit h-fit overflow-auto border">
                 {/* close button */}
-                <div className='flex flex-row justify-end '>
+                <div className='flex flex-row justify-between '>
+                    <h1 className='text-2xl mt-2 mb-5'>Update profile Picture</h1>
                     <RiCloseLargeFill
                         onClick={() => setImagePreview(false)}
                         className='bg-red-500 rounded-full text-4xl p-2 text-white drop-shadow hover:bg-red-700' />
@@ -120,7 +121,7 @@ const ImagePreview = ({ imageURL, setImagePreview, child, setImageURL }) => {
 
                 {/* body */}
                 <div className=' flex flex-col items-center'>
-                    <h1 className='text-2xl mt-2 mb-5'>Update profile Picture</h1>
+
                     {/* image */}
                     <div className="avatar">
                         <div className="w-36 md:w-48 lg:w-96  rounded-full">
@@ -132,18 +133,18 @@ const ImagePreview = ({ imageURL, setImagePreview, child, setImageURL }) => {
 
                         <input type="file" onChange={handleChange} className="file-input file-input-bordered w-full" accept="image/*" disabled={loading} />
                         {(imageURL && !newImage) && <PrimaryButton
-                            text={deleteText}
+                            text={'Delete'}
                             className='my-3'
                             onClick={deleteImage}
-                            disabled={loading && true}
+                            loading={loading}
                             color='red' />}
                         <div>
                             {newImage && <PrimaryButton
-                                text={uploadText}
+                                text={'Upload'}
                                 className='my-3'
                                 color='blue'
                                 onClick={uploadImage}
-                                disabled={loading && true} />}
+                                loading={loading} />}
                             {newImage && <PrimaryButton onClick={clearImage} text='Clear' className='m-3' color='red' disabled={loading && true} />}
                         </div>
 

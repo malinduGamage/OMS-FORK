@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PrimaryButton = ({ text, onClick, disabled, className, color = 'orange' }) => {
+const PrimaryButton = ({ text, onClick, disabled, className, color = 'orange', loading = false }) => {
     const baseClasses = `min-w-28 items-end font-normal py-2 px-4 border rounded disabled:text-gray-400 disabled:border-gray-400 ${className} disabled:hover:bg-transparent disabled:cursor-not-allowed`;
 
     // Define the color classes based on the 'color' prop
@@ -13,14 +13,14 @@ const PrimaryButton = ({ text, onClick, disabled, className, color = 'orange' })
     };
 
     const activeClasses = colorClasses[color] || colorClasses.orange; // Fallback to orange if color is not specified
-    const disabledClasses = `disabled:text-gray-400 disabled:border-gray-400`;
+    const disabledClasses = `disabled:text-gray-400 disabled:border-gray-400 cursor-not-allowed`;
 
     return (
         <button
             disabled={disabled}
             onClick={onClick ? onClick : () => { }}
-            className={`${baseClasses} ${disabled ? disabledClasses : activeClasses}`}>
-            {text}
+            className={`${baseClasses} ${(disabled || loading) ? disabledClasses : activeClasses} `}>
+            {loading ? <span className="loading loading-dots loading-xs"></span> : text}
         </button>
     );
 };
