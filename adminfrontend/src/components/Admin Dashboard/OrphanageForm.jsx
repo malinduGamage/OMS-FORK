@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import PrimaryButton from "../elements/PrimaryButton";
 import { RiCloseLargeFill } from "react-icons/ri";
+import toast from "react-hot-toast";
 
 const OrphanageForm = ({ setOrphanageForm }) => {
   const axiosPrivate = useAxiosPrivate();
@@ -46,6 +47,8 @@ const OrphanageForm = ({ setOrphanageForm }) => {
 
       if (response.status === 200) {
         console.log("Orphanage added successfully");
+        toast.success("Orphanage added successfully");
+        setOrphanageForm(false);  // Close the form after successful submission
 
         // Reset form fields
         setOrphanageDetails({
@@ -56,6 +59,7 @@ const OrphanageForm = ({ setOrphanageForm }) => {
           head_email: "",
           district: "" // Reset district as well
         });
+        
       } else {
         console.error("Failed to add orphanage");
       }
@@ -65,27 +69,27 @@ const OrphanageForm = ({ setOrphanageForm }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm py-20 ">
+    <div className="fixed inset-0 flex items-center justify-center py-20 backdrop-blur-sm ">
       <div
         id="scrollview"
-        className="bg-white rounded drop-shadow-lg w-full h-fit mt-10 mx-10 border">
+        className="w-full mx-10 mt-10 bg-white border rounded drop-shadow-lg h-fit">
 
-        <div className='flex flex-row justify-between my-auto mx-5'>
-          <h1 className="text-2xl font-bold text-center my-5 relative">
+        <div className='flex flex-row justify-between mx-5 my-auto'>
+          <h1 className="relative my-5 text-2xl font-bold text-center">
             Submit New Orphanage
           </h1>
           {/* close button */}
 
           <RiCloseLargeFill
             onClick={() => setOrphanageForm(false)}
-            className='bg-red-500 rounded-full text-4xl p-2 text-white drop-shadow hover:bg-red-700 my-auto' />
+            className='p-2 my-auto text-4xl text-white bg-red-500 rounded-full drop-shadow hover:bg-red-700' />
         </div>
 
         <div id="report" className="w-full  h-[45vh] overflow-y-auto px-10">
           <form className="flex flex-col gap-5" >
             <div className="flex flex-col gap-5 md:flex-row">
               <div className="flex flex-col w-full">
-                <label className="text-md font-semibold mb-3" htmlFor="orphanagename">
+                <label className="mb-3 font-semibold text-md" htmlFor="orphanagename">
                   Orphanage Name:
                 </label>
                 <input
@@ -100,8 +104,8 @@ const OrphanageForm = ({ setOrphanageForm }) => {
               </div>
 
               <div className="flex flex-col w-full">
-                <label className="text-md font-semibold mb-3" htmlFor="address">
-                  Address:
+                <label className="mb-3 font-semibold text-md" htmlFor="address">
+                  Orphanage Address:
                 </label>
                 <input
                   className="w-full bg-gray-100 h-[40px] rounded-md px-4 py-3 border-none focus-visible:ring-primary !important"
@@ -117,8 +121,8 @@ const OrphanageForm = ({ setOrphanageForm }) => {
 
             <div className="flex flex-col gap-5 md:flex-row">
               <div className="flex flex-col w-full">
-                <label className="text-md font-semibold mb-3" htmlFor="capacity">
-                  Capacity:
+                <label className="mb-3 font-semibold text-md" htmlFor="capacity">
+                  Orphanage Capacity:
                 </label>
                 <input
                   className="w-full bg-gray-100 h-[40px] rounded-md px-4 py-3 border-none focus-visible:ring-primary !important"
@@ -133,8 +137,8 @@ const OrphanageForm = ({ setOrphanageForm }) => {
               </div>
 
               <div className="flex flex-col w-full">
-                <label className="text-md font-semibold mb-3" htmlFor="telno">
-                  Tel Number:
+                <label className="mb-3 font-semibold text-md" htmlFor="telno">
+                  Orphanage Tel Number:
                 </label>
                 <input
                   className="w-full bg-gray-100 h-[40px] rounded-md px-4 py-3 border-none focus-visible:ring-primary !important"
@@ -150,8 +154,8 @@ const OrphanageForm = ({ setOrphanageForm }) => {
 
             <div className="flex flex-col gap-5 md:flex-row">
               <div className="flex flex-col w-full">
-                <label className="text-md font-semibold mb-3" htmlFor="head_email">
-                  Head Email:
+                <label className="mb-3 font-semibold text-md" htmlFor="head_email">
+                  Assign Head Email:
                 </label>
                 <input
                   className="w-full bg-gray-100 h-[40px] rounded-md px-4 py-3 border-none focus-visible:ring-primary !important"
@@ -166,8 +170,8 @@ const OrphanageForm = ({ setOrphanageForm }) => {
             </div>
 
             <div className="flex flex-col w-full">
-              <label className="text-md font-semibold mb-3" htmlFor="district">
-                District:
+              <label className="mb-3 font-semibold text-md" htmlFor="district">
+                Orphanage District:
               </label>
               <select
                 className="w-full bg-gray-100 h-[40px] rounded-md px-4  border-none focus-visible:ring-primary !important"

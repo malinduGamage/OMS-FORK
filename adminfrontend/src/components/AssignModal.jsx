@@ -7,6 +7,8 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
 
     const handleSubmit = () => {
         onSubmit({ email, orphanageId: selectedOrphanageId })
+        setSelectedOrphanageId('')
+        setEmail('')
         closeModal();
     }
 
@@ -17,9 +19,9 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
     if (!showModal) return null
 
     return (
-        <div className='fixed inset-0 backdrop-blur-md flex justify-center items-center'>
-            <div className='bg-white rounded p-5 shadow-lg w-1/3'>
-                <h2 className='text-xl font-bold mb-4'>Assign {type}</h2>
+        <div className='fixed inset-0 flex items-center justify-center backdrop-blur-md'>
+            <div className='w-1/3 p-5 bg-white rounded shadow-lg'>
+                <h2 className='mb-4 text-xl font-bold'>Assign {type}</h2>
                 <label className='block mb-2'>{type} Email:</label>
                 <input
                     type='email'
@@ -43,13 +45,13 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
                 <div className='flex justify-end'>
                     <button
                         onClick={closeModal}
-                        className='mr-4 px-4 py-2 bg-gray-300 rounded'
+                        className='px-4 py-2 mr-4 bg-gray-300 rounded'
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className='px-4 py-2 bg-primary text-white rounded'
+                        className='px-4 py-2 text-white rounded bg-primary'
                     >
                         Assign
                     </button>
