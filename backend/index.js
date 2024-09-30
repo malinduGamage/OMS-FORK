@@ -44,6 +44,7 @@ app.use('/logout', require('./routes/logout'));
 
 app.use('/verify', require('./routes/verify'));
 
+app.use('/donate', require('./routes/api/payment'))
 
 
 app.use(verifyJWT)
@@ -72,6 +73,8 @@ app.use('/application', require('./routes/api/application'))
 app.use('/case', require('./routes/api/case'))
 
 app.use('/notifications', require('./routes/api/notifications'))
+
+
 
 
 
