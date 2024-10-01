@@ -5,6 +5,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import useLogout from '../hooks/useLogout';
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import Badge from './elements/Badge';
 
 const ROLES = {
     User: 1010,
@@ -24,6 +25,7 @@ const NavBar = () => {
     const [homeRoute, setHomeRoute] = useState('/');
     const [inboxRoute, setInboxRoute] = useState('/');
     const [inbox, setInbox] = useState(false);
+    const [role, setRole] = useState('')
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -66,12 +68,19 @@ const NavBar = () => {
     useEffect(() => {
         if (auth && auth.roles) {
             if (auth.roles.includes(ROLES.Admin)) {
+                setRole('admin')
                 setHomeRoute(routes.admin.home);
                 setInboxRoute(routes.admin.inbox);
                 setInbox(true);
-            } else if (auth.roles.includes(ROLES.Head) || auth.roles.includes(ROLES.Staff) || auth.roles.includes(ROLES.SocialWorker)) {
+            } else if (auth.roles.includes(ROLES.Head)) {
+                setRole('head')
+            } else if (auth.roles.includes(ROLES.Staff)) {
+                setRole('staff')
+            } else if (auth.roles.includes(ROLES.SocialWorker)) {
+                setRole('social')
                 setHomeRoute(routes.head.home);
             } else if (auth.roles.includes(ROLES.User)) {
+                setRole('user')
                 setHomeRoute(routes.user.home);
                 setInboxRoute(routes.user.inbox);
                 setInbox(true);
@@ -90,12 +99,11 @@ const NavBar = () => {
     return (
         <div className="navbar bg-base-100 fixed top-0 left-0 w-full z-10 shadow-md ">
 
-
-
             <div className="flex-1">
                 <a className="btn btn-ghost w-fit px-1" href={homeRoute}>
                     <img src="https://i.imgur.com/VXw99Rp.jpg" alt="logo" className="w-36" />
                 </a>
+                <Badge type={role} />
             </div>
 
             <div className="flex-none">

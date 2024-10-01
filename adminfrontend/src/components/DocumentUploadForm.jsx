@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast';
 import { ConfirmationModal } from './ConfirmationModal';
+import { RiCloseLargeFill } from 'react-icons/ri';
+import PrimaryButton from './elements/PrimaryButton';
 
-const DocumentUploadForm = ({ setUploadVisibility, category, setCategory, type, setType, document, setDocument, uploadDocument }) => {
+const DocumentUploadForm = ({ loading, setUploadVisibility, category, setCategory, type, setType, document, setDocument, uploadDocument }) => {
     const axiosPrivate = useAxiosPrivate()
     const [confirmModelVisibility, setConfirmModelVisibility] = useState(false);
 
@@ -12,7 +14,6 @@ const DocumentUploadForm = ({ setUploadVisibility, category, setCategory, type, 
     const educationalTypes = ['Report Card', 'Transcript', 'IEP']
     const legalTypes = ['Birth Certificate', 'Custody Report', 'Adoption Certificate']
     const [types, setTypes] = useState(medicalTypes)
-
     useEffect(() => {
         setCategory(categories[0])
     }, [])
@@ -38,20 +39,23 @@ const DocumentUploadForm = ({ setUploadVisibility, category, setCategory, type, 
     }, [category])
 
     return (
-        <div className="fixed inset-0 flex  justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
-            <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-auto w-2/3 h-fit">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md py-20 ">
+            <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-lg my-5 max-w-3xl border">
 
-                <div className="flex justify-between items-center my-4">
-                    <h1 className="text-lg font-bold text-gray-700 capitalize flex"> Upload Document </h1>
-                    <button
-                        className="px-2 py-1 bg-red-500 text-white rounded-md"
-                        onClick={() => {
-                            setDocument(null)
-                            setUploadVisibility(false)
-                        }}>
-                        Close
-                    </button>
+                <div className="flex flex-row justify-between">
+                    <h2 className="m-4 text-2xl font-semibold text-gray-800 flex flex-row">Upload Document</h2>
+                    {/* close button */}
+                    <div className='flex flex-row justify-end my-auto ml-5'>
+                        <RiCloseLargeFill
+                            onClick={() => {
+                                setDocument(null)
+                                setUploadVisibility(false)
+                            }}
+                            className='bg-red-500 rounded-full text-4xl p-2 text-white drop-shadow hover:bg-red-700' />
+                    </div>
                 </div>
+
+
                 <div className="overflow-y-auto max-h-[80vh]">
                     <form >
                         <div className="space-y-8 font-[sans-serif] mx-auto">
@@ -79,18 +83,25 @@ const DocumentUploadForm = ({ setUploadVisibility, category, setCategory, type, 
                         </div>
 
                         <div className="flex justify-end my-6">
-                            <button
+                            <PrimaryButton
                                 onClick={(e) => {
                                     e.preventDefault()
                                     setConfirmModelVisibility(true)
                                 }}
                                 disabled={!(document && category && type)}
-                                className="px-4 py-2 leading-5 text-gray-700 transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">Submit</button>
+                                text={'Submit'}
+                                loading={loading}
+                            />
+
                         </div>
                     </form>
                 </div>
             </section>
-            {confirmModelVisibility && <ConfirmationModal head={`${category} document upload`} body={`Please confirm that you want to upload ${document.name}. Ensure that the file is correct and relevant to the child's profile.`} handleConfirmation={() => uploadDocument(setConfirmModelVisibility)} setVisibility={setConfirmModelVisibility} />}
+            {confirmModelVisibility && <ConfirmationModal
+                head={`${category} document upload`}
+                body={`Please confirm that you want to upload ${document.name}. Ensure that the file is correct and relevant to the child's profile.`}
+                handleConfirmation={() => uploadDocument(setConfirmModelVisibility)}
+                setVisibility={setConfirmModelVisibility} />}
         </div >
     )
 }

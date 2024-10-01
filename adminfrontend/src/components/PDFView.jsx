@@ -7,7 +7,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
 export const PDFView = ({ documentUrl }) => {
     return (
-        <div className="h-5/6  border border-gray-300">
+        <div className="  border border-gray-300 h-[50vh] sm:h-[70vh]">
             {documentUrl ? (
                 <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.0.279/build/pdf.worker.min.js`}>
                     <Viewer fileUrl={documentUrl} />

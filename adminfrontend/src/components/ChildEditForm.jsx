@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast';
 import { ConfirmationModal } from './ConfirmationModal';
+import { RiCloseLargeFill } from 'react-icons/ri';
+import PrimaryButton from './elements/PrimaryButton';
 
 const NAME_REGEX = /^[a-zA-Z. ]{0,99}[a-zA-Z]$/;
 const GENDER_REGEX = /^(Male|Female)$/;
@@ -37,6 +39,8 @@ const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageU
 
     const [confirmModelVisibility, setConfirmModelVisibility] = useState(false);
     const [image, setImage] = useState(null);
+
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         setValidName(NAME_REGEX.test(name));
@@ -92,8 +96,6 @@ const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageU
             educationaldetails: educationalDetails
         }
 
-        console.log(data)
-
         try {
             const response = await axiosPrivate.post(`/request/editChild`, data)
             toast.success(response.data.message);
@@ -106,9 +108,11 @@ const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageU
     }
 
     const handleConfirmation = async () => {
-        await updateChild();
+        setLoading(true)
         setConfirmModelVisibility(false);
+        await updateChild();
         setEditVisibility(false);
+        setLoading(false)
     }
 
     const handleSubmit = (e) => {
@@ -117,14 +121,21 @@ const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageU
     }
 
     return (
-        <div className="fixed inset-0 flex  justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
-            <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 max-w-3xl">
-                <div className="flex justify-between items-center mb-3">
-                    <h1 className="text-lg font-bold text-gray-700 capitalize flex"> Edit profile of <p className='text-orange-500 mx-2'> {child.name} </p></h1>
-                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setEditVisibility(false)}>Close</button>
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md py-20 ">
+            <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-lg my-5 max-w-3xl border">
+
+                <div className="flex flex-row justify-between">
+                    <h2 className="m-4 text-2xl font-semibold text-gray-800 flex flex-row">Edit profile of <p className='text-orange-500 mx-2'> {child.name} </p></h2>
+                    {/* close button */}
+                    <div className='flex flex-row justify-end my-auto ml-5'>
+                        <RiCloseLargeFill
+                            onClick={() => setEditVisibility(false)}
+                            className='bg-red-500 rounded-full text-4xl p-2 text-white drop-shadow hover:bg-red-700' />
+                    </div>
                 </div>
+
                 <div className="overflow-y-auto max-h-[80vh]">
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
                             <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL ? imageURL : avatarPlaceHolder} alt="ERROR" />
                             <div className="col-span-1 sm:col-span-2 ">
@@ -162,9 +173,12 @@ const ChildEditForm = ({ setEditVisibility, child, setChild, imageURL, setImageU
 
                         </div>
                         <div className="flex justify-end mt-4">
-                            <button
+                            <PrimaryButton
                                 disabled={!submitEligibility()}
-                                className="px-4 py-2 leading-5 text-gray-700 transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">Submit</button>
+                                text={'submit'}
+                                onClick={handleSubmit}
+                                loading={loading}
+                            />
                         </div>
                     </form>
                 </div>
