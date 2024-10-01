@@ -16,6 +16,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     const navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDistrict, setSelectedDistrict] = useState("");
+    
 
     const [orphanageForm, setOrphanageForm] = useState(false)
     const [updateForm, setUpdateForm] = useState(false)
@@ -24,6 +25,8 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     const filteredOrphanageList = orphanageList.filter((orphanage) => {
         const matchesSearch = orphanage.orphanagename.toLowerCase().startsWith(searchTerm.toLowerCase());
         const matchesDistrict = selectedDistrict ? orphanage.district === selectedDistrict : true;
+        console.log(selectedDistrict, orphanage.district);
+        console.log(matchesDistrict);
         return matchesSearch && matchesDistrict;
     });
 
@@ -94,8 +97,8 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
     return (
         <div >
-            <h1 className='text-4xl font-bold text-center text-gray-800 mb-5'>Registered Orphanages</h1>
-            <div className='flex flex-col sm:flex-row justify-start'>
+            <h1 className='mb-5 text-4xl font-bold text-center text-gray-800'>Registered Orphanages</h1>
+            <div className='flex flex-col justify-start sm:flex-row'>
                 <PrimaryButton onClick={() => setOrphanageForm(true)} text={'Add Orphanage'} className={' my-auto ml-2 '} />
 
                 <div className='m-2'>
@@ -104,7 +107,9 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
                 <div className='my-auto ml-2' >
                     <Dropdown
                         valueList={districts}
-                        onSelect={(district) => setSelectedDistrict(district)}
+                        onSelect={(district) => {
+                            setSelectedDistrict(district);
+                        }}
                         className={'w-full m-0 p-0'}
                     />
                 </div>
@@ -134,7 +139,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
             <InfiniteScroll
 
-                className='mx-2 infinite-scroll-container mb-5'
+                className='mx-2 mb-5 infinite-scroll-container'
                 dataLength={sortedOrphanageList.length}
                 next={fetchMoreData}
                 hasMore={true}
@@ -142,11 +147,11 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
                 {sortedOrphanageList.map((item, index) => (
                     <div className='flex items-center justify-between py-2 '
                         key={index}>
-                        <div className="card bg-transparent border border-orange-900 rounded-md text-black w-full">
+                        <div className="w-full text-black bg-transparent border border-orange-900 rounded-md card">
                             <div className="card-body">
                                 <h2 className="card-title">{item.orphanagename}</h2>
                                 <p>Reg. No : {item.orphanageid}<br />{item.head_email}</p>
-                                <div className="card-actions justify-end">
+                                <div className="justify-end card-actions">
                                     <PrimaryButton
                                         text='view'
                                         color='black'

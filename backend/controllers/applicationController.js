@@ -185,7 +185,11 @@ const updateApplicationStatus = async (req, res) => {
 
     const userId = application.userid
 
-    const notification = "Your adoption application has been accepted. Now choose a child from given options"
+    if(status === "Rejected"){
+      const notification = "Your adoption application has been rejected. Now choose a child from given options"
+    }else if(status === "Accepted"){
+      const notification = "Your adoption application has been accepted. Now choose a child from given options"
+    }
 
 
     await prisma.users.update({
@@ -245,6 +249,7 @@ const addToApprovedList = async (req, res) => {
         headid: true
       }
     });
+
 
 
     const notification = `Assign a social worker to case of ${child.name} `

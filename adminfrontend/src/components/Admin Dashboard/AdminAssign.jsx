@@ -29,6 +29,7 @@ export const AdminAssign = ({ orphanageList }) => {
 
             toast.success('Assigned successfully');
             console.log('assigned successfully');
+            setSelectedAssign('')
 
         } catch (error) {
             toast.error('Failed to assign');
@@ -36,7 +37,7 @@ export const AdminAssign = ({ orphanageList }) => {
         }
     }
     return (
-        <div className='flex  justify-center items-center'>
+        <div className='flex items-center justify-center'>
 
             <div class=" max-w-sm rounded overflow-hidden shadow-lg">
                 <img src="https://www.allprodad.com/wp-content/uploads/2020/04/What-your-Foster-Childs-Social-Worker-Wishes-You-Knew.jpg" alt="Sunset in the mountains" />
@@ -45,7 +46,7 @@ export const AdminAssign = ({ orphanageList }) => {
                     <p class="text-gray-700 text-base">
                         Assign a social worker to one of registered orphanages
                     </p>
-                    <button className='mx-20 my-3 py-3 text-primary border-2 border-primary hover:text-white hover:bg-primary transition-colors duration-200  px-2'
+                    <button className='px-2 py-3 mx-20 my-3 transition-colors duration-200 border-2 text-primary border-primary hover:text-white hover:bg-primary'
                         onClick={() => {
                             setShowModal(true)
                             setSelectedAssign('socialworker')
@@ -62,7 +63,7 @@ export const AdminAssign = ({ orphanageList }) => {
                     <p class="text-gray-700 text-base">
                         Assign a staff member to one of registered orphanages
                     </p>
-                    <button className='mx-20 my-3 py-3 text-primary border-2 border-primary hover:text-white hover:bg-primary transition-colors duration-200  px-2' onClick={() => {
+                    <button className='px-2 py-3 mx-20 my-3 transition-colors duration-200 border-2 text-primary border-primary hover:text-white hover:bg-primary' onClick={() => {
                         setShowModal(true)
                         setSelectedAssign('staff')
                     }}>
