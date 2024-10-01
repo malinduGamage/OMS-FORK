@@ -27,5 +27,9 @@ router.route('/childDocument')
 router.route('/deleteChildDocument')
     .post(verifyRoles(ROLES_LIST.Staff), requestController.deleteChildDocumentRequest)
     .put(verifyRoles(ROLES_LIST.Head), requestController.handleDeleteDocumentRequest)
+router.route('/byChild/:childId')
+    .get(verifyRoles(ROLES_LIST.Head, ROLES_LIST.Staff), requestController.getRequestCountByChild)
+router.route('/byDocument/:documentId')
+    .get(verifyRoles(ROLES_LIST.Head, ROLES_LIST.Staff), requestController.getRequestCountByDocument)
 
 module.exports = router

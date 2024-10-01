@@ -42,6 +42,57 @@ const getRequest = async (req, res) => {
 
 }
 
+const getRequestCountByChild = async (req, res) => {
+    const childid = req.params.childId;
+
+    try {
+        const requestCount = await prisma.request.count({
+            where: {
+                target_key: childid,
+                status: 'pending'
+            }
+        })
+        console.log(requestCount)
+        res.status(200).json({
+            success: true,
+            requestCount
+        })
+    } catch (error) {
+        console.error('Database query failed:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching request.'
+        });
+    }
+
+}
+
+
+const getRequestCountByDocument = async (req, res) => {
+    const documentid = req.params.documentId;
+
+    try {
+        const requestCount = await prisma.request.count({
+            where: {
+                entity_key: documentid,
+                status: 'pending'
+            }
+        })
+        console.log('doc count', requestCount)
+        res.status(200).json({
+            success: true,
+            requestCount
+        })
+    } catch (error) {
+        console.error('Database query failed:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching request.'
+        });
+    }
+
+}
+
 const getSentRequests = async (req, res) => {
     try {
         const requests = await prisma.request.findMany({
@@ -570,7 +621,8 @@ const createChildDocumentRequest = async (req, res) => {
                     entity: 'document',
                     entity_key: newDocument.documentid,
                     sender_id: req.userId,
-                    receiver_id: child.orphanage.headid
+                    receiver_id: child.orphanage.headid,
+                    target_key: newDocument.documentid
                 }
             });
             //rename temp document in s3 bucket
@@ -694,7 +746,8 @@ const deleteChildDocumentRequest = async (req, res) => {
                 entity: 'document',
                 entity_key: documentId,
                 receiver_id: document.child.orphanage.headid,
-                sender_id: req.userId
+                sender_id: req.userId,
+                target_key: documentId
             }
         })
 
@@ -790,5 +843,7 @@ module.exports = {
     createChildDocumentRequest,
     handleChildDocumentRequest,
     deleteChildDocumentRequest,
-    handleDeleteDocumentRequest
+    handleDeleteDocumentRequest,
+    getRequestCountByChild,
+    getRequestCountByDocument
 };

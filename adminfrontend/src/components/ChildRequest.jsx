@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import { ConfirmationModal } from './ConfirmationModal'
 import toast from 'react-hot-toast';
 import AvatarPlaceHolder from '../assets/images/avatar_placeholder.png'
+import Loading from './Loading';
+import PrimaryButton from './elements/PrimaryButton';
+import { RiCloseLargeFill } from 'react-icons/ri';
 
-export const ChildRequest = ({ requests, setRequests, setChildVisibility, requestId }) => {
+export const ChildRequest = ({ requests, setRequests, setChildVisibility, requestId, role }) => {
     const [child, setChild] = useState({})
     const [imageURL, setImageURL] = useState(AvatarPlaceHolder)
     const [confirmModalVisibility, setConfirmModalVisibility] = useState(false)
@@ -12,8 +15,7 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
     const [res, setRes] = useState('')
     const [request, setRequest] = useState({})
     const [pageLoading, setPageLoading] = useState(true)
-
-    console.log(requestId)
+    const [loading, setLoading] = useState(false)
 
     const getPhotoURL = async () => {
         try {
@@ -31,6 +33,7 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
 
     const handleResponse = async (response) => {
         try {
+            setLoading(true)
             let data
             let updatedRequest
             switch (request.type) {
@@ -69,6 +72,7 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
                 default:
                     break;
             }
+            setLoading(false)
 
             toast.success(`Request ${response} successfully`)
         }
@@ -80,6 +84,7 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
     }
 
     useEffect(() => {
+        setPageLoading(true)
         const getRequestData = async () => {
             try {
                 const response = await axiosPrivate.get(`/request/get/${requestId}`)
@@ -98,67 +103,77 @@ export const ChildRequest = ({ requests, setRequests, setChildVisibility, reques
 
     return (
 
-        <div className="fixed inset-0 flex  justify-center bg-black bg-opacity-50 overflow-auto px-10 z-10">
+        <div className="fixed inset-0 flex  justify-center backdrop-blur-md drop-shadow-lg border px-10 z-10">
             <section className=" px-8 py-4 mx-auto bg-white rounded-md shadow-md my-5 max-w-3xl">
 
-                <div className="flex justify-between items-center mb-3">
-                    <h1 className="text-lg font-bold text-gray-700 capitalize flex"> {request.type} profile Request </h1>
-                    <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={() => setChildVisibility(false)}>Close</button>
-                </div>
-                <div className="overflow-y-auto max-h-[80vh]">
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
-                        <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL} alt="ERROR" />
-                        <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-                            <label className="text-gray-700" htmlFor="name">Name of the child </label>
-                            <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.name}</label>
-                        </div>
-                        <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-                            <label className="text-gray-700" htmlFor="name">Date of birth</label>
-                            <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.date_of_birth}</label>
-                        </div>
-                        <div className="col-span-1">
-                            <label className="text-gray-700" htmlFor="gender">Gender</label>
-                            <label id="name" type="text" className="block w-30 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.gender}</label>
-                        </div>
-                        <div className="col-span-1">
-                            <label className="text-gray-700" htmlFor="nationality">Nationality </label>
-                            <label id="name" type="text" className="block w-30 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.nationality}</label>
-                        </div>
-                        <div className="col-span-1 sm:col-span-2 ">
-                            <label className="text-gray-700" htmlFor="religion">Religion </label>
-                            <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.religion}</label>
-                        </div>
-                        <div className="col-span-1 sm:col-span-2 ">
-                            <label className="text-gray-700" htmlFor="medicaldetails">Medical Details</label>
-                            <label id="name" type="text" className="block w-80 min-h-20 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.medicaldetails}</label>
-                        </div>
-                        <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-                            <label className="text-gray-700" htmlFor="educationaldetails">Educational Details</label>
-                            <label id="name" type="text" className="block w-80 min-h-20 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.educationaldetails}</label>
+                {pageLoading ? <Loading /> :
+                    <>
+                        <div className="flex justify-between items-center mb-3">
+                            <h1 className="text-lg font-bold text-gray-700 capitalize flex"> {request.type} profile Request </h1>
+                            {/* close button */}
+                            <div className='flex flex-row justify-end my-auto ml-5'>
+                                <RiCloseLargeFill
+                                    onClick={() => setChildVisibility(false)}
+                                    className='bg-red-500 rounded-full text-4xl p-2 text-white drop-shadow hover:bg-red-700' />
+                            </div>
                         </div>
 
-                    </div>
-                    <div className="flex justify-end mt-4">
-                        <button
-                            onClick={() => {
-                                setRes('approved')
-                                setConfirmModalVisibility(true)
-                            }}
-                            className="mx-4 px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">
-                            Approve
-                        </button>
-                        <button
-                            onClick={() => {
-                                setRes('rejected')
-                                setConfirmModalVisibility(true)
-                            }}
-                            className="mx-4 px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-orange-500 rounded-md hover:bg-orange-700 disabled:bg-orange-300">
-                            Reject
-                        </button>
-                    </div>
+                        <div className="overflow-y-auto max-h-[80vh] w-fit">
 
-                </div>
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 w-fit">
+                                <img className="w-64 h-64 my-auto p-10 rounded-full md:rounded-full mx-auto col-span-1 sm:col-span-4" src={imageURL} alt="ERROR" />
+                                <div className="col-span-1 sm:col-span-2">
+                                    <label className="text-gray-700" htmlFor="name">Name of the child </label>
+                                    <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.name}</label>
+                                </div>
+                                <div className="col-span-1 sm:col-span-2 ">
+                                    <label className="text-gray-700" htmlFor="name">Date of birth</label>
+                                    <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.date_of_birth}</label>
+                                </div>
+                                <div className="col-span-1">
+                                    <label className="text-gray-700" htmlFor="gender">Gender</label>
+                                    <label id="name" type="text" className="block w-30 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.gender}</label>
+                                </div>
+                                <div className="col-span-1">
+                                    <label className="text-gray-700" htmlFor="nationality">Nationality </label>
+                                    <label id="name" type="text" className="block w-30 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.nationality}</label>
+                                </div>
+                                <div className="col-span-1 sm:col-span-2 ">
+                                    <label className="text-gray-700" htmlFor="religion">Religion </label>
+                                    <label id="name" type="text" className="block w-80 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.religion}</label>
+                                </div>
+                                <div className="col-span-1 sm:col-span-2 ">
+                                    <label className="text-gray-700" htmlFor="medicaldetails">Medical Details</label>
+                                    <label id="name" type="text" className="block w-80 min-h-20 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.medicaldetails}</label>
+                                </div>
+                                <div className="col-span-1 sm:col-span-2 ">
+                                    <label className="text-gray-700" htmlFor="educationaldetails">Educational Details</label>
+                                    <label id="name" type="text" className="block w-80 min-h-20 px-3 py-1 mt-1 text-gray-700 bg-white border " >{child.educationaldetails}</label>
+                                </div>
+
+                            </div>
+                            <div className="flex justify-end mt-4">
+                                <PrimaryButton
+                                    onClick={() => {
+                                        setRes('approved')
+                                        setConfirmModalVisibility(true)
+                                    }}
+                                    text={'Approve'}
+                                    disabled={request.status != 'pending' || !child || role != 'Head'}
+                                    className={'mx-2'}
+                                    loading={loading} />
+                                <PrimaryButton
+                                    onClick={() => {
+                                        setRes('rejected')
+                                        setConfirmModalVisibility(true)
+                                    }}
+                                    text={'Reject'}
+                                    disabled={request.status != 'pending' || !child || role != 'Head'}
+                                    className={'mx-2'}
+                                    loading={loading} />
+                            </div>
+
+                        </div></>}
             </section>
 
             {confirmModalVisibility &&
