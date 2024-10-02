@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 const databaseCall = async () => {
   const orphanageCount = await prisma.orphanage.count();
   const childCount = await prisma.child.count();
-  const socialWorkerCount = await prisma.users.count();
+  const socialWorkerCount = await prisma.socialworker.count();
   const staffCount = await prisma.staff.count();
   const ongoingCaseCount = await prisma.cases.count({
     where: {
@@ -258,7 +258,7 @@ const getOrphanageDetailsById = async (req, res) => {
 
     res.json({
       success: true,
-      data : orphanage,
+      data: orphanage,
     });
   } catch (error) {
     console.error(error);
