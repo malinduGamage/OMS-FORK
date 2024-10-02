@@ -92,6 +92,7 @@ function App() {
               <Route path=':id' element={<Orphanage />} />
               <Route path=':id/child/:childid' element={<Child />} />
               <Route path=':id/case/:caseId' element={<Case />} />
+              <Route path="inbox" element={<Inbox />} />
             </Route>
 
             {/*user routes*/}
