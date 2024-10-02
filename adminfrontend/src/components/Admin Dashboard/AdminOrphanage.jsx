@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import PrimaryButton from '../elements/PrimaryButton';
 import OrphanageForm from './OrphanageForm';
 import UpdateOrphanage from './UpdateOrphanage';
+import { ConfirmationModal } from './../ConfirmationModal';
 
 export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
 
@@ -16,6 +17,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     const navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDistrict, setSelectedDistrict] = useState("");
+    const [showModal, setShowModal] = useState(false);
     
 
     const [orphanageForm, setOrphanageForm] = useState(false)
@@ -44,8 +46,9 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
     };
 
     const handleDeleteOrphanage = async (orphanageId) => {
+        console.log('Inside the handle Delete orphanage...');
         try {
-            console.log('Inside the handle Delete orphanage...');
+            console.log('try block Inside the handle Delete orphanage...');
             const children = await axiosPrivate.get(`/child/orphanage/${orphanageId}`, {
                 headers: {
                     orphanageId: orphanageId
@@ -72,18 +75,26 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
                     // Update orphanage list state
                     setOrphanageList(orphanageList.filter((orphanage) => orphanage.orphanageid !== orphanageId));
                     console.log('Deleted orphanage');
+                    toast.success('Orphanage deleted successfully');
 
                 } catch (error) {
                     console.error('Error during delete operations:', error);
+                    toast.error('Failed to delete orphanage');
                 }
             }
             else {
                 console.log(children.data.childrenList.length)
+                toast.error('Cannot delete orphanage with children');
+                
             }
 
         } catch (error) {
             console.error('Failed to delete orphanage:', error);
+           
             setOrphanageList(orphanageList);
+        }
+        finally{
+            setShowModal(false);
         }
     };
 
@@ -163,6 +174,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
                                             e.stopPropagation();
                                             setOrphanageId(item.orphanageid)
                                             setUpdateForm(true)
+                                            
                                         }}
                                     />
                                     <PrimaryButton
@@ -170,7 +182,8 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
                                         text='Delete'
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleDeleteOrphanage(item.orphanageid);
+                                            setOrphanageId(item.orphanageid)
+                                            setShowModal(true)
                                         }} />
                                 </div>
                             </div>
@@ -182,6 +195,7 @@ export const AdminOrphanage = ({ orphanageList, setOrphanageList }) => {
             </InfiniteScroll>
             {orphanageForm && <OrphanageForm setOrphanageForm={setOrphanageForm} />}
             {updateForm && <UpdateOrphanage id={orphanageId} setUpdateForm={setUpdateForm} />}
+            {showModal && <ConfirmationModal head={"Delete this Orphanage"} body={"Are you sure you want to delete this orphanage?"} setVisibility={setShowModal} handleConfirmation={() =>handleDeleteOrphanage(orphanageId)} />}
         </div>
     )
 }

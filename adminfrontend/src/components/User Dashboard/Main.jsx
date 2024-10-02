@@ -81,8 +81,11 @@ const UserDashboard = () => {
 
     const findState = async () => {
         //get cases
+        
         const casesResponse = await axiosPrivate.get(`/case/byUser`);
+        
         setCases(casesResponse.data.userCases);
+        console.log(cases)
         if (casesResponse.data.userCases != 0) {
             //get case details
             await getCase(casesResponse.data.userCases[casesResponse.data.userCases.length - 1].caseid)

@@ -11,6 +11,8 @@ import Phase3 from "./Phase3";
 const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
   const axiosPrivate = useAxiosPrivate();
 
+  console.log(caseDetails);
+
   if (!caseDetails) return <Loading />;
 
   // Determine progress bar value and phase visibility
@@ -41,17 +43,17 @@ const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
 
   return (
     <div>
-      <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="min-h-screen p-6 bg-gray-50">
         <ProgressBar step={progressValue} />
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="p-6 mb-6 bg-white rounded-lg shadow-lg">
+          <h1 className="mb-4 text-2xl font-bold text-gray-800">
             CaseID: <span className="text-primary">{caseDetails.caseid}</span>
           </h1>
-          <p className="text-lg text-gray-700 mb-2">
+          <p className="mb-2 text-lg text-gray-700">
             <span className="font-semibold">Child's Name:</span>{" "}
             {caseDetails.child.name}
           </p>
-          <p className="text-lg text-gray-700 mb-2">
+          <p className="mb-2 text-lg text-gray-700">
             <span className="font-semibold">Parent's Name:</span>{" "}
             {caseDetails.parent.username}
           </p>
@@ -63,12 +65,12 @@ const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
 
         {/* Phase 1 */}
         {isPhase1Visible && (
-          <div className="bg-white shadow-lg rounded-lg mb-5">
-            <div className="flex justify-between items-center w-full p-10 text-primary text-2xl font-bold bg-white rounded-t-lg">
+          <div className="mb-5 bg-white rounded-lg shadow-lg">
+            <div className="flex items-center justify-between w-full p-10 text-2xl font-bold bg-white rounded-t-lg text-primary">
               <span className="flex items-center">
                 Phase 1: Documentation
                 {caseDetails.phase1 === "Completed" && (
-                  <span className="ml-2 px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-full">
+                  <span className="px-3 py-1 ml-2 text-sm font-medium text-white bg-green-600 rounded-full">
                     Approved
                   </span>
                 )}
@@ -88,12 +90,12 @@ const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
 
         {/* Phase 2 */}
         {isPhase2Visible && (
-          <div className="bg-white shadow-lg rounded-lg mb-5">
-            <div className="flex justify-between items-center w-full p-10 text-primary text-2xl font-bold bg-white rounded-t-lg">
+          <div className="mb-5 bg-white rounded-lg shadow-lg">
+            <div className="flex items-center justify-between w-full p-10 text-2xl font-bold bg-white rounded-t-lg text-primary">
               <span className="flex items-center">
                 Phase 2: Video Conferencing
                 {caseDetails.phase2 === "Completed" && (
-                  <span className="ml-2 px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-full">
+                  <span className="px-3 py-1 ml-2 text-sm font-medium text-white bg-green-600 rounded-full">
                     Approved
                   </span>
                 )}
@@ -113,12 +115,12 @@ const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
 
         {/* Phase 3 */}
         {isPhase3Visible && (
-          <div className="bg-white shadow-lg rounded-lg">
-            <div className="flex justify-between items-center w-full p-10 text-primary text-2xl font-bold bg-white rounded-t-lg">
+          <div className="bg-white rounded-lg shadow-lg">
+            <div className="flex items-center justify-between w-full p-10 text-2xl font-bold bg-white rounded-t-lg text-primary">
               <span className="flex items-center">
                 Phase 3: Home Environment Assessment
                 {caseDetails.phase3 === "Completed" && (
-                  <span className="ml-2 px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-full">
+                  <span className="px-3 py-1 ml-2 text-sm font-medium text-white bg-green-600 rounded-full">
                     Approved
                   </span>
                 )}
@@ -137,7 +139,7 @@ const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
         )}
 
         {isCaseClosed && (
-          <div className="p-6 bg-gray-50 min-h-screen">
+          <div className="min-h-screen p-6 bg-gray-50">
             <ProgressBar step={progressValue} />
           </div>
         )}
