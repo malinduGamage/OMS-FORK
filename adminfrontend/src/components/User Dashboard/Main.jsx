@@ -66,7 +66,7 @@ const UserDashboard = () => {
         try {
             const response = await axiosPrivate.get(`/case/byId?caseid=${caseId}`);
             setCaseDetails(response.data);
-            if (response.data.phase3 === 'Completed') setCurrentState(6);
+            if (response.data.phase3 === 'Completed') setCurrentState(5);
             else {
                 if (response.data.phase2 === 'Completed') setCurrentPhase(3)
                 else if (response.data.phase1 === 'Completed') setCurrentPhase(2)
