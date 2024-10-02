@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AssignModal } from '../AssignModal'
 import toast from 'react-hot-toast'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import PrimaryButton from '../elements/PrimaryButton';
 
 export const AdminAssign = ({ orphanageList }) => {
 
@@ -9,9 +10,38 @@ export const AdminAssign = ({ orphanageList }) => {
     const [showModal, setShowModal] = useState(false)
     const [selectedAssign, setSelectedAssign] = useState("")
 
+    const [socialWorkerList, setSocialWorkerList] = useState([]);
+    const [staffList, setStaffList] = useState([]);
+
+    const [selectedTab, setSelectedTab] = useState('Staff')
+
+    const getAllStaff = async () => {
+        try {
+            const response = await axiosPrivate.get(`/staff/all`);
+            setStaffList(response.data.staffList);
+        } catch (error) {
+            console.error('Failed to fetch staff:', error);
+        }
+    };
+
+    const getAllSocialWorkers = async () => {
+        try {
+            const response = await axiosPrivate.get(`/socialworker/overview`);
+            setSocialWorkerList(response.data.socialWorkerList);
+        } catch (error) {
+            console.error('Failed to fetch social workers:', error);
+        }
+    };
+
+    useEffect(() => {
+        getAllStaff()
+        getAllSocialWorkers()
+    }, [])
+
 
     const handleAssign = async (data) => {
         try {
+
             let response;
             if (selectedAssign === 'socialworker') {
                 response = await axiosPrivate.post('/socialworker', data, {
@@ -19,58 +49,130 @@ export const AdminAssign = ({ orphanageList }) => {
                         'Content-Type': 'application/json'
                     }
                 })
+                setLoading(false)
             } else if (selectedAssign === 'staff') {
                 response = await axiosPrivate.post('/staff', data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
-            }
 
+            }
             toast.success('Assigned successfully');
             console.log('assigned successfully');
             setSelectedAssign('')
 
         } catch (error) {
+
             toast.error('Failed to assign');
             console.log(error);
         }
     }
     return (
-        <div className='flex items-center justify-center'>
+        <div className='mx-2'>
 
-            <div class=" max-w-sm rounded overflow-hidden shadow-lg">
-                <img src="https://www.allprodad.com/wp-content/uploads/2020/04/What-your-Foster-Childs-Social-Worker-Wishes-You-Knew.jpg" alt="Sunset in the mountains" />
-                <div class="px-6 py-4">
-                    <div class="font-bold text-xl mb-2">Assign Social Worker</div>
-                    <p class="text-gray-700 text-base">
-                        Assign a social worker to one of registered orphanages
-                    </p>
-                    <button className='px-2 py-3 mx-20 my-3 transition-colors duration-200 border-2 text-primary border-primary hover:text-white hover:bg-primary'
+            <h1 className='text-4xl font-bold text-center text-gray-800'>Workforce Management</h1>
+            <div role="tablist" className="tabs tabs-lifted w-fit my-5">
+                <a role="tab" onClick={() => setSelectedTab('Staff')} className={`tab ${selectedTab == 'Staff' && 'tab-active text-yellow-600'}  text-xl`}>Staff</a>
+                <a role="tab" onClick={() => setSelectedTab('Social')} className={`tab ${selectedTab == 'Social' && 'tab-active text-green-600'}  text-xl`}>Social Workers</a>
+            </div>
+
+            {selectedTab == 'Staff' &&
+                <div>
+                    <PrimaryButton
                         onClick={() => {
                             setShowModal(true)
-                            setSelectedAssign('socialworker')
-                        }}>
-                        Assign social worker
-                    </button>
-                </div>
-            </div>
+                            setSelectedAssign('staff')
+                        }}
+                        text={'Assign Staff Member'}
+                        className={'my-5'} />
 
-            <div class="m-20 max-w-sm rounded overflow-hidden shadow-lg">
-                <img src="https://vivahr.com/wp-content/uploads/2024/02/front-desk-clerk-job-description-template-office-setting.jpg" alt="Sunset in the mountains" />
-                <div class="px-6 py-4">
-                    <div class="font-bold text-xl mb-2">Assign Staff Member</div>
-                    <p class="text-gray-700 text-base">
-                        Assign a staff member to one of registered orphanages
-                    </p>
-                    <button className='px-2 py-3 mx-20 my-3 transition-colors duration-200 border-2 text-primary border-primary hover:text-white hover:bg-primary' onClick={() => {
+                    <div className="  mx-auto card bg-base-100 w-full shadow-xl rounded-lg overflow-auto mb-10 p-5 ">
+                        <h1 className='text-2xl text-center my-5'>Social Workers</h1>
+                        <table className="table table-zebra">
+                            {/* head */}
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Username</th>
+                                    <th>Tel. No.</th>
+                                    <th>Email</th>
+                                    <th>Orphanage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* Check if there are social workers in the list */}
+                                {staffList.length > 0 ? (
+                                    staffList.map((sw, index) => (
+                                        <tr key={index}>
+                                            <th>{index + 1}</th>
+                                            <td>{sw.username}</td>
+                                            <td>{sw.telno}</td>
+                                            <td>{sw.email}</td>
+                                            <td>{sw.orphanage}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    // Render a single row with a colspan to show the 'No social workers found' message
+                                    <tr>
+                                        <td colSpan="4" className="text-center">No social worker found.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>}
+
+
+            {selectedTab == 'Social' && <div>
+                <PrimaryButton
+                    onClick={() => {
                         setShowModal(true)
-                        setSelectedAssign('staff')
-                    }}>
-                        Assign staff Member
-                    </button>
+                        setSelectedAssign('socialworker')
+                    }}
+                    text={'Assign social worker'}
+                    className={'my-5'}
+                />
+
+                <div className="  mx-auto card bg-base-100 w-full shadow-xl rounded-lg overflow-auto mb-10 p-5 ">
+                    <h1 className='text-2xl text-center my-5'>Social Workers</h1>
+                    <table className="table table-zebra">
+                        {/* head */}
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Username</th>
+                                <th>Tel. No.</th>
+                                <th>Email</th>
+                                <th>Orphanage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {/* Check if there are social workers in the list */}
+                            {socialWorkerList.length > 0 ? (
+                                socialWorkerList.map((sw, index) => (
+                                    <tr key={index}>
+                                        <th>{index + 1}</th>
+                                        <td>{sw.username}</td>
+                                        <td>{sw.telno}</td>
+                                        <td>{sw.email}</td>
+                                        <td>{sw.orphanage}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                // Render a single row with a colspan to show the 'No social workers found' message
+                                <tr>
+                                    <td colSpan="4" className="text-center">No social worker found.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
+            }
             <AssignModal
                 showModal={showModal}
                 type={selectedAssign}
@@ -79,7 +181,8 @@ export const AdminAssign = ({ orphanageList }) => {
                     setShowModal(false)
                 }}
                 orphanageList={orphanageList}
-                onSubmit={handleAssign} />
+                onSubmit={handleAssign}
+            />
         </div>
     )
 }
