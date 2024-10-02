@@ -9,14 +9,18 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { FaHouseUser } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md";
-import { SiGoogleforms } from "react-icons/si";
-import { FaFileWaveform } from "react-icons/fa6";
 
 import { AdminOrphanage } from './AdminOrphanage';
 import { AdminAssign } from './AdminAssign';
 import ApplicationListAdmin from './ApplicationListAdmin';
 import { AdminOverView } from './AdminOverView';
 import Report from '../Report'
+
+import { FaChildren } from 'react-icons/fa6'
+import { FaHome } from "react-icons/fa";
+import { IoPerson } from 'react-icons/io5';
+import { SiGoogleforms } from 'react-icons/si';
+import { FaFileWaveform } from "react-icons/fa6";
 
 const AdminDashboard = () => {
 
@@ -31,12 +35,12 @@ const AdminDashboard = () => {
     const [selectedTab, setSelectedTab] = useState(baseTabs[0].label); // Default selected tab
 
     const [overview, setOverview] = useState([
-        { parameter: 'Orphanages', value: '-' },
-        { parameter: 'Children', value: '-' },
-        { parameter: 'Staff Members', value: '-' },
-        { parameter: 'Social Workers', value: '-' },
-        { parameter: 'Active Cases', value: '-' },
-        { parameter: 'Pending Adoption Applications', value: '-' }
+        { parameter: 'Total Orphanages', value: '-', icon: <FaHome />, color: 'blue' },
+        { parameter: 'Total Children', value: '-', icon: <FaChildren />, color: 'green' },
+        { parameter: 'Total Staff Members', value: '-', icon: <IoPerson />, color: 'yellow' },
+        { parameter: 'Total Social Workers', value: '-', icon: <IoPerson />, color: 'gray' },
+        { parameter: 'Active Cases', value: '-', icon: <SiGoogleforms />, color: 'purple' },
+        { parameter: 'Pending Adoption Applications', value: '-', icon: <FaFileWaveform />, color: 'red' }
     ]);
 
     const renderTabContent = () => {
@@ -76,12 +80,12 @@ const AdminDashboard = () => {
             try {
                 const response = await axiosPrivate.get('/orphanage/overview')
                 setOverview([
-                    { parameter: 'Orphanages', value: response.data.data.orphanageCount },
-                    { parameter: 'Children', value: response.data.data.childCount },
-                    { parameter: 'Staff Members', value: response.data.data.staffCount },
-                    { parameter: 'Social Workers', value: response.data.data.socialWorkerCount },
-                    { parameter: 'Active Cases', value: response.data.data.ongoingCaseCount },
-                    { parameter: 'Pending Adoption Applications', value: response.data.data.pendingApplicationCount }
+                    { parameter: 'Total Orphanages', value: response.data.data.orphanageCount, icon: <FaHome />, color: 'blue' },
+                    { parameter: 'Total Children', value: response.data.data.childCount, icon: <FaChildren />, color: 'green' },
+                    { parameter: 'Total Staff Members', value: response.data.data.staffCount, icon: <IoPerson />, color: 'yellow' },
+                    { parameter: ' Total Social Workers', value: response.data.data.socialWorkerCount, icon: <IoPerson />, color: 'gray' },
+                    { parameter: 'Active Cases', value: response.data.data.ongoingCaseCount, icon: <SiGoogleforms />, color: 'purple' },
+                    { parameter: 'Pending Adoption Applications', value: response.data.data.pendingApplicationCount, icon: <FaFileWaveform />, color: 'red' }
                 ])
             } catch (error) {
                 console.error('Failed to fetch overview:', error);

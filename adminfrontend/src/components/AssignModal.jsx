@@ -1,14 +1,19 @@
 import React, { useState } from 'react'
+import PrimaryButton from './elements/PrimaryButton'
 
 export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, type }) => {
 
     const [email, setEmail] = useState('')
     const [selectedOrphanageId, setSelectedOrphanageId] = useState('')
 
+    const [loading, setLoading] = useState(false)
+
     const handleSubmit = () => {
+        setLoading(true)
         onSubmit({ email, orphanageId: selectedOrphanageId })
         setSelectedOrphanageId('')
         setEmail('')
+        setLoading(false)
         closeModal();
     }
 
@@ -43,18 +48,19 @@ export const AssignModal = ({ showModal, closeModal, orphanageList, onSubmit, ty
                     ))}
                 </select>
                 <div className='flex justify-end'>
-                    <button
+                    <PrimaryButton
                         onClick={closeModal}
-                        className='px-4 py-2 mr-4 bg-gray-300 rounded'
-                    >
-                        Cancel
-                    </button>
-                    <button
+                        text={' Cancel'}
+                        color='red'
+                        loading={loading}
+                        className={'mx-2'} />
+                    <PrimaryButton
                         onClick={handleSubmit}
-                        className='px-4 py-2 text-white rounded bg-primary'
-                    >
-                        Assign
-                    </button>
+                        text={' Assign'}
+                        loading={loading}
+                        className={'mx-2'}
+                        disabled={!email || !selectedOrphanageId}
+                    />
                 </div>
             </div>
         </div>

@@ -4,39 +4,39 @@ const prisma = new PrismaClient();
 
 
 
-const getAllSocialWorkers = async(req,res)=>{
+const getSocialWorkersByOrphanage = async (req, res) => {
 
   try {
 
-    const {orphanageid} = req.query
+    const { orphanageid } = req.query
 
     const socialWorkerList = await prisma.socialworker.findMany({
-      where:{
-        orphanageid:orphanageid
+      where: {
+        orphanageid: orphanageid
       },
 
-      include:{
-        users:{
-          select:{
-           
-            username:true,
-            email:true,
-            telno:true
+      include: {
+        users: {
+          select: {
+
+            username: true,
+            email: true,
+            telno: true
           }
         }
       }
     })
 
     res.json({
-      success:true,
-      socialWorkerList:socialWorkerList.map((sw)=>({
-        socialworkerid:sw.socialworkerid,
-        username:sw.users.username,
-        email:sw.users.email,
-        telno:sw.users.telno
+      success: true,
+      socialWorkerList: socialWorkerList.map((sw) => ({
+        socialworkerid: sw.socialworkerid,
+        username: sw.users.username,
+        email: sw.users.email,
+        telno: sw.users.telno
       }))
     })
-    
+
   } catch (error) {
 
     console.log('Database query failed:');
@@ -46,7 +46,53 @@ const getAllSocialWorkers = async(req,res)=>{
     });
 
 
-    
+
+  }
+}
+
+const getAllSocialWorkers = async (req, res) => {
+
+  try {
+    const socialWorkerList = await prisma.socialworker.findMany({
+
+      include: {
+        users: {
+          select: {
+
+            username: true,
+            email: true,
+            telno: true
+          }
+        },
+        orphanage: {
+          select: {
+            orphanagename: true
+          }
+        }
+      }
+    })
+
+    res.json({
+      success: true,
+      socialWorkerList: socialWorkerList.map((sw) => ({
+        socialworkerid: sw.socialworkerid,
+        username: sw.users.username,
+        email: sw.users.email,
+        telno: sw.users.telno,
+        orphanage: sw.orphanage.orphanagename
+      }))
+    })
+
+  } catch (error) {
+
+    console.log('Database query failed:');
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching social workers.'
+    });
+
+
+
   }
 }
 
@@ -116,24 +162,28 @@ const getOrphanage = async (req, res) => {
 }
 
 
-const deleteSocialWorkersByOrphanage = async (req,res) => {
+const deleteSocialWorkersByOrphanage = async (req, res) => {
   try {
-    console.log("inside the deleteScocil worker",req.params.orphanageid)
-      const deletedSocialWorkers = await prisma.socialworker.deleteMany({
-          where: {
-            orphanageid: req.params.orphanageid
-          }
-      });
-      return res.json({ status: 200, deletedCount: deletedSocialWorkers.count });
+    console.log("inside the deleteScocil worker", req.params.orphanageid)
+    const deletedSocialWorkers = await prisma.socialworker.deleteMany({
+      where: {
+        orphanageid: req.params.orphanageid
+      }
+    });
+    return res.json({ status: 200, deletedCount: deletedSocialWorkers.count });
 
   } catch (error) {
-      console.error('Database query failed:', error);
-      return { status: 500, error: 'Internal server error' };
+    console.error('Database query failed:', error);
+    return { status: 500, error: 'Internal server error' };
   }
 }
 
 
 
 module.exports = {
-  addSocialWorker, getOrphanage,getAllSocialWorkers,deleteSocialWorkersByOrphanage
+  addSocialWorker,
+  getOrphanage,
+  getSocialWorkersByOrphanage,
+  getAllSocialWorkers,
+  deleteSocialWorkersByOrphanage
 }

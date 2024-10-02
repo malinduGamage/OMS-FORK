@@ -31,7 +31,8 @@ const addStaff = async (req, res) => {
     });
   }
 };
-const getAllStaff = async (req, res) => {
+
+const getStaffByOrphanage = async (req, res) => {
   try {
     const { orphanageid } = req.query;
 
@@ -69,14 +70,54 @@ const getAllStaff = async (req, res) => {
   }
 };
 
-const deleteStaffByOrphanage = async (req,res) => {
+const getAllStaff = async (req, res) => {
   try {
-    console.log("inside the delete Staff",req.params.orphanageid)
+
+    const staffList = await prisma.staff.findMany({
+
+      include: {
+        users: {
+          select: {
+            username: true,
+            email: true,
+            telno: true,
+          },
+        },
+        orphanage: {
+          select: {
+            orphanagename: true
+          }
+        }
+      },
+    });
+
+    res.json({
+      success: true,
+      staffList: staffList.map((sw) => ({
+        staffid: sw.staffid,
+        username: sw.users.username,
+        email: sw.users.email,
+        telno: sw.users.telno,
+        orphanage: sw.orphanage.orphanagename
+      })),
+    });
+  } catch (error) {
+    console.error("Database query failed:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching staff.",
+    });
+  }
+};
+
+const deleteStaffByOrphanage = async (req, res) => {
+  try {
+    console.log("inside the delete Staff", req.params.orphanageid)
     const deletedStaffs = await prisma.staff.deleteMany({
       where: {
         orphanageid: req.params.orphanageid,
       },
-      
+
     });
     console.log("deleted the staffs")
     return res.json({ status: 200, deletedCount: deletedStaffs.count });
@@ -86,4 +127,4 @@ const deleteStaffByOrphanage = async (req,res) => {
   }
 };
 
-module.exports = { addStaff, getAllStaff,deleteStaffByOrphanage };
+module.exports = { addStaff, getStaffByOrphanage, deleteStaffByOrphanage, getAllStaff };
