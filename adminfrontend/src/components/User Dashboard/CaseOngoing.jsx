@@ -138,11 +138,7 @@ const CaseOngoing = ({ caseDetails, currentPhase, setCurrentState }) => {
           </div>
         )}
 
-        {isCaseClosed && (
-          <div className="min-h-screen p-6 bg-gray-50">
-            <ProgressBar step={progressValue} />
-          </div>
-        )}
+
       </div>
     </div>
   );

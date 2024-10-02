@@ -57,6 +57,7 @@ const NavBar = () => {
         },
         socialWorker: {
             home: `/orphanage/${auth?.orphanageId}`,
+            inbox: '/orphanage/inbox',
         },
         user: {
             home: '/user/dashboard',
@@ -78,7 +79,9 @@ const NavBar = () => {
                 setRole('staff')
             } else if (auth.roles.includes(ROLES.SocialWorker)) {
                 setRole('social')
+                // setInbox(true);
                 setHomeRoute(routes.head.home);
+                //setInboxRoute(routes.socialWorker.inbox);
             } else if (auth.roles.includes(ROLES.User)) {
                 setRole('user')
                 setHomeRoute(routes.user.home);
