@@ -6,6 +6,7 @@ import PrimaryButton from "../elements/PrimaryButton";
 
 const UpdateOrphanage = ({ id, setUpdateForm }) => {
   const axiosPrivate = useAxiosPrivate();
+  const [loading, setLoading] = useState(false)
 
   const [orphanageDetails, setOrphanageDetails] = useState({
     orphanagename: "",
@@ -53,6 +54,7 @@ const UpdateOrphanage = ({ id, setUpdateForm }) => {
   const updatingOrphanage = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true)
       console.log("Request ID:", id); // Debug line
       console.log("Request Body:", orphanageDetails); // Debug line
       const response = await axiosPrivate.put(
@@ -79,8 +81,12 @@ const UpdateOrphanage = ({ id, setUpdateForm }) => {
       } else {
         console.error("Failed to Update orphanage");
       }
+      setLoading(false)
+      setUpdateForm(false)
     } catch (error) {
+      setLoading(false)
       console.log(error);
+      setUpdateForm(false)
     }
   };
 
@@ -209,7 +215,7 @@ const UpdateOrphanage = ({ id, setUpdateForm }) => {
 
         </form>
         <div className="flex flex-row justify-end">
-          <PrimaryButton onClick={updatingOrphanage} text={'Update Orphanage'} className={'m-10'} />
+          <PrimaryButton onClick={updatingOrphanage} text={'Update Orphanage'} className={'m-10'} loading={loading} />
         </div>
 
       </div>
