@@ -66,7 +66,7 @@ const handleNewUser = async (req, res) => {
                 }
             });
             res.status(201).json({ 'success': `New user ${username} created!` });
-        } else {
+        } else if (!user.username) {
             // Update existing user
             result = await prisma.users.update({
                 where: {
@@ -80,6 +80,9 @@ const handleNewUser = async (req, res) => {
                 }
             });
             res.status(200).json({ 'success': `User ${username} updated!` });
+        }
+        else {
+            res.status(403).json({ 'message': 'User already exists.' });
         }
 
         console.log(result);

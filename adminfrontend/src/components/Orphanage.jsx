@@ -35,7 +35,7 @@ const Orphanage = () => {
       { label: 'Overview' },
       { label: 'Child Management' },
       { label: 'Case Management' },
-      { label: 'Profile Modifications' }
+      { label: 'Request Management' }
     ];
 
     if (auth.roles.includes(ROLES.Admin)) {
@@ -47,6 +47,7 @@ const Orphanage = () => {
       setRole('Head')
     }
     else if (auth.roles.includes(ROLES.Staff)) {
+      baseTabs.splice(2, 1);
       setType('sent');
       setRole('Staff')
     }
@@ -63,7 +64,7 @@ const Orphanage = () => {
         return <Overview />;
       case "Child Management":
         return <Children role={role} />;
-      case "Profile Modifications":
+      case "Request Management":
         return <Requests type={type} role={role} />;
       case "Adoption Management":
         return <ApplicationList />;
