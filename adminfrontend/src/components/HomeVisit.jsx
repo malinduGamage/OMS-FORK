@@ -187,7 +187,7 @@ const HomeVisit = ({ caseId }) => {
       </div>
     ) : (
       // Use parentheses here instead of curly braces for the conditional rendering
-      auth.roles === 1010 && homeCondition ==null (
+      auth.roles == 1010 && homeCondition === null && (
         <div>
           <h2 className="text-xl font-bold mb-4">Proposed Home Visits</h2>
           {visits.length > 0 ? (
