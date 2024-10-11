@@ -28,7 +28,7 @@ jobs:
       # Step 4: Build and push Frontend image to DockerHub
       - name: Build and push Frontend image
         run: |
-          docker build -t savindugunasekara/orphanagefront:latest -f ./frontend/Dockerfile ./frontend
+          docker build -t savindugunasekara/orphanagefront:latest -f ./adminfrontend/Dockerfile ./adminfrontend
           docker push savindugunasekara/orphanagefront:latest
 
       # Step 5: Build and push Backend image to DockerHub
