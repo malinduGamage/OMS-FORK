@@ -30,7 +30,7 @@ const UserDash = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[rgba(255, 87, 34,0.5)]  to-transparent"></div>
         <div className="relative z-10 px-20 pt-36 mb-32 text-6xl font-bold text-primary font-poppins">
-          LET’S BRIGHTEN THEIR LIVES
+          LET’S BRIGHTEN THEIR LIVES Dockerhub
           <div className="mb-6 text-lg">
             They will make the world in a different way
           </div>
