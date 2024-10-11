@@ -68,7 +68,7 @@ const LandingPage = () => {
                     <div className="flex flex-col justify-center items-center w-full h-screen relative">
                         <img src="https://images.unsplash.com/photo-1617878227827-8360231f7f03?q=80&w=1912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Background Image" className="absolute inset-0 object-cover w-full h-full opacity-70" />
                         <div className="relative z-10 text-8xl text-white font-extrabold text-center drop-shadow-lg">
-                            LET’S <p className='text-orange-600'>BRIGHTEN </p>THEIR LIVES
+                            LET’S <p className='text-orange-600'>BRIGHTEN </p>THEIR LIVES DOCKERHUB
                           
                          
 
